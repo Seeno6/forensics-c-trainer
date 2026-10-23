@@ -105,8 +105,8 @@ const LESSONS=[
 const LES=Object.fromEntries(LESSONS.map(l=>[l.id,l]));
 // ---------- PICTURES (Wikimedia Commons, free licenses; shown from the web, credit under each) ----------
 const IMGS={
- f2:[['Arch in the right index fingerprint of a woman.JPG','An arch pattern.','Metrónomo, CC BY-SA 2.5'],['Central Pocket Loop Whorl in a left little finger.jpg','A central pocket loop whorl.','Metrónomo, CC BY-SA 4.0']],
- f3:[['Bifurcation.svg','A bifurcation: one ridge splits in two.','Nima Pirzadeh and Alvin, public domain']],
+ f2:[['Fingerprint Arch.jpg','A plain arch.','public domain'],['Tented arch.jpg','A tented arch.','NIST, public domain'],['Fingerprint Loop.jpg','A loop.','public domain'],['Plain whorl in a right thumbprint.jpg','A plain whorl.','Metrónomo, CC BY-SA 4.0'],['Central Pocket Loop Whorl in a left little finger.jpg','A central pocket loop whorl.','Metrónomo, CC BY-SA 4.0']],
+ f3:[['Bifurcation.svg','A bifurcation: one ridge splits in two.','Nima Pirzadeh and Alvin, public domain'],['Ridge ending.svg','A ridge ending: the ridge just stops.','Nima Pirzadeh, CC BY-SA 3.0'],['Short ridge.svg','A short ridge (island), circled.','Nima Pirzadeh and Alvin, public domain']],
  e1:[['BPA ellipse example.png','Measure the width and the length of the stain.','Kevin Maloney, public domain']],
  e2:[['BPA POC.png','Lines through the stains cross at the point of convergence.','Kevin Maloney, public domain'],['Calculating the area of origin of a blood splatter.jpg','Finding the height of the area of origin.','Ashley Do, CC BY-SA 4.0']],
  d2:[['Polymerase chain reaction diagram.jpg','The PCR steps.','Tpirojsi, public domain']],
@@ -116,7 +116,15 @@ const IMGS={
  c1:[['Paper chromatography in progress.jpg','Paper chromatography: the colors separate as the solvent climbs.','Amitchell125, CC BY-SA 4.0']],
  c3:[['TLC Plate - Feb 2024.jpg','A TLC plate under UV light.','CharacterLook8405, CC0']],
  c5:[['EI-MS.JPG','A mass spectrum: m/z across, abundance up.','Codc, public domain']],
- t4:[['Three Species Pollen Grains.jpg','Pollen grains from three plant species under the microscope.','Asja Radja, CC BY 4.0']],
+ t4:[['Three Species Pollen Grains.jpg','Pollen grains from three plant species under the microscope.','Asja Radja, CC BY 4.0'],['Misc pollen colorized.jpg','Pollen shapes differ by plant (colorized electron micrograph).','Dartmouth Electron Microscope Facility, public domain']],
+ p5:[['CSIRO ScienceImage 8115 Human hair and Merino wool fibre.jpg','A human hair and a wool fibre under an electron microscope: wool scales stand out.','CSIRO, CC BY 3.0']],
+ p7:[['CSIRO ScienceImage 8115 Human hair and Merino wool fibre.jpg','Hair scales (cuticle) under an electron microscope.','CSIRO, CC BY 3.0']],
+ d5:[['Erythrocytes in vertebrates.jpg','Red blood cells across vertebrates: note which have a nucleus.','George Gulliver, public domain'],['Red White Blood cells.jpg','Mammal red blood cells are discs with no nucleus.','National Cancer Institute, public domain']],
+ t2:[['Conch fract glass.jpg','A conchoidal (curved) fracture surface in glass.','Tchenguise, public domain']],
+ t3:[['Shoeprint(forensic).jpg','A shoe print: tread pattern and wear help match a shoe.','Stechondanet, CC BY 3.0']],
+ t5:[['7,62x39 bullets - unfired and fired.JPG','An unfired and a fired bullet: the rifling leaves marks on the fired one.','Vic2015, CC BY-SA 4.0'],['Zuege.jpg','Looking down a rifled barrel: the lands and grooves spiral.','MatthiasKabel, CC BY-SA 3.0'],['Polygonal vs normal rifling.svg','Barrel cross sections: rifling shapes.','Pbroks13, public domain']],
+ e3:[['Examples of Blood-Spatter and Droplet patterns.svg','Spatter types by speed and shape.','JJPMaster, CC BY-SA 4.0']],
+ e4:[['Forensic Entomology Diagram.svg','Insects and time since death.','Ramcheer27, CC BY 4.0']],
  p6:[['Anagen catagen telogen.jpg','Hair growth stages and the root.','Fevan, public domain']]
 };
 function imgs(id){const a=IMGS[id];if(!a)return '';return '<div class="row" style="align-items:flex-start;gap:12px">'+a.map(([n,c,by])=>{const e=encodeURIComponent(n);return `<figure style="margin:8px 0;flex:1 1 220px;max-width:340px"><img loading="lazy" alt="${c}" style="width:100%;height:auto;border-radius:8px;background:#fff" src="https://commons.wikimedia.org/wiki/Special:FilePath/${e}?width=640" onerror="this.closest('figure').style.display='none'"><figcaption class="small">${c} <a href="https://commons.wikimedia.org/wiki/File:${e}" target="_blank" rel="noopener">${by}</a></figcaption></figure>`}).join('')+'</div>';}

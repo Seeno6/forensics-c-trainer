@@ -103,6 +103,23 @@ const LESSONS=[
 {id:'a3',t:'case',i:'⚖️',n:'Strong and weak conclusions',hook:'Do not say more than the evidence says.',st:['Strongest: DNA, fingerprints, bullet striations.','Medium: tool marks, shoe wear, a rare fiber or soil type.','Weakest (class): blood type, common fiber, shoe size, plastic type.','Several class matches that all point to the same person are stronger together.','If two suspects both fit, look for evidence that separates them.'],mem:'Many class clues on one person add up.'}
 ];
 const LES=Object.fromEntries(LESSONS.map(l=>[l.id,l]));
+// ---------- PICTURES (Wikimedia Commons, free licenses; shown from the web, credit under each) ----------
+const IMGS={
+ f2:[['Arch in the right index fingerprint of a woman.JPG','An arch pattern.','Metrónomo, CC BY-SA 2.5'],['Central Pocket Loop Whorl in a left little finger.jpg','A central pocket loop whorl.','Metrónomo, CC BY-SA 4.0']],
+ f3:[['Bifurcation.svg','A bifurcation: one ridge splits in two.','Nima Pirzadeh and Alvin, public domain']],
+ e1:[['BPA ellipse example.png','Measure the width and the length of the stain.','Kevin Maloney, public domain']],
+ e2:[['BPA POC.png','Lines through the stains cross at the point of convergence.','Kevin Maloney, public domain'],['Calculating the area of origin of a blood splatter.jpg','Finding the height of the area of origin.','Ashley Do, CC BY-SA 4.0']],
+ d2:[['Polymerase chain reaction diagram.jpg','The PCR steps.','Tpirojsi, public domain']],
+ d3:[['STR electropherogram of a three person mixture.jpg','An electropherogram: each peak is an allele.','NIST, public domain']],
+ d4:[['BlutAgglutination.JPG','Blood on a typing card: clumps show agglutination.','Fadi, CC BY-SA 3.0 de']],
+ q2:[['Coloured flames of methanol solutions of metal salts and compounds.jpg','Flame colors of different metal salts.','Hegelrast, CC BY-SA 4.0']],
+ c1:[['Paper chromatography in progress.jpg','Paper chromatography: the colors separate as the solvent climbs.','Amitchell125, CC BY-SA 4.0']],
+ c3:[['TLC Plate - Feb 2024.jpg','A TLC plate under UV light.','CharacterLook8405, CC0']],
+ c5:[['EI-MS.JPG','A mass spectrum: m/z across, abundance up.','Codc, public domain']],
+ t4:[['Three Species Pollen Grains.jpg','Pollen grains from three plant species under the microscope.','Asja Radja, CC BY 4.0']],
+ p6:[['Anagen catagen telogen.jpg','Hair growth stages and the root.','Fevan, public domain']]
+};
+function imgs(id){const a=IMGS[id];if(!a)return '';return '<div class="row" style="align-items:flex-start;gap:12px">'+a.map(([n,c,by])=>{const e=encodeURIComponent(n);return `<figure style="margin:8px 0;flex:1 1 220px;max-width:340px"><img loading="lazy" alt="${c}" style="width:100%;height:auto;border-radius:8px;background:#fff" src="https://commons.wikimedia.org/wiki/Special:FilePath/${e}?width=640" onerror="this.closest('figure').style.display='none'"><figcaption class="small">${c} <a href="https://commons.wikimedia.org/wiki/File:${e}" target="_blank" rel="noopener">${by}</a></figcaption></figure>`}).join('')+'</div>';}
 
 
 // ---------- QUESTIONS ----------
@@ -290,7 +307,7 @@ function learn(d){const st=store();
  for(const k of topicsFor(d)){h+=`<h2 class="th">${TOPICS[k]}</h2>`;
   LESSONS.filter(l=>l.t===k&&(d==='C'||!l.c)).forEach(l=>{const n=lq(d,l.id).length;const s=st[d+'L'+l.id]||{r:0,n:0};const acc=s.n?Math.round(100*s.r/s.n):null;
    h+=`<details class="card les"><summary><span class="ic">${l.i}</span> <b>${l.n}</b>${l.c?'<span class="pill cp">C</span>':''}${acc!==null&&acc>=80?' ✅':''}</summary>
-   <div class="hook">${l.hook}</div><ol>${l.st.map(x=>`<li>${x}</li>`).join('')}</ol>
+   <div class="hook">${l.hook}</div>${imgs(l.id)}<ol>${l.st.map(x=>`<li>${x}</li>`).join('')}</ol>
    ${l.cx&&d==='C'?'<div class="cx"><b>Division C add-on</b><ol>'+l.cx.map(x=>`<li>${x}</li>`).join('')+'</ol></div>':''}
    ${l.ex?`<div class="try"><b>Try it:</b> ${l.ex.q}<ol>${l.ex.st.map(x=>`<li>${x}</li>`).join('')}</ol></div>`:''}
    <div class="mem">🧠 <b>Remember:</b> ${l.mem}</div>

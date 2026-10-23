@@ -337,6 +337,7 @@ function path(d){let prev=true;
   h+=`<div class="card"><h3>${ok?'\u2705 ':''}${L.t}</h3><div>${L.why}</div>${L.topic!=='all'?'<div class="small">Lessons in this level: '+LESSONS.filter(l=>l.t===L.topic&&(d==='C'||!l.c)).map(l=>l.i+' '+l.n).join(' \u2022 ')+'</div>':''}
   ${L.v.length?'<ul>'+L.v.flatMap(k=>VID[k]).map(vitem).join('')+'</ul>':''}
   <div class="row"><button class="btn" onclick="startLevel('${d}','${L.topic}','${L.mode}')">Start Level ${L.n} quiz</button><button class="ghost" onclick="sub['${d}']='learn';render()">Read the cards</button><span class="small">${a===null?'not tried':'best so far: '+a+'%'}</span></div></div>`;}
+ h+='<div class="card"><h3>&#128221; Full practice test</h3><div>A timed test like the real event, with an answer key and a score by part.</div><p><a href="practice_test.html" target="_blank" rel="noopener">Open the practice test</a></p></div>';
  h+='<p class="small">Each video link opens a YouTube search. Pick a short, clear video, and watch it before you take the level quiz.</p>';
  return h;}
 function startLevel(d,topic,mode){sub[d]='quiz';render();$('#qt').value=topic;$('#qm').value=mode;startQuiz(d);}
@@ -462,6 +463,7 @@ function device(){const lg=logs();
  const rows=lg.map((r,i)=>`<tr><td>${String(r.lab).replace(/[<>&]/g,'')}</td><td>${r.got}</td><td>${r.max}</td><td>${Math.round(100*r.got/r.max)}%</td><td><button class="ghost" onclick="delLog(${i})">x</button></td></tr>`).join('');
  const tot=lg.reduce((a,r)=>[a[0]+r.got,a[1]+r.max],[0,0]);
  return `<div class="card"><h3>The event rules in plain English</h3>${['r1','r2','r3','r4','r5'].map(i=>`<b>${LES[i].i} ${LES[i].n}</b><ul>${LES[i].st.map(x=>`<li>${x}</li>`).join('')}</ul>`).join('')}</div>
+ <div class="card"><h3>&#128221; Full practice test</h3><div>A timed test like the real event, with an answer key and a score by part.</div><p><a href="practice_test.html" target="_blank" rel="noopener">Open the practice test</a></p></div>
  <h2 class="th">Case practice (the 30% part)</h2><div class="tip">Read the case, write your analysis in the box (name the culprit, give the evidence, say why each other suspect is out), then open the model answer.</div>
  ${CASES.map(c=>`<details class="card"><summary><b>${c.t}</b> <span class="small">(${c.lv})</span></summary><p>${c.sc}</p><ul>${c.ev.map(x=>`<li>${x}</li>`).join('')}</ul><textarea rows="6" style="width:100%;font-size:16px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)" placeholder="Write your analysis here (not saved)."></textarea><details style="margin-top:8px"><summary><b>Show the model answer</b></summary><div class="mem">${c.md}</div></details></details>`).join('')}
  <div class="card"><h3>Practice test log</h3><div class="row"><input id="l_n" placeholder="what you did (e.g. 2019 invitational)"><input type="number" id="l_g" placeholder="your score"><input type="number" id="l_x" placeholder="out of"><button class="btn" onclick="addLog()">Add</button></div>

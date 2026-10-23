@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forensics C practice test</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1d2330;--mut:#5b6475;--line:#dfe3ea;--acc:#0b7285;--accbg:#e3fafc;--ok:#2b8a3e;--okbg:#e6f6ea;--bad:#c92a2a;--badbg:#fdeaea}
+@media (prefers-color-scheme:dark){:root{--bg:#14171d;--card:#1d222b;--ink:#e8ebf1;--mut:#9aa4b5;--line:#2c3340;--acc:#3bc9db;--accbg:#10343b;--ok:#5fd07a;--okbg:#17301f;--bad:#ff7a7a;--badbg:#3a1c1c}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0}.small{font-size:13px;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.sec{font-weight:700;color:var(--acc);margin:18px 0 4px;border-bottom:2px solid var(--acc);padding-bottom:2px}
+label.o{display:block;margin:5px 0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+label.o:hover{border-color:var(--acc)}
+label.o.ok{background:var(--okbg);border-color:var(--ok)}label.o.bad{background:var(--badbg);border-color:var(--bad)}
+button{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-weight:700;cursor:pointer;font-size:15px}
+button.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
+input[type=number]{font-size:16px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:140px}
+select{font-size:16px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+#bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#tm{font-size:22px;font-weight:800}.fb{margin-top:8px;padding:8px 12px;border-radius:8px}.fb.ok{background:var(--okbg)}.fb.bad{background:var(--badbg)}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}th{background:var(--accbg)}
+</style></head><body><div class="wrap">
+<h1>🔍 Forensics C practice test</h1>
+<div class="small">Questions come from the trainer. Do your best without notes first, then try again with your one sheet. Class III calculator allowed.</div>
+<div id="app"></div>
+</div>
+<script>
+const Q=[
+{t:'rules',lv:'C',l:'r1',q:'How many people can be on a Forensics C team?',o:['Up to 2','Up to 3','Exactly 1','Up to 4'],a:0,e:'A team of up to 2.'},
+{t:'rules',lv:'C',l:'r1',q:'What can each participant bring for notes?',o:['One 8.5 x 11 sheet, both sides, no affixed labels','A full binder','Three index cards','Nothing at all'],a:0,e:'One sheet of paper, both sides, any form and source, no affixed labels. It may be laminated or in a taped sheet protector.'},
+{t:'rules',lv:'C',l:'r1',q:'Which calculator class is allowed?',o:['Class III','Class I only','Class IV','No calculators'],a:0,e:'Each participant may bring a Class III calculator.'},
+{t:'rules',lv:'C',l:'r1',q:'About how long is the event?',o:['50 minutes','20 minutes','90 minutes','2 hours'],a:0,e:'About 50 minutes. Time is not part of the score.'},
+{t:'rules',lv:'C',l:'r2',q:'Which part of the score is the biggest?',o:['Analysis of the crime (3.f), about 30%','Qualitative analysis (3.b), about 20%','Chromatography (3.d), about 15%','Crime scene evidence (3.e), about 15%'],a:0,e:'The crime analysis is about 30%.'},
+{t:'rules',lv:'C',l:'r2',q:'How are ties broken?',o:['By the highest score on the crime analysis','By the fastest time','By a coin flip','By the lowest penalty'],a:0,e:'Ties go to the higher analysis score, which includes your reasons for clearing suspects.'},
+{t:'rules',lv:'C',l:'r2',q:'The penalty for not cleaning up as the supervisor designates is…',o:['10%','50%','Disqualification','None'],a:0,e:'A 10% penalty may be given.'},
+{t:'rules',lv:'C',l:'r3',q:'What must you wear?',o:['Goggles and an apron or lab coat, with skin covered from neck to wrist and toes','Only goggles','Only gloves','Nothing special'],a:0,e:'Goggles, apron or lab coat, covered skin. Gloves are optional.'},
+{t:'rules',lv:'C',l:'r4',q:'Which of these will the supervisor ALWAYS provide?',o:['Benedict’s solution','A microscope','Candle and matches','Density solutions'],a:0,e:'Benedict’s solution is always provided. The microscope, candle and matches, and density solutions are only provided when needed.'},
+{t:'rules',lv:'C',l:'r4',q:'You get plastics to identify. What might the supervisor provide for them?',o:['Differential density solutions','A candle to burn them','A pencil','A magnet'],a:0,e:'Density solutions may be provided. You do NOT burn plastics.'},
+{t:'rules',lv:'C',l:'r5',q:'At Regional, about how many solids are tested (Part 3.b)?',o:['3 to 8','10 to 14','20 to 30','Exactly 15'],a:0,e:'Regional 3 to 8, State 6 to 10, National 10 to 14.'},
+{t:'rules',lv:'C',l:'r5',q:'Which level has the MOST crime scene topics (Part 3.e)?',o:['National (3 to 5)','Regional (1 to 2)','State (1 to 3)','They are all equal'],a:0,e:'National 3 to 5, State 1 to 3, Regional 1 to 2.'},
+{t:'rules',lv:'C',l:'r5',q:'Is the crime analysis (Part 3.f) required at every level?',o:['Yes','No, only at Nationals','No, only at Regionals','Only if time is left'],a:0,e:'Required at Regional, State and National.'},
+{t:'rules',lv:'C',l:'r2',n:1,q:'A team scores full marks on 3.c, 3.d and 3.e only. What percent of the total is that? (20, 15, 15)',a:50,tol:0.5,u:'%',h:['3.c = 20','3.d = 15 and 3.e = 15','20 + 15 + 15 = 50'],e:'50%'},
+
+{t:'qual',lv:'C',l:'q2',q:'A lilac (pale violet) flame test points to…',o:['Potassium','Lithium','Sodium','Calcium'],a:0,e:'Potassium is lilac.'},
+{t:'qual',lv:'C',l:'q2',q:'A crimson red flame test points to…',o:['Lithium','Potassium','Boron','Sodium'],a:0,e:'Lithium is crimson red.'},
+{t:'qual',lv:'C',l:'q2',q:'A bright yellow-orange flame points to…',o:['Sodium','Calcium','Magnesium','Ammonium'],a:0,e:'Sodium is bright yellow-orange.'},
+{t:'qual',lv:'C',l:'q2',q:'Which solid gives a green flame?',o:['Boric acid','Calcium carbonate','Sucrose','Magnesium sulfate'],a:0,e:'Boron compounds burn green.'},
+{t:'qual',lv:'C',l:'q2',q:'A brick red or orange-red flame points to…',o:['Calcium','Lithium','Potassium','Boron'],a:0,e:'Calcium is brick red.'},
+{t:'qual',lv:'C',l:'q3',q:'A white solid FIZZES when 1 M HCl is added. Which could it be?',o:['Sodium carbonate','Sodium chloride','Cornstarch','Glucose'],a:0,e:'Carbonates and hydrogen carbonates release carbon dioxide with acid.'},
+{t:'qual',lv:'C',l:'q3',q:'Which three solids fizz with HCl?',o:['Sodium hydrogen carbonate, sodium carbonate, calcium carbonate','Sodium chloride, potassium chloride, lithium chloride','Glucose, sucrose, cornstarch','Boric acid, ammonium chloride, magnesium sulfate'],a:0,e:'All carbonates and hydrogen carbonates.'},
+{t:'qual',lv:'C',l:'q3',q:'Warming a solid with NaOH gives an ammonia smell. It is…',o:['Ammonium chloride','Sodium acetate','Calcium nitrate','Boric acid'],a:0,e:'NaOH frees ammonia gas from ammonium salts.'},
+{t:'qual',lv:'C',l:'q3',q:'A solid with a yellow flame gives a vinegar smell with HCl. It is…',o:['Sodium acetate','Sodium chloride','Sodium carbonate','Sodium hydrogen carbonate'],a:0,e:'Acetate plus acid makes acetic acid (vinegar).'},
+{t:'qual',lv:'C',l:'q3',q:'NaOH makes a white cloudy precipitate with…',o:['Magnesium sulfate','Sucrose','Sodium chloride','Cornstarch'],a:0,e:'Magnesium ions form magnesium hydroxide, a white solid.'},
+{t:'qual',lv:'C',l:'q4',q:'Iodine turns blue-black with…',o:['Cornstarch','Glucose','Sucrose','Sodium chloride'],a:0,e:'Iodine is the starch test.'},
+{t:'qual',lv:'C',l:'q4',q:'Which gives an orange-red result with Benedict’s solution and heat?',o:['Glucose','Sucrose','Cornstarch','Boric acid'],a:0,e:'Glucose is a reducing sugar.'},
+{t:'qual',lv:'C',l:'q4',q:'Sucrose with Benedict’s solution and heat…',o:['Stays blue (no change)','Turns brick red','Turns black','Fizzes'],a:0,e:'Sucrose is not a reducing sugar.'},
+{t:'qual',lv:'C',l:'q4',q:'Which two solids are both sugars?',o:['Glucose and sucrose','Glucose and cornstarch','Sucrose and boric acid','Cornstarch and sodium chloride'],a:0,e:'Cornstarch is a starch, not a sugar.'},
+{t:'qual',lv:'C',l:'q5',q:'Which solid is the most strongly basic (highest pH) in water?',o:['Sodium carbonate','Sodium chloride','Boric acid','Sucrose'],a:0,e:'Sodium carbonate is about pH 11.'},
+{t:'qual',lv:'C',l:'q5',q:'Which solid does NOT dissolve in water?',o:['Calcium carbonate','Sodium chloride','Glucose','Magnesium sulfate'],a:0,e:'Calcium carbonate (chalk, limestone) is insoluble.'},
+{t:'qual',lv:'C',l:'q5',q:'Boric acid solution is…',o:['Slightly acidic','Strongly basic','Exactly neutral','Strongly acidic'],a:0,e:'Boric acid is a weak acid (about pH 5).'},
+{t:'qual',lv:'C',l:'q6',q:'A white powder does not dissolve, fizzes with HCl, and gives a brick-red flame. It is…',o:['Calcium carbonate','Calcium sulfate','Sodium carbonate','Cornstarch'],a:0,e:'Insoluble + fizz + calcium flame = calcium carbonate.'},
+{t:'qual',lv:'C',l:'q6',q:'A white powder, barely soluble, no fizz, brick-red flame. It is probably…',o:['Calcium sulfate','Calcium carbonate','Calcium nitrate','Magnesium sulfate'],a:0,e:'Calcium sulfate is slightly soluble and does not fizz.'},
+{t:'qual',lv:'C',l:'q6',q:'Which test separates sodium carbonate from sodium hydrogen carbonate?',o:['Solution pH (carbonate is higher)','Flame color','Iodine','Benedict’s solution'],a:0,e:'Both fizz and both give a yellow flame. Carbonate is the stronger base.'},
+{t:'qual',lv:'C',l:'q1',q:'Which of these is NOT on the list of 15 solids?',o:['Copper sulfate','Boric acid','Glucose','Ammonium chloride'],a:0,e:'Copper sulfate is not on the list.'},
+{t:'qual',lv:'C',l:'q6',q:'A solid that turns Benedict’s orange and gives no flame color is…',o:['Glucose','Sucrose','Cornstarch','Sodium chloride'],a:0,e:'Glucose.'},
+
+{t:'poly',lv:'C',l:'p1',q:'Which plastic is used for milk jugs (recycling #2)?',o:['HDPE','PETE','PVC','PS'],a:0,e:'HDPE.'},
+{t:'poly',lv:'C',l:'p1',q:'Which plastic is used for soda bottles (#1)?',o:['PETE','HDPE','LDPE','PP'],a:0,e:'PETE.'},
+{t:'poly',lv:'C',l:'p1',q:'Which three plastics float in water?',o:['PP, LDPE, HDPE','PETE, PVC, PS','PMMA, PC, PVC','PS, PETE, PMMA'],a:0,e:'Only plastics with density below 1.00 g/cm³ float in water.'},
+{t:'poly',lv:'C',l:'p1',q:'Which plastic is the DENSEST of these?',o:['PVC','PP','LDPE','HDPE'],a:0,e:'PVC (about 1.3 to 1.4 g/cm³) is much denser than PP, LDPE and HDPE.'},
+{t:'poly',lv:'C',l:'p1',q:'Recycling code #5 is…',o:['PP','PS','PVC','LDPE'],a:0,e:'PP = #5. LDPE = #4. PVC = #3. PS = #6.'},
+{t:'poly',lv:'C',l:'p2',q:'A plastic floats in water but sinks in a liquid of density 0.91 g/cm³. Its density is between…',o:['0.91 and 1.00','1.00 and 1.20','0.50 and 0.80','1.30 and 1.40'],a:0,e:'Floats in water means below 1.00. Sinks in the 0.91 liquid means above 0.91.'},
+{t:'poly',lv:'C',l:'p2',n:1,q:'A plastic piece has mass 9.5 g and volume 10 cm³. What is its density (g/cm³)?',a:0.95,tol:0.01,u:'g/cm³',h:['Density = mass ÷ volume','9.5 ÷ 10 = 0.95'],e:'0.95 g/cm³ (HDPE)'},
+{t:'poly',lv:'C',l:'p2',q:'In a density test, a plastic floats when its density is…',o:['Less than the liquid’s','More than the liquid’s','Equal to zero','Always the same as water'],a:0,e:'Lighter than the liquid floats.'},
+{t:'poly',lv:'C',l:'p3',q:'Do participants burn the plastics at this event?',o:['No, the supervisor may give the results','Yes, with the Bunsen burner','Yes, with a candle','Only the PVC'],a:0,e:'No burn tests on plastics. Fibers may be burned.'},
+{t:'poly',lv:'C',l:'p3',q:'A plastic burns with a green-edged flame and an acrid smell, and goes out when removed. It is…',o:['PVC','PP','PS','PMMA'],a:0,e:'PVC contains chlorine.'},
+{t:'poly',lv:'C',l:'p3',q:'A plastic burns with heavy black soot and a sweet smell. It is probably…',o:['PS','HDPE','PP','LDPE'],a:0,e:'Polystyrene burns smoky.'},
+{t:'poly',lv:'C',l:'p4',q:'A fiber burns fast with a burning-paper smell and leaves soft gray ash. It is…',o:['Cotton','Wool','Silk','Nylon'],a:0,e:'Cellulose fibers (cotton, linen) smell like burning paper.'},
+{t:'poly',lv:'C',l:'p4',q:'A fiber smells like burning hair and leaves a crushable black ash. It is…',o:['Wool','Cotton','Polyester','Spandex'],a:0,e:'Protein fibers (wool, silk) smell like burning hair.'},
+{t:'poly',lv:'C',l:'p4',q:'A fiber melts, drips, smells like celery and leaves a hard bead. It is…',o:['Nylon','Linen','Wool','Silk'],a:0,e:'Nylon melts and smells chemical or like celery.'},
+{t:'poly',lv:'C',l:'p4',q:'Which pair are both NATURAL protein fibers?',o:['Wool and silk','Cotton and linen','Nylon and polyester','Polyester and spandex'],a:0,e:'Wool and silk. Cotton and linen are plant cellulose fibers.'},
+{t:'poly',lv:'C',l:'p4',q:'Which fiber is synthetic?',o:['Spandex','Silk','Linen','Cotton'],a:0,e:'Spandex (also nylon and polyester).'},
+{t:'poly',lv:'C',l:'p5',q:'Under a microscope, a fiber looks like a flat twisted ribbon. It is…',o:['Cotton','Silk','Nylon','Wool'],a:0,e:'Cotton has a twisted ribbon look.'},
+{t:'poly',lv:'C',l:'p5',q:'Which fiber has visible scales like shingles?',o:['Wool','Silk','Polyester','Cotton'],a:0,e:'Wool.'},
+{t:'poly',lv:'C',l:'p6',q:'The outer layer of a hair is the…',o:['Cuticle','Cortex','Medulla','Root'],a:0,e:'Cuticle = scales on the outside.'},
+{t:'poly',lv:'C',l:'p6',q:'Pigment granules in a hair are mainly in the…',o:['Cortex','Cuticle','Medulla','Tag'],a:0,e:'The cortex holds the pigment.'},
+{t:'poly',lv:'C',l:'p6',q:'The central canal of a hair is the…',o:['Medulla','Cortex','Cuticle','Follicle'],a:0,e:'Medulla.'},
+{t:'poly',lv:'C',l:'p6',q:'Which hair root gives usable NUCLEAR DNA?',o:['A root with a follicular tag','A hair shaft with no root','A club-shaped root with no tag','Any cut hair end'],a:0,e:'The sticky tag carries the cells with nuclear DNA.'},
+{t:'poly',lv:'C',l:'p7',q:'Human hair usually has…',o:['A thin or absent medulla and imbricate scales','A very wide medulla','Coronal scales','Spinous scales only'],a:0,e:'Human medullary index is less than 1/3.'},
+{t:'poly',lv:'C',l:'p7',q:'A hair with a medullary index over 1/2 is most likely…',o:['Animal','Human','A synthetic fiber','Wool'],a:0,e:'Animal hair has a wide medulla.'},
+{t:'poly',lv:'C',l:'p7',q:'Crown-like, stacked scales are called…',o:['Coronal','Spinous','Imbricate','Pigment'],a:0,e:'Coronal.'},
+{t:'poly',lv:'C',l:'p7',n:1,q:'A hair is 80 µm wide and its medulla is 20 µm wide. What is the medullary index?',a:0.25,tol:0.01,u:'',h:['Index = medulla width ÷ hair width','20 ÷ 80 = 0.25'],e:'0.25 (under 1/3, so human-like)'},
+
+{t:'chrom',lv:'C',l:'c1',q:'Why draw the start line with PENCIL, not pen?',o:['Pencil graphite does not dissolve in the solvent','Pen is too expensive','Pencil makes the solvent climb faster','Pen is not allowed in labs'],a:0,e:'Ink would run. Pencil stays put.'},
+{t:'chrom',lv:'C',l:'c1',q:'In paper chromatography the PAPER is the…',o:['Stationary phase','Mobile phase','Solvent front','Sample'],a:0,e:'The paper stays. The solvent moves.'},
+{t:'chrom',lv:'C',l:'c1',q:'The solvent level should be…',o:['Below the start line','Above the start line','At the top of the paper','Covering the paper'],a:0,e:'If it covers the spots, they wash into the solvent.'},
+{t:'chrom',lv:'C',l:'c2',q:'Rf is the distance moved by…',o:['The spot ÷ the solvent front','The solvent front ÷ the spot','The spot × the solvent front','The spot − the solvent front'],a:0,e:'Rf = spot ÷ solvent.'},
+{t:'chrom',lv:'C',l:'c2',q:'An Rf value is always…',o:['Between 0 and 1','Greater than 1','Negative','In centimeters'],a:0,e:'The spot cannot go farther than the solvent.'},
+{t:'chrom',lv:'C',l:'c2',n:1,q:'A spot moved 3.2 cm and the solvent front moved 8.0 cm. What is the Rf?',a:0.4,tol:0.01,u:'',h:['Rf = spot ÷ solvent front','3.2 ÷ 8.0 = 0.40'],e:'0.40'},
+{t:'chrom',lv:'C',l:'c2',n:1,q:'A spot is at Rf 0.60. The solvent front moved 9.0 cm. How far did the spot move (cm)?',a:5.4,tol:0.05,u:'cm',h:['Spot = Rf × solvent distance','0.60 × 9.0 = 5.4'],e:'5.4 cm'},
+{t:'chrom',lv:'C',l:'c3',q:'In TLC the stationary phase is…',o:['A silica gel layer','Paper','Water','A UV lamp'],a:0,e:'Silica gel on a plate.'},
+{t:'chrom',lv:'C',l:'c3',q:'On a polar silica plate, which compounds travel FARTHEST?',o:['Less polar ones','More polar ones','The heaviest ones','The colorless ones'],a:0,e:'Polar compounds stick to the polar silica. Less polar ones run farther.'},
+{t:'chrom',lv:'C',l:'c3',q:'A UV lamp is used with TLC to…',o:['Show colorless spots','Heat the plate','Make the solvent climb','Dissolve the silica'],a:0,e:'Many spots are invisible in normal light.'},
+{t:'chrom',lv:'C',l:'c4',q:'An ink at the scene splits into spots at Rf 0.35 and 0.72. Suspect A has 0.35 and 0.72. Suspect B has 0.35 only. Which is consistent?',o:['Suspect A','Suspect B','Both','Neither'],a:0,e:'Only A has both spots at the same heights.'},
+{t:'chrom',lv:'C',l:'c5',q:'In a mass spectrum, the x-axis shows…',o:['m/z (mass-to-charge)','Time','Rf','Temperature'],a:0,e:'x = m/z. y = relative abundance.'},
+{t:'chrom',lv:'C',l:'c5',q:'The tallest peak in a mass spectrum is called the…',o:['Base peak','Molecular ion','Solvent front','Parent ladder'],a:0,e:'The base peak is set to 100%.'},
+{t:'chrom',lv:'C',l:'c5',q:'The molecular ion peak is usually…',o:['The peak at the highest m/z','The tallest peak','The peak at 15','The peak at 100'],a:0,e:'The right-most major peak is the intact molecule.'},
+{t:'chrom',lv:'C',l:'c5',n:1,q:'A mass spectrum’s molecular ion is at m/z 78 and there is a big peak at m/z 63. What mass was lost? (Hint: 15 is CH₃)',a:15,tol:0.5,u:'',h:['Lost mass = 78 − 63','78 − 63 = 15, which is a CH₃ group'],e:'15 (a methyl group, CH₃)'},
+
+{t:'print',lv:'C',l:'f1',q:'Which skin layer is on the OUTSIDE?',o:['Epidermis','Dermis','Hypodermis','Muscle'],a:0,e:'Epidermis.'},
+{t:'print',lv:'C',l:'f1',q:'A print left in soft wax or soap is a…',o:['Plastic print','Latent print','Patent print','Iodine print'],a:0,e:'Plastic = 3-D impression.'},
+{t:'print',lv:'C',l:'f1',q:'A print you can see without any treatment (like in blood or ink) is…',o:['Patent','Latent','Plastic','Radial'],a:0,e:'Patent = visible.'},
+{t:'print',lv:'C',l:'f2',q:'Which pattern family is the MOST common?',o:['Loops','Whorls','Arches','Deltas'],a:0,e:'Loops are about 60 to 65%.'},
+{t:'print',lv:'C',l:'f2',q:'A pattern with NO delta is a…',o:['Arch','Loop','Whorl','Double loop whorl'],a:0,e:'Arches have no delta. Loops have one. Whorls have two.'},
+{t:'print',lv:'C',l:'f2',q:'A loop that opens toward the little-finger side is…',o:['Ulnar','Radial','Tented','Accidental'],a:0,e:'Ulnar = pinky side (ulna). Radial = thumb side.'},
+{t:'print',lv:'C',l:'f2',q:'Which is NOT one of the 8 patterns?',o:['Spur loop','Plain arch','Tented arch','Central pocket whorl'],a:0,e:'The 8: plain arch, tented arch, radial loop, ulnar loop, plain whorl, central pocket whorl, accidental whorl, double loop whorl.'},
+{t:'print',lv:'C',l:'f2',q:'Two loops twisting around each other make a…',o:['Double loop whorl','Plain whorl','Tented arch','Radial loop'],a:0,e:'Double loop whorl.'},
+{t:'print',lv:'C',l:'f3',q:'A ridge that splits into two is a…',o:['Bifurcation','Island','Spur','Delta'],a:0,e:'Bifurcation.'},
+{t:'print',lv:'C',l:'f3',q:'A very short ridge, like a dot, is an…',o:['Island','Enclosure','Trifurcation','Eye'],a:0,e:'Island.'},
+{t:'print',lv:'C',l:'f3',q:'A ridge that splits and then rejoins makes an…',o:['Enclosure','Island','Spur','Delta'],a:0,e:'Enclosure (also called a lake or eye).'},
+{t:'print',lv:'C',l:'f3',q:'A ridge that splits into three is a…',o:['Trifurcation','Bifurcation','Double bifurcation','Island'],a:0,e:'Trifurcation.'},
+{t:'print',lv:'C',l:'f4',q:'Which method turns amino acids in a print purple on paper?',o:['Ninhydrin','Iodine fuming','Dusting','Cyanoacrylate fuming'],a:0,e:'Ninhydrin reacts with amino acids.'},
+{t:'print',lv:'C',l:'f4',q:'Which method is best for prints on plastic, metal or glass?',o:['Cyanoacrylate (super glue) fuming','Ninhydrin','Iodine fuming','Sprinkling flour'],a:0,e:'Super glue vapor builds a white polymer on non-porous surfaces.'},
+{t:'print',lv:'C',l:'f4',q:'Iodine fuming makes prints…',o:['Brown, and they fade quickly','Purple and permanent','Glow-in-the-dark','Invisible'],a:0,e:'Iodine prints are brown and temporary.'},
+{t:'print',lv:'C',l:'f4',q:'When dusting, you use dark powder on…',o:['Light-colored surfaces','Dark surfaces','Paper only','Glass only'],a:0,e:'Pick a powder that contrasts with the surface.'},
+
+{t:'bio',lv:'C',l:'d1',q:'In DNA, which bases pair together?',o:['A with T, and C with G','A with G, and C with T','A with C, and T with G','A with A'],a:0,e:'A–T and C–G.'},
+{t:'bio',lv:'C',l:'d1',q:'A match between scene DNA and a suspect requires…',o:['Matching at every locus tested','Matching at one locus','Matching blood type','Matching hair color'],a:0,e:'One clear mismatch excludes the suspect.'},
+{t:'bio',lv:'C',l:'d1',q:'How many alleles does a person have at each STR locus?',o:['Two (one from each parent)','One','Three','Four'],a:0,e:'One from each parent.'},
+{t:'bio',lv:'C',l:'d2',q:'In PCR, the strands are separated at about…',o:['95 °C (denaturing)','72 °C (extending)','55 °C (annealing)','0 °C'],a:0,e:'Heat separates the strands.'},
+{t:'bio',lv:'C',l:'d2',q:'Which step lets the primers stick to the DNA?',o:['Annealing','Denaturing','Extension','Electrophoresis'],a:0,e:'Cooling to about 50 to 60 °C lets the primers anneal.'},
+{t:'bio',lv:'C',l:'d2',q:'The enzyme that builds new DNA in PCR is…',o:['Taq polymerase','Ninhydrin','Amylase','Ligase'],a:0,e:'Taq survives the heat.'},
+{t:'bio',lv:'C',l:'d2',n:1,q:'Starting with 1 copy of DNA, how many copies after 8 PCR cycles?',a:256,tol:0.5,u:'copies',h:['Each cycle doubles','2⁸ = 256'],e:'256 copies'},
+{t:'bio',lv:'C',l:'d2',n:1,q:'Starting with 100 copies of DNA, how many copies after 5 cycles?',a:3200,tol:0.5,u:'copies',h:['Copies = start × 2ⁿ','2⁵ = 32','100 × 32 = 3200'],e:'3200 copies'},
+{t:'bio',lv:'C',l:'d3',q:'In gel electrophoresis, DNA moves toward the…',o:['Positive electrode','Negative electrode','Top of the gel','Light'],a:0,e:'DNA is negatively charged.'},
+{t:'bio',lv:'C',l:'d3',q:'Which DNA fragments travel FARTHEST in a gel?',o:['The smallest','The largest','The coldest','The reddest'],a:0,e:'Small pieces slip through faster.'},
+{t:'bio',lv:'C',l:'d3',q:'On an electropherogram, each peak is…',o:['One allele (fragment size)','One person','One gene','One cycle'],a:0,e:'Peak position = size. Peak height = amount.'},
+{t:'bio',lv:'C',l:'d3',q:'A locus with ONE tall peak means the person is…',o:['Homozygous','Heterozygous','A mixture','Excluded'],a:0,e:'Two identical alleles show as one peak.'},
+{t:'bio',lv:'C',l:'d4',q:'Blood clumps with anti-A serum ONLY. The type is…',o:['A','B','AB','O'],a:0,e:'Clumping with anti-A means A antigens are present.'},
+{t:'bio',lv:'C',l:'d4',q:'Blood clumps with BOTH anti-A and anti-B serum. The type is…',o:['AB','O','A','B'],a:0,e:'Both antigens present.'},
+{t:'bio',lv:'C',l:'d4',q:'Blood that does NOT clump with anti-A or anti-B is type…',o:['O','AB','A','B'],a:0,e:'Neither antigen.'},
+{t:'bio',lv:'C',l:'d4',q:'Blood type evidence is…',o:['Class evidence','Individual evidence','Proof of one person','Not useful'],a:0,e:'Many people share a type.'},
+{t:'bio',lv:'C',l:'d5',q:'Red blood cells with a nucleus come from…',o:['Birds, reptiles or amphibians','Mammals','Humans only','Fish only'],a:0,e:'Mammal red cells lose their nucleus.'},
+{t:'bio',lv:'C',l:'d5',q:'On a slide, small round cells with NO nucleus suggest…',o:['A mammal','A bird','A reptile','An amphibian'],a:0,e:'Mammal red cells have no nucleus.'},
+{t:'bio',lv:'C',l:'d5',q:'Which red blood cells are usually the LARGEST?',o:['Amphibian','Bird','Mammal','Human'],a:0,e:'Amphibian red cells are big and oval with a nucleus.'},
+
+{t:'trace',lv:'C',l:'t1',q:'Refractive index is…',o:['Speed of light in vacuum ÷ speed in the material','Speed in the material ÷ speed in vacuum','Mass ÷ volume','Angle ÷ distance'],a:0,e:'n = c ÷ v.'},
+{t:'trace',lv:'C',l:'t1',q:'In the oil immersion method, the glass chip seems to vanish when…',o:['The oil and the glass have the same refractive index','The oil is boiling','The glass melts','The oil is colder than the glass'],a:0,e:'Matching refractive index makes the edge disappear (Becke line).'},
+{t:'trace',lv:'C',l:'t1',n:1,q:'Light moves at 2.0 × 10⁸ m/s in a glass. What is its refractive index? (c = 3.0 × 10⁸ m/s)',a:1.5,tol:0.02,u:'',h:['n = c ÷ v','3.0 ÷ 2.0 = 1.5'],e:'1.5'},
+{t:'trace',lv:'C',l:'t2',q:'In a broken window, the fracture that STOPS at another fracture was formed…',o:['Later','First','At the same time','Before the glass broke'],a:0,e:'A crack cannot cross an existing crack, so it ends there.'},
+{t:'trace',lv:'C',l:'t2',q:'Cracks that radiate outward like spokes are…',o:['Radial','Concentric','Conchoidal','Tented'],a:0,e:'Radial. Concentric ones form rings.'},
+{t:'trace',lv:'C',l:'t2',q:'A bullet hole through glass has a cone-shaped crater that is wider on the…',o:['Exit side','Entry side','Top','Left'],a:0,e:'The crater widens in the direction the bullet traveled.'},
+{t:'trace',lv:'C',l:'t3',q:'A shoe’s model and size are…',o:['Class evidence','Individual evidence','Not evidence','DNA'],a:0,e:'A unique cut or wear mark would be individual.'},
+{t:'trace',lv:'C',l:'t3',q:'Tire track width is the distance between…',o:['Left and right tires','Front and back tires','Two tread blocks','The road edges'],a:0,e:'Wheelbase is front to back.'},
+{t:'trace',lv:'C',l:'t3',n:1,q:'A footprint is 27 cm long. Using foot length = 15% of height, estimate the height in cm.',a:180,tol:1,u:'cm',h:['Height = foot ÷ 0.15','27 ÷ 0.15 = 180'],e:'180 cm'},
+{t:'trace',lv:'C',l:'t3',q:'Soil texture is described by the amounts of…',o:['Sand, silt and clay','Fats, oils and wax','Iron and gold','Water and air only'],a:0,e:'Sand, silt and clay.'},
+{t:'trace',lv:'C',l:'t4',q:'Wind-pollinated plants usually make pollen that is…',o:['Light and smooth','Sticky and spiny','Heavy and large','Bright red'],a:0,e:'Insect-pollinated pollen is stickier and spinier.'},
+{t:'trace',lv:'C',l:'t4',q:'Seeds with tiny hooks (burrs) travel by…',o:['Sticking to animals or clothing','Wind','Water','Explosion'],a:0,e:'That is why they are good clues on clothing.'},
+{t:'trace',lv:'C',l:'t4',q:'Pollen and seeds can help place a suspect at a scene because…',o:['Plant types differ by region and habitat','They glow','They are always on shoes','They do not decay'],a:0,e:'Compare plant species to where the plants grow.'},
+{t:'trace',lv:'C',l:'t5',q:'The spiral grooves inside a gun barrel are called…',o:['Rifling','Striations','Spatters','Convergence'],a:0,e:'Rifling spins the bullet.'},
+{t:'trace',lv:'C',l:'t5',q:'Which is an INDIVIDUAL characteristic of a bullet?',o:['Fine striation scratches','Caliber','Number of lands and grooves','Twist direction'],a:0,e:'Caliber, land and groove count and twist are class features.'},
+{t:'trace',lv:'C',l:'t5',q:'A comparison microscope is used to…',o:['Line up two bullets side by side','Heat samples','Fingerprint a gun','Measure pH'],a:0,e:'It matches striations.'},
+
+{t:'scene',lv:'C',l:'e1',q:'A round blood drop means it hit the surface…',o:['Straight on (near 90°)','At a very shallow angle','From far away','While moving fast'],a:0,e:'Long, oval stains mean a shallow angle.'},
+{t:'scene',lv:'C',l:'e1',n:1,q:'A stain is 6 mm wide and 12 mm long. What is the angle of impact (degrees)?',a:30,tol:0.5,u:'°',h:['sin θ = width ÷ length','6 ÷ 12 = 0.5','θ = sin⁻¹(0.5) = 30°'],e:'30°'},
+{t:'scene',lv:'C',l:'e1',n:1,q:'A stain is 8 mm wide and 16 mm long. What angle?',a:30,tol:0.5,u:'°',h:['sin θ = 8 ÷ 16 = 0.5','θ = 30°'],e:'30°'},
+{t:'scene',lv:'C',l:'e1',n:1,q:'A stain is 7 mm wide and 10 mm long. What is the angle of impact (degrees)?',a:44.4,tol:0.7,u:'°',h:['sin θ = 7 ÷ 10 = 0.70','θ = sin⁻¹(0.70)','θ ≈ 44.4°'],e:'About 44°'},
+{t:'scene',lv:'C',l:'e2',q:'The point where lines drawn back through many stains cross is the…',o:['Area of convergence','Area of origin','Base peak','Wheelbase'],a:0,e:'Convergence is the 2-D spot on the surface.'},
+{t:'scene',lv:'C',l:'e2',n:1,q:'A stain is 50 cm from the point of convergence at an angle of 45°. What is the height of origin (cm)?',a:50,tol:1,u:'cm',h:['height = distance × tan θ','tan 45° = 1','50 × 1 = 50'],e:'50 cm'},
+{t:'scene',lv:'C',l:'e2',n:1,q:'A stain is 40 cm from the point of convergence at an angle of 30°. What is the height of origin (cm)?',a:23.1,tol:0.7,u:'cm',h:['height = distance × tan θ','tan 30° = 0.577','40 × 0.577 = 23.1'],e:'23 cm'},
+{t:'scene',lv:'C',l:'e3',q:'Tiny mist-like spatter drops (under about 1 mm) suggest…',o:['High velocity (such as a gunshot)','Low velocity (a drip)','A wipe','A pool'],a:0,e:'High velocity breaks blood into a fine mist.'},
+{t:'scene',lv:'C',l:'e3',q:'Large drops (over about 4 mm) that fall from a bleeding wound are…',o:['Low velocity, passive','High velocity','Medium velocity, projected','Transfer'],a:0,e:'Gravity drips are low velocity.'},
+{t:'scene',lv:'C',l:'e3',q:'A bloody hand dragged across a wall leaves a…',o:['Transfer (wipe or swipe) stain','Projected stain','Cast-off','Mist'],a:0,e:'Transfer pattern.'},
+{t:'scene',lv:'C',l:'e4',q:'Which gives the MINIMUM time since death?',o:['The oldest insect stage on the body','The newest eggs','The color of the body','The smell'],a:0,e:'The oldest stage had to start at least that long ago.'},
+{t:'scene',lv:'C',l:'e4',q:'Insect development in colder weather is…',o:['Slower','Faster','The same','Impossible to measure'],a:0,e:'Temperature controls growth speed.'},
+{t:'scene',lv:'C',l:'e4',q:'The correct order of the blow fly life cycle is…',o:['Egg, larva, pupa, adult','Larva, egg, adult, pupa','Pupa, larva, egg, adult','Egg, pupa, larva, adult'],a:0,e:'Egg, larva (maggot), pupa, adult.'},
+
+{t:'case',lv:'C',l:'a1',q:'Which is INDIVIDUAL evidence?',o:['A fingerprint','Blood type A','Cotton fibers','A size 9 shoe'],a:0,e:'Fingerprints, DNA and bullet striations point to one source.'},
+{t:'case',lv:'C',l:'a1',q:'Locard’s principle says…',o:['Every contact leaves a trace','Only blood is evidence','Fingerprints fade quickly','Insects tell the time'],a:0,e:'Every contact exchanges material.'},
+{t:'case',lv:'C',l:'a1',q:'A suspect’s blood type does not match the blood at the scene. The suspect is probably…',o:['Excluded','The culprit','Impossible to judge','Guilty of something else'],a:0,e:'A clear mismatch excludes.'},
+{t:'case',lv:'C',l:'a2',q:'In a good crime analysis you should explain…',o:['Who did it, and why each other suspect was cleared','Only who did it','Only the tests you did','The chain of custody only'],a:0,e:'Clearing suspects counts, and it breaks ties.'},
+{t:'case',lv:'C',l:'a2',q:'What is the first thing to write in the analysis?',o:['Name the culprit(s)','Your team’s favorite test','The time you finished','The tests that failed'],a:0,e:'State the answer, then prove it.'},
+{t:'case',lv:'C',l:'a3',q:'Which evidence is the STRONGEST?',o:['DNA that matches at every locus','Blood type O','A common blue cotton fiber','A shoe size'],a:0,e:'DNA, prints and striations are individual.'},
+{t:'case',lv:'C',l:'a3',q:'Three class-evidence matches (blood type, fiber, shoe size) all point to the same suspect. That is…',o:['Stronger together than any one alone','No help at all','Individual evidence','Proof by itself'],a:0,e:'Class clues add up.'}
+];
+const SEC={qual:'3.b Solids',poly:'3.c Plastics, fibers, hair',chrom:'3.d Chromatography and mass spectra',print:'3.e Crime scene evidence',bio:'3.e Crime scene evidence',trace:'3.e Crime scene evidence',scene:'3.e Crime scene evidence',case:'3.f Crime analysis (concepts)'};
+const WT={'3.b Solids':20,'3.c Plastics, fibers, hair':20,'3.d Chromatography and mass spectra':15,'3.e Crime scene evidence':15,'3.f Crime analysis (concepts)':30};
+const PLAN=[[['qual'],8],[['poly'],8],[['chrom'],6],[['print','bio','trace','scene'],8],[['case'],4]];
+const $=s=>document.querySelector(s);
+let T=null,tick=null;
+function shuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function home(){clearInterval(tick);T=null;
+ $('#app').innerHTML=`<div class="card"><h3>Start a test</h3><div class="small">About ${PLAN.reduce((a,p)=>a+p[1],0)} questions across the five scored parts. Number problems are included.</div>
+ <p>Time: <select id="mins"><option value="50">50 minutes (event length)</option><option value="30">30 minutes</option><option value="75">75 minutes</option><option value="0">No timer</option></select> <button onclick="startT()">Start</button></p>
+ <div class="small">Parts and weights on the real event: 3.b 20, 3.c 20, 3.d 15, 3.e 15, 3.f 30. The written crime analysis (3.f) is practiced in the trainer under Rules &amp; cases.</div></div>`;}
+function startT(){const mins=parseInt($('#mins').value);let list=[];
+ PLAN.forEach(([ts,n])=>{list=list.concat(shuf(Q.filter(q=>ts.includes(q.t))).slice(0,n))});
+ list=list.map(q=>{if(q.n||!q.o||(q.o.length===2&&q.o[0]==='True'))return q;const idx=shuf(q.o.map((_,i)=>i));return {...q,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a)}});
+ const order=['3.b','3.c','3.d','3.e','3.f'];list.sort((a,b)=>order.indexOf(SEC[a.t].slice(0,3))-order.indexOf(SEC[b.t].slice(0,3)));
+ T={list,left:mins*60,total:mins*60,done:false};paint();
+ clearInterval(tick);if(mins>0)tick=setInterval(()=>{T.left--;const e=$('#tm');if(e)e.textContent=fmt(T.left);if(T.left<=0){clearInterval(tick);submit()}},1000);}
+function fmt(s){s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function paint(){let last='',n=0;
+ let h=`<div id="bar"><span id="tm">${T.total?fmt(T.left):'No timer'}</span><span class="small" id="cnt"></span><button onclick="submit()">Finish and score</button><button class="ghost" onclick="if(confirm('Leave this test?'))home()">Quit</button></div>`;
+ T.list.forEach((q,i)=>{const s=SEC[q.t];if(s!==last){last=s;h+=`<div class="sec">${s}</div>`}
+  h+=`<div class="card" id="q${i}"><div><b>${i+1}.</b> ${esc(q.q)}</div>`;
+  if(q.n)h+=`<p><input type="number" step="any" id="a${i}" placeholder="answer"> ${esc(q.u||'')}</p>`;
+  else h+=q.o.map((o,k)=>`<label class="o"><input type="radio" name="r${i}" value="${k}"> ${'ABCDE'[k]}. ${esc(o)}</label>`).join('');
+  h+=`<div id="f${i}"></div></div>`});
+ $('#app').innerHTML=h;
+ document.querySelectorAll('input').forEach(e=>e.oninput=count);count();}
+function count(){let n=0;T.list.forEach((q,i)=>{if(q.n){const v=$('#a'+i);if(v&&v.value!=='')n++}else if(document.querySelector(`input[name=r${i}]:checked`))n++});const e=$('#cnt');if(e)e.textContent='Answered '+n+' of '+T.list.length;}
+function submit(){if(!T||T.done)return;T.done=true;clearInterval(tick);const by={};let right=0;
+ T.list.forEach((q,i)=>{let ok=false,given='(no answer)';
+  if(q.n){const v=parseFloat(($('#a'+i)||{}).value);if(!isNaN(v)){given=v+' '+(q.u||'');ok=Math.abs(v-q.a)<=q.tol}}
+  else{const c=document.querySelector(`input[name=r${i}]:checked`);if(c){given=q.o[+c.value];ok=+c.value===q.a}}
+  const s=SEC[q.t];by[s]=by[s]||{r:0,n:0};by[s].n++;if(ok){by[s].r++;right++}
+  const box=$('#f'+i);if(!q.n)document.querySelectorAll(`input[name=r${i}]`).forEach(r=>{r.disabled=true;const lab=r.parentElement;if(+r.value===q.a)lab.classList.add('ok');else if(r.checked)lab.classList.add('bad')});else{const a=$('#a'+i);if(a)a.disabled=true}
+  box.innerHTML=`<div class="fb ${ok?'ok':'bad'}">${ok?'Correct.':'Not correct. Your answer: '+esc(given)+'.'} ${esc(q.e)}${q.n&&q.h?'<div class="small">Steps: '+q.h.map(esc).join(' → ')+'</div>':''}</div>`});
+ let wsum=0,wtot=0;const rows=Object.keys(WT).filter(s=>by[s]).map(s=>{const p=by[s].r/by[s].n;wsum+=p*WT[s];wtot+=WT[s];return `<tr><td>${s}</td><td>${by[s].r} / ${by[s].n}</td><td>${Math.round(p*100)}%</td><td>${WT[s]}</td></tr>`}).join('');
+ const res=`<div class="card" id="res"><h3>Score: ${right} of ${T.list.length} (${Math.round(100*right/T.list.length)}%)</h3><p>Weighted like the real event (parts 3.b to 3.f): <b>${Math.round(wsum/wtot*100)}%</b></p><table><tr><th>Part</th><th>Right</th><th>%</th><th>Event weight</th></tr>${rows}</table><p class="small">Your weakest part is the one with the lowest percent. Study it in the trainer, then retake.</p><p><button onclick="home()">New test</button></p></div>`;
+ $('#bar').insertAdjacentHTML('afterend',res);window.scrollTo(0,0);}
+home();
+</script></body></html>

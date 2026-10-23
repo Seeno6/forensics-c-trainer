@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forensics C Trainer</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1d2330;--mut:#5b6475;--line:#dfe3ea;--acc:#0b7285;--accbg:#e3fafc;--ok:#2b8a3e;--okbg:#e6f6ea;--bad:#c92a2a;--badbg:#fdeaea;--b:#1c7ed6;--c:#7048e8}
+@media (prefers-color-scheme:dark){:root{--bg:#14171d;--card:#1d222b;--ink:#e8ebf1;--mut:#9aa4b5;--line:#2c3340;--acc:#3bc9db;--accbg:#10343b;--ok:#5fd07a;--okbg:#17301f;--bad:#ff7a7a;--badbg:#3a1c1c;--b:#5aa9f0;--c:#a58bff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0 2px}.sub{color:var(--mut);font-size:14px;margin-bottom:12px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.tab{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:600;font-size:15px}
+.tab.on{color:#fff;border-color:transparent}.tab.on.B{background:var(--b)}.tab.on.C{background:var(--c)}.tab.on.T{background:var(--acc)}.tab.on.P{background:var(--ok)}
+.sub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 14px}
+.st{border:0;border-bottom:3px solid transparent;background:none;color:var(--mut);padding:6px 10px;cursor:pointer;font-weight:600;font-size:15px}
+.st.on{color:var(--ink);border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.card h3{margin:0 0 6px;font-size:17px}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:20px;padding:2px 9px;margin-left:6px;background:var(--accbg);color:var(--acc)}
+.tip{background:var(--accbg);border-left:4px solid var(--acc);padding:8px 12px;border-radius:6px;margin:8px 0;font-size:15px}
+ul{margin:6px 0;padding-left:20px}li{margin:3px 0}
+button.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-weight:700;cursor:pointer;font-size:15px}
+button.ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:14px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);cursor:pointer;font-size:15px}
+.opt:hover{border-color:var(--acc)}.opt.ok{background:var(--okbg);border-color:var(--ok)}.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:8px;padding:8px 12px;border-radius:8px}.fb.ok{background:var(--okbg)}.fb.bad{background:var(--badbg)}
+input,select{font-size:16px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);max-width:100%}
+input[type=number]{width:130px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0}
+.res{background:var(--okbg);border-radius:8px;padding:8px 12px;margin-top:8px;font-size:15px}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:var(--ok)}
+table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:var(--accbg)}
+a{color:var(--b);font-weight:600}a:visited{color:var(--c)}
+.lyrbox{position:relative;max-height:55vh;overflow-y:auto;margin-top:6px}
+.small{font-size:13px;color:var(--mut)}
+h2.th{font-size:18px;margin:22px 0 4px;padding-bottom:4px;border-bottom:2px solid var(--acc)}
+details.les summary,details.card summary{cursor:pointer;font-size:17px;list-style:none}details.les summary::-webkit-details-marker,details.card summary::-webkit-details-marker{display:none}
+details.les summary:before,details.card summary:before{content:"\25b6 ";font-size:12px;color:var(--acc)}details[open]>summary:before{content:"\25bc "}
+.ic{font-size:22px}.hook{font-weight:600;margin:8px 0;color:var(--acc)}.try{background:var(--okbg);border-radius:8px;padding:8px 12px;margin:8px 0}
+.mem{background:var(--accbg);border-left:4px solid var(--acc);border-radius:6px;padding:8px 12px;margin:8px 0}.cx{background:var(--accbg);border-left:4px solid var(--c);border-radius:6px;padding:8px 12px;margin:8px 0}
+.pill.cp{background:var(--c);color:#fff}.xp{font-size:14px;margin:2px 0 10px}.xpbar{height:10px;background:var(--line);border-radius:8px;overflow:hidden;max-width:360px}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),#fcc419)}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="config.js"></script></head><body><div class="wrap">
+<h1>&#128269; Forensics C Trainer</h1><div id="xp" class="xp"></div>
+<div class="sub">Science Olympiad 2027 &middot; Division C only &middot; study together: sign in and see how your classmates are doing.</div>
+<div class="tabs" id="tabs"></div><div class="sub-tabs" id="subtabs"></div><div id="view"></div>
+<p class="small">Content follows the 2027 Forensics C rules (Parts 1 to 4). Sample counts and lists change by tournament level, so check your tournament's rules and your coach's notes.</p>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const TOPICS={rules:'Event rules & scoring',qual:'Qualitative analysis of solids (3.b, 20%)',poly:'Plastics, fibers & hair (3.c, 20%)',chrom:'Chromatography & mass spectra (3.d, 15%)',print:'Fingerprints (3.e)',bio:'DNA & blood (3.e)',trace:'Glass, soil, seeds, tracks & bullets (3.e)',scene:'Spatters & insects (3.e)',case:'Analysis of the crime (3.f, 30%)'};
+// ---------- LEARN CONTENT ----------
+const LESSONS=[
+{id:'r1',t:'rules',i:'📋',n:'The event in one minute',hook:'Two people, 50 minutes, one crime to solve.',st:['A team of up to 2 solves a mock crime from a scenario, some suspects and a series of tests.','About 50 minutes. High score wins. Time is not scored.','Each person may bring writing tools, a Class III calculator and ONE 8.5 x 11 inch sheet of paper. Both sides, any form, any source, no affixed labels. It can be in a sheet protector sealed with tape, or laminated.','The team may bring items from the Division C Chemistry Events Lab Equipment List on soinc.org. The supervisor will not provide them, so teams without them may be at a disadvantage.'],mem:'Two people, 50 minutes, one sheet each, one crime.'},
+{id:'r2',t:'rules',i:'🏆',n:'How the score is split',hook:'20, 20, 15, 15, 30. The write-up is the biggest piece.',st:['3.b Qualitative analysis of solids: about 20%.','3.c Polymers (plastics, fibers, hair): about 20%.','3.d Chromatography and mass spectra: about 15%.','3.e Crime scene physical evidence: about 15%.','3.f Analysis of the crime: about 30%.','Ties are broken by the crime analysis score, including your reasons for clearing suspects.','Penalties: 10% for not cleaning up as the supervisor says. Up to 10% for bringing prohibited lab equipment.'],ex:{q:'A team earns full marks on 3.b and 3.f and nothing else. Score?',st:['3.b = 20 and 3.f = 30','20 + 30 = 50%']},mem:'20, 20, 15, 15, 30.'},
+{id:'r3',t:'rules',i:'🥽',n:'Safety, dress and clean-up',hook:'Goggles on, skin covered, hair tied back.',st:['Wear goggles and an apron or lab coat the whole time.','Skin must be covered from the neck down to the wrist and toes. Pants should be loose fitting.','Gloves are optional unless the host asks for a type.','Shoulder-length or longer hair must be tied back.','Take off safety gear or handle materials unsafely: penalty, up to disqualification.','Dispose of waste the way the supervisor tells you. Not cleaning up costs 10%.'],mem:'Goggles, apron, covered skin, hair back, waste where told.'},
+{id:'r4',t:'rules',i:'🧰',n:'What the supervisor gives you',hook:'Know the toolbox before test day.',st:['ALWAYS provided: iodine reagent (I₂ in KI, or 2% tincture of iodine), 1 M HCl, 1 M NaOH, Benedict’s solution, a hot water bath, a Bunsen burner (or equal heat source) for flame tests, a waste container, chromatography materials, a wash bottle of distilled water.','MAY be provided: a microscope and probes, candle and matches if fibers are given, density solutions if plastics are given, reagents for other tests.','Each tool matches a test: iodine = starch, Benedict’s + hot bath = glucose, HCl = carbonates, NaOH = ammonium and metal ions, burner = flame test and fiber burn.'],mem:'Iodine = starch. Benedict’s = sugar. HCl = fizz. Burner = flame.'},
+{id:'r5',t:'rules',i:'📊',n:'How much evidence per level',hook:'Regional is light. National is a lot.',st:['Regional: 3 to 8 solids, 5 to 9 polymers, 1 chromatogram type plus mass spectra, 1 to 2 crime scene topics.','State: 6 to 10 solids, 6 to 12 polymers, 1 to 2 chromatogram types plus mass spectra, 1 to 3 crime scene topics.','National: 10 to 14 solids, 10 to 18 polymers, 1 to 3 types plus mass spectra, 3 to 5 crime scene topics.','The crime analysis is required at every level.','Questions only come from the evidence topics used in that competition. The evidence can appear in a mock crime scene.','All teams get the same set of solids, and there are no mixtures of solids.'],mem:'Bigger tournament, more samples, more topics.'},
+
+{id:'q1',t:'qual',i:'🧂',n:'The 15 solids',hook:'Learn them in families.',st:['SODIUM: sodium acetate, sodium chloride, sodium hydrogen carbonate (baking soda), sodium carbonate.','OTHER SALTS: lithium chloride, potassium chloride, ammonium chloride, magnesium sulfate.','CALCIUM: calcium nitrate, calcium sulfate, calcium carbonate.','FOOD AND ORGANIC: cornstarch, glucose, sucrose.','ACID: boric acid.','Formulas: CH₃COONa, NaCl, NaHCO₃, Na₂CO₃, LiCl, KCl, NH₄Cl, MgSO₄, Ca(NO₃)₂, CaSO₄, CaCO₃, C₆H₁₂O₆ (glucose), C₁₂H₂₂O₁₁ (sucrose), H₃BO₃.'],mem:'Sodium x4, other salts x4, calcium x3, food x3, boric acid.'},
+{id:'q2',t:'qual',i:'🔥',n:'Flame tests',hook:'Metal ions give flames their colors.',st:['Dip a clean loop or splint in the solid (or its solution) and hold it in the burner flame.','SODIUM: bright yellow-orange. It is so strong it can hide other colors.','LITHIUM: crimson red.','POTASSIUM: lilac (pale violet). It is easy to miss.','CALCIUM: orange-red or brick red.','BORIC ACID: green flame (or green edges).','Magnesium, ammonium, glucose and sucrose give no useful metal color (sugars and starch just char).'],mem:'Li = red, Na = yellow, K = lilac, Ca = brick, boron = green.'},
+{id:'q3',t:'qual',i:'🫧',n:'Acid and base tests',hook:'Fizz means carbonate.',st:['Add 1 M HCl. FIZZ (carbon dioxide gas) means a carbonate or hydrogen carbonate: sodium hydrogen carbonate, sodium carbonate, calcium carbonate.','Sodium acetate plus acid makes acetic acid: a vinegar smell.','Add 1 M NaOH and warm gently. AMMONIA smell (and damp red litmus turning blue) means ammonium chloride.','Magnesium sulfate plus NaOH makes a white cloudy precipitate (magnesium hydroxide).','Calcium salts plus NaOH can also look cloudy white, so use other clues too.'],mem:'HCl fizz = carbonate. NaOH smell = ammonium.'},
+{id:'q4',t:'qual',i:'🧪',n:'Starch and sugar tests',hook:'Iodine for starch. Benedict’s for glucose.',st:['IODINE: turns blue-black with starch (cornstarch). Brown or orange with no change means no starch.','BENEDICT’S SOLUTION plus a hot water bath: glucose is a reducing sugar, so the blue turns green, then orange or brick red.','SUCROSE is not a reducing sugar. Benedict’s stays blue (it only reacts after the sucrose is broken down with acid).','Cornstarch does not really dissolve in cold water. Glucose and sucrose both dissolve.'],mem:'Iodine = starch. Benedict’s = glucose, not sucrose.'},
+{id:'q5',t:'qual',i:'💧',n:'Solubility and pH',hook:'Add water first. It tells you a lot.',st:['INSOLUBLE or barely: calcium carbonate, calcium sulfate (slightly), cornstarch (cloudy).','SOLUBLE: the rest.','Test the solution pH with indicator paper. Sodium carbonate is strongly basic (about 11). Sodium hydrogen carbonate and sodium acetate are mildly basic (about 8 to 9).','Boric acid and ammonium chloride are mildly acidic (about 5 or 6).','Sodium chloride, potassium chloride, lithium chloride, calcium nitrate, glucose and sucrose are about neutral (7).'],mem:'Carbonate = strong base. Boric and ammonium = weak acid.'},
+{id:'q6',t:'qual',i:'🗺️',n:'Identify an unknown: the plan',hook:'Look, dissolve, flame, acid, special test.',st:['1. Look: white crystals or powder? Note texture.','2. Add water: does it dissolve? Insoluble white: calcium carbonate (fizzes), calcium sulfate, cornstarch (iodine blue-black).','3. Flame test: Li red, Na yellow, K lilac, Ca brick red, boron green.','4. HCl: fizz = carbonate (sodium carbonate vs sodium hydrogen carbonate: check the pH, carbonate is stronger).','5. NaOH smell = ammonium chloride. White cloud and no flame = magnesium sulfate.','6. Benedict’s: orange = glucose. Sucrose = no change. Iodine: blue-black = starch.','7. Yellow flame, no fizz, mild base, vinegar smell with HCl = sodium acetate. Yellow flame and neutral = sodium chloride.'],mem:'Water, flame, acid, then the special test.'},
+
+{id:'p1',t:'poly',i:'♻️',n:'The plastics',hook:'Number, name, density.',st:['PETE (#1) soda bottles. HDPE (#2) milk jugs. PVC (#3) pipes. LDPE (#4) bags. PP (#5) yogurt tubs. PS (#6) foam cups and clear cases (non-expanded for this event). PMMA acrylic. PC polycarbonate.','Densities (g/cm³): PP 0.90, LDPE 0.92, HDPE 0.95, PS 1.05, PMMA 1.18, PC 1.20, PVC 1.3 to 1.4, PETE 1.38.','In plain water (1.00) only PP, LDPE and HDPE float. All the others sink.','PETE and PVC are the densest.'],mem:'Water floaters: PP, LDPE, HDPE.'},
+{id:'p2',t:'poly',i:'🥣',n:'Density tests for plastics',hook:'Sink or float in a ladder of liquids.',st:['Put the piece in a liquid. If its density is LESS than the liquid it floats. If MORE it sinks.','Water 1.00: separates PP, LDPE and HDPE (float) from the rest (sink).','A salt solution a little denser than PS (about 1.10) floats PS but sinks PMMA, PC, PETE and PVC.','Go up a ladder of denser solutions and note where each piece first floats.','Density = mass ÷ volume. Make sure bubbles are off the sample.'],ex:{q:'A piece has mass 10.5 g and volume 10 cm³. Which plastic is it closest to?',st:['Density = 10.5 ÷ 10 = 1.05 g/cm³','That is polystyrene (PS)']},mem:'Lighter than the liquid floats.'},
+{id:'p3',t:'poly',i:'🕯️',n:'Plastic burn results (given to you)',hook:'You do not burn plastics, but you may read the results.',st:['Participants do NOT perform burn tests on the plastics. The supervisor may give burn results.','PE and PP: burn with a drip, candle-wax smell, keep burning.','PS: smoky black soot, sweet styrene smell.','PVC: hard to keep burning, green-edged flame, sharp acrid smell (HCl). It stops burning when removed.','PMMA: burns steadily, fruity sweet smell, can crackle.','PC: yellow sooty flame, tends to go out on its own.','PETE: sooty, sweet smell, melts and drips.'],mem:'PE/PP = candle. PS = soot. PVC = green and acrid.'},
+{id:'p4',t:'poly',i:'🧵',n:'Fibers: natural vs synthetic',hook:'Plant, animal, or made in a factory.',st:['PLANT (cellulose): cotton, linen.','ANIMAL (protein): wool, silk.','SYNTHETIC: nylon, polyester, spandex.','Burn test (permitted on fibers): cotton and linen burn fast, smell like burning paper, leave soft gray ash.','Wool and silk smell like burning hair or feathers and leave a crushable black ash. Wool tends to go out by itself.','Nylon melts, drips and smells like celery or chemicals. It leaves a hard bead.','Polyester melts and burns with black smoke and a sweet smell, leaving a hard black bead.','Spandex melts and burns, and stretches a lot before it is burned.'],mem:'Paper smell = plant. Hair smell = animal. Melts into a bead = synthetic.'},
+{id:'p5',t:'poly',i:'🔬',n:'Fibers under the microscope',hook:'Look at the shape of each fiber.',st:['COTTON: flat, twisted ribbon (like a flattened twisted tube).','LINEN: straight, with small bumps (nodes) like bamboo.','WOOL: scales on the surface, like shingles.','SILK: very smooth and straight, fine and shiny.','NYLON and POLYESTER: smooth, uniform rods, sometimes with dull specks (delusterant).','Synthetics are very even in width. Natural fibers vary.'],mem:'Cotton twists, linen has nodes, wool has scales, silk is smooth.'},
+{id:'p6',t:'poly',i:'💇',n:'Hair structure',hook:'Cuticle outside, cortex middle, medulla center.',st:['CUTICLE: outer layer of overlapping scales, like roof shingles.','CORTEX: the bulk of the hair. It holds the pigment granules.','MEDULLA: the center canal. It can be absent, broken up, or continuous.','ROOT: the bulb at the base. A growing hair has a sticky follicular tag, which carries nuclear DNA. A resting hair has a club-shaped root with no tag.','Hair shaft only (no root) gives mitochondrial DNA, not nuclear DNA.'],mem:'Cuticle, cortex, medulla. Tag on the root = nuclear DNA.'},
+{id:'p7',t:'poly',i:'🐿️',n:'Hair scales and species',hook:'Human or animal? Medulla size and scale shape.',st:['SCALE TYPES: coronal (crown-like, stacked cups), spinous (petal or triangle shaped), imbricate (flat, overlapping, like shingles).','HUMAN: imbricate scales, thin or absent medulla, pigment spread fairly evenly.','MEDULLARY INDEX = medulla width ÷ hair width. Human is less than 1/3. Animal hair is usually more than 1/2.','BAT: very fine, strongly patterned scales (coronal or petal-like).','SQUIRREL: wide medulla with a ladder or lattice look.','COW and HORSE: coarse, thick shafts. Horse is especially thick with a wide medulla.','Check the photos in your own notes. These are cues, not guarantees.'],ex:{q:'Medulla 12 µm wide in a hair 60 µm wide. Human-like?',st:['MI = 12 ÷ 60 = 0.20','Less than 1/3, so human-like']},mem:'Human: index under 1/3. Animal: over 1/2.'},
+
+{id:'c1',t:'chrom',i:'📄',n:'Paper chromatography',hook:'The solvent climbs and carries the colors up.',st:['The paper is the STATIONARY phase. The solvent is the MOBILE phase.','Draw the start line with PENCIL. Pencil graphite does not dissolve. Ink would run.','The start line must sit above the solvent level, or the spots wash away.','Parts that stick to the paper stay low. Parts that like the solvent travel high.','Stop when the solvent front is near the top and mark it right away. It dries and disappears.'],mem:'Pencil line, solvent below it, mark the front.'},
+{id:'c2',t:'chrom',i:'📏',n:'Rf values',hook:'Spot distance over solvent distance.',st:['Rf = distance the spot moved ÷ distance the solvent front moved.','Measure both from the start line. Measure to the CENTER of the spot.','Rf is always between 0 and 1. It has no units.','Same substance and same conditions give the same Rf, so you can compare an unknown to knowns.'],ex:{q:'Spot moved 3.2 cm. Solvent front moved 8.0 cm. Rf?',st:['Rf = 3.2 ÷ 8.0','Rf = 0.40']},mem:'Rf = spot ÷ solvent.'},
+{id:'c3',t:'chrom',i:'🧫',n:'TLC (thin layer)',hook:'Same idea, on a silica plate.',st:['TLC uses a thin silica gel layer on a plate as the stationary phase. Silica is polar.','On a polar plate, polar parts stick and move less. Less polar parts move farther (higher Rf).','Spot small and let the spot dry.','Many spots are colorless. A UV lamp or stain makes them show.','Mark the solvent front right away. Calculate Rf the same way.'],mem:'Silica plate: polar sticks, nonpolar runs.'},
+{id:'c4',t:'chrom',i:'🖍️',n:'Matching a chromatogram to a suspect',hook:'Same pattern, same source.',st:['A mixture such as an ink or dye splits into several spots.','Compare the evidence strip to each suspect strip: same number of spots, same colors, same heights (Rf).','If one suspect matches every spot, that suspect is consistent with the evidence.','A strip with different spots or missing spots is eliminated.','Say the numbers: "spots at Rf 0.35 and 0.72 match suspect B".'],mem:'Count the spots, compare the heights.'},
+{id:'c5',t:'chrom',i:'📈',n:'Reading a mass spectrum',hook:'The right-most big peak is the whole molecule.',st:['A mass spectrometer breaks a molecule into charged pieces and sorts them by mass-to-charge (m/z).','x-axis = m/z. y-axis = relative abundance (the tallest peak is the BASE PEAK = 100%).','MOLECULAR ION (M⁺): the peak at the highest m/z. It equals the molecular mass.','Gaps between peaks show lost pieces: 15 = CH₃, 18 = water, 28 = CO or ethene, 29 = ethyl or CHO, 43 = propyl or acetyl.','Common fragments: 77 = phenyl ring (benzene), 91 = benzyl.','Chlorine shows two peaks (M and M+2) in about a 3 to 1 ratio. Bromine is about 1 to 1.'],mem:'Right-most = the molecule. Tallest = base peak.'},
+
+{id:'f1',t:'print',i:'🖐️',n:'Skin layers and why prints exist',hook:'Ridges are built in the deep layer and last for life.',st:['Skin has the EPIDERMIS (outer), DERMIS (middle, with nerves and blood vessels) and the hypodermis (fat) below.','Friction ridges form in the womb and are set in the dermis, so a new epidermis grows back with the same pattern.','Each person’s prints are unique, even identical twins.','Sweat (water, salts, amino acids) and oils from touching the face leave a print on a surface.','Print types: PATENT (visible, like in blood or ink), LATENT (hidden), PLASTIC (a 3-D impression, like in wax or soap).'],mem:'Epidermis outside, dermis sets the pattern.'},
+{id:'f2',t:'print',i:'🌀',n:'The 8 patterns',hook:'Arches, loops, whorls.',st:['ARCHES (about 5%): plain arch and tented arch (a sharp upward spike or angle).','LOOPS (about 60 to 65%): radial loop (opens toward the thumb side, the radius bone) and ulnar loop (opens toward the little-finger side, the ulna bone). One delta.','WHORLS (about 30 to 35%): plain whorl, central pocket whorl, accidental whorl, double loop whorl. Two deltas.','Arches have no delta. Loops have one. Whorls have two (or more).','Double loop whorl = two loops twisting around each other. Accidental = a mix of two different patterns or one that does not fit.'],mem:'Arch 0 deltas, loop 1, whorl 2. Ulnar = pinky side.'},
+{id:'f3',t:'print',i:'🔎',n:'Ridge details (minutiae)',hook:'The tiny features that make a match.',st:['RIDGE ENDING: a ridge just stops.','BIFURCATION: a ridge splits into two. DOUBLE BIFURCATION: two splits close together. TRIFURCATION: a ridge splits into three.','ISLAND: a very short ridge, like a dot.','ENCLOSURE: a ridge splits and rejoins, making a small loop shape (also called a lake or eye).','SPUR: a short branch sticking off a ridge.','LOOP: ridges enter on one side, turn and leave on the same side.','DELTA: a triangle where ridges meet from three directions.'],mem:'Split = bifurcation. Dot = island. Split and join = enclosure.'},
+{id:'f4',t:'print',i:'🧴',n:'Developing prints',hook:'Match the method to the surface.',st:['DUSTING: powder sticks to the oils and moisture. Use dark powder on light surfaces and light powder on dark surfaces.','IODINE FUMING: iodine vapor dissolves into the oils and makes brown prints. They fade quickly. Good on paper and wood.','NINHYDRIN: reacts with AMINO ACIDS in the print and turns purple (Ruhemann’s purple). Used on porous paper. Heat and humidity speed it up.','CYANOACRYLATE (super glue) FUMING: the vapor sticks to the print’s moisture and builds a hard white polymer. Used on non-porous surfaces like plastic, metal and glass.','Plastic prints (3-D, in soft materials) are photographed, not developed.'],mem:'Paper: ninhydrin. Plastic or metal: super glue. Quick and brown: iodine.'},
+
+{id:'d1',t:'bio',i:'🧬',n:'DNA basics',hook:'Four letters, in pairs.',st:['DNA is a double helix: two strands twisted together.','The bases pair A with T and C with G.','Forensics looks at STRs (short tandem repeats): short DNA sequences that repeat. People differ in how many repeats they have.','You get one copy of each STR from each parent, so each person has two alleles at every spot (locus).','A match means every locus matches. One mismatch excludes the suspect.'],mem:'A–T, C–G. Repeat count differs between people.'},
+{id:'d2',t:'bio',i:'🔁',n:'PCR: how DNA is copied',hook:'Heat, cool, build. Repeat.',st:['PCR (polymerase chain reaction) copies a small bit of DNA millions of times.','Ingredients: template DNA, two primers, Taq polymerase (a heat-proof enzyme), the four nucleotides, buffer.','Step 1 DENATURE (about 95 °C): heat separates the two strands.','Step 2 ANNEAL (about 50 to 60 °C): cool so the primers stick to the strands.','Step 3 EXTEND (about 72 °C): Taq builds the new strands.','Each cycle doubles the DNA. 30 cycles gives about a billion times more.'],ex:{q:'Starting with 1 copy, how many copies after 10 cycles?',st:['Each cycle doubles','2¹⁰ = 1024 copies']},mem:'Heat apart, cool to bind, build up. Doubles every cycle.'},
+{id:'d3',t:'bio',i:'📉',n:'Electropherograms and gels',hook:'Matching peaks (or bands) means a match.',st:['DNA is negative, so in electrophoresis it moves toward the + electrode. Small pieces move faster and farther.','On a GEL the fragments make bands. A ladder of known sizes shows how big they are.','An ELECTROPHEROGRAM is a graph: x-axis = fragment size, y-axis = signal (RFU). Each peak is one allele.','Two different peaks at a locus = heterozygous. One tall peak = homozygous.','Compare scene DNA to each suspect at every locus. Matching at all loci = a match. Any clear mismatch = excluded.','More than two peaks at a locus can mean a mixture of people.'],mem:'Small moves farther. Every peak must match.'},
+{id:'d4',t:'bio',i:'🩸',n:'Blood typing: ABO',hook:'Clumping shows the antigen.',st:['Red cells can carry A and/or B antigens (markers).','Type A: A antigen. Type B: B antigen. Type AB: both. Type O: neither.','You can test with anti-A and anti-B serum. If a serum makes the blood CLUMP (agglutinate), that antigen is present.','Clumps with anti-A only = type A. Anti-B only = type B. Both = AB. Neither = O.','Rh factor: clumping with anti-D = Rh positive.','Blood type is class evidence: it narrows the group but does not name one person.'],mem:'Clumps with the serum = that antigen is there.'},
+{id:'d5',t:'bio',i:'🔬',n:'Whose blood? Microscope slides',hook:'Nucleus or no nucleus. Round or oval.',st:['MAMMAL red cells: no nucleus, round, flattened discs.','BIRD red cells: oval, WITH a nucleus, fairly small.','REPTILE and AMPHIBIAN red cells: oval, WITH a nucleus, and larger (amphibians are the biggest).','Human red cells are about 7 to 8 µm across. Many other mammals are smaller or larger.','Telling human from other mammal needs size or a special test.'],mem:'No nucleus = mammal. Nucleus = bird, reptile, amphibian.'},
+
+{id:'t1',t:'trace',i:'🪟',n:'Glass and refractive index',hook:'When the edge disappears, the glass matches the liquid.',st:['Refractive index (n) = speed of light in vacuum ÷ speed of light in the material. Glass is a little over 1.4 to 1.6.','Each type of glass has its own index. Float (window) glass is about 1.52.','Immersion method: put a chip in oil. When the oil’s index equals the glass’s index, the chip’s edge seems to vanish (the Becke line).','Heat the oil to change its index until the chip disappears. Read the temperature and match it to the glass.','Density is also used to compare glass.'],ex:{q:'Light moves at 2.0 × 10⁸ m/s in glass. n? (c = 3.0 × 10⁸)',st:['n = c ÷ v','n = 3.0 ÷ 2.0 = 1.5']},mem:'Edge vanishes = same index.'},
+{id:'t2',t:'trace',i:'💥',n:'Glass fractures: which came first',hook:'A crack stops at an earlier crack.',st:['RADIAL cracks run outward from the hole like spokes. CONCENTRIC cracks form rings around it.','Radial cracks form first and concentric cracks later.','When two fractures meet in a T, the crack that STOPS at the other one is the LATER one.','3R rule: Radial cracks make a Right angle on the Reverse side from where the force came.','A bullet makes a cone-shaped crater wider on the EXIT side, so the wide side shows which way it went.'],mem:'The crack that ends is the later one.'},
+{id:'t3',t:'trace',i:'🥾',n:'Tracks and soil',hook:'Class evidence and individual marks.',st:['FOOTPRINTS: size, tread pattern, wear spots and cuts. Shoe model = class evidence. A unique cut or wear pattern = individual evidence.','Stride length is longer when running. A person’s height is about foot length ÷ 0.15 (foot is about 15% of height).','TIRE TRACKS: tread pattern, width and the track width (distance between left and right tires) and wheelbase (front to back).','SOIL: color, texture (sand, silt, clay), pH, mineral grains, organic matter. Compare scene soil to shoe soil.','Layered soil can be sorted by density in a liquid column.'],mem:'Match the pattern, the size and the wear.'},
+{id:'t4',t:'trace',i:'🌼',n:'Seeds and pollen',hook:'Plants say where you have been.',st:['POLLEN grains have shapes that are unique to each plant: smooth, spiny, with pores or furrows.','Wind-pollinated plants (grass, pine) make light, smooth, smaller grains. Insect-pollinated plants make sticky, spiny, larger grains.','Pine pollen has two air sacs.','SEEDS: hooked burrs stick to clothes. Wings (maple), fluff (dandelion), floaters (coconut) travel by wind or water.','Compare seeds and pollen at the scene with those on a suspect or from a region to place them there.'],mem:'Shape tells the plant. Plant tells the place.'},
+{id:'t5',t:'trace',i:'🔫',n:'Bullet striations',hook:'Every barrel scratches its own signature.',st:['RIFLING: spiral grooves in a barrel make the bullet spin. The raised parts are LANDS, the cut parts are GROOVES.','Class features: caliber, number of lands and grooves, and twist direction (left or right).','INDIVIDUAL features: tiny scratches (STRIATIONS) from imperfections in that barrel.','A comparison microscope puts two bullets side by side to line up striations.','Cartridge casings also match: firing pin mark, breech face marks, ejector and extractor marks.'],mem:'Lands and grooves are class. Scratches are individual.'},
+
+{id:'e1',t:'scene',i:'🩸',n:'Spatter angle of impact',hook:'Round means straight on. Long means shallow.',st:['A drop hitting straight on (90°) makes a round stain. A drop hitting at a shallow angle makes a long, oval stain.','Measure the stain’s WIDTH and LENGTH.','sin θ = width ÷ length. Then use the arcsin (sin⁻¹) button.','The pointed tail and any small satellite drops lead in the direction the drop was traveling.'],ex:{q:'Stain width 5 mm, length 10 mm. Angle?',st:['sin θ = 5 ÷ 10 = 0.5','θ = sin⁻¹(0.5) = 30°']},mem:'sin θ = width ÷ length.'},
+{id:'e2',t:'scene',i:'📍',n:'Area of convergence and height',hook:'Draw lines back to where the blood came from.',st:['Draw a straight line along the long axis of each stain, back toward where the drop came from (away from the tail).','The lines cross at the AREA OF CONVERGENCE (the spot on the surface, in 2-D).','Measure the distance from a stain to that point.','HEIGHT OF ORIGIN: height = distance × tan θ.','Height is the area of origin above the surface (3-D).'],ex:{q:'A stain is 40 cm from the point of convergence and its angle is 30°. Height?',st:['tan 30° = 0.577','40 × 0.577 = 23 cm']},mem:'Lines cross at convergence. Height = distance × tan θ.'},
+{id:'e3',t:'scene',i:'💧',n:'Spatter velocity and types',hook:'Bigger drops mean slower speed.',st:['LOW velocity: drops larger than about 4 mm (drips, pools, walking).','MEDIUM velocity: about 1 to 4 mm (beating, stabbing, cast-off).','HIGH velocity: tiny mist drops under about 1 mm (gunshot, explosions, power tools).','PASSIVE: drips and pools from gravity. PROJECTED: an arterial spurt or swing (cast-off). TRANSFER: a wipe or swipe where an object touched blood.','The tail shows the direction, not the speed.'],mem:'Big drops = slow. Mist = fast.'},
+{id:'e4',t:'scene',i:'🪰',n:'Insects and time since death',hook:'The oldest bug gives the minimum time.',st:['Blow flies arrive within minutes to hours and lay eggs on the body.','Life cycle: egg, larva (maggot, three growth stages), pupa, adult.','Warmer weather speeds growth. Cold slows it.','Find the oldest stage on the body. That stage plus the temperature gives the MINIMUM time since death.','Body stages: fresh, bloat, active decay, advanced decay, dry. Different insects arrive at different stages (flies first, beetles later).'],mem:'Oldest stage + temperature = minimum time.'},
+
+{id:'a1',t:'case',i:'🧩',n:'Class vs individual evidence',hook:'Narrows the group or names the one.',st:['CLASS evidence matches a group: blood type, fiber type, shoe size, plastic type, glass type, soil type.','INDIVIDUAL evidence points to one source: DNA, fingerprints, bullet striations, a tool mark, a unique shoe cut.','Locard’s principle: every contact leaves a trace both ways.','A match says the suspect COULD be the source. A mismatch usually EXCLUDES.','Chain of custody: record everyone who held the evidence.'],mem:'Class narrows. Individual names.'},
+{id:'a2',t:'case',i:'✍️',n:'Writing the crime analysis',hook:'Culprit, evidence, and why the others are out.',st:['1. NAME the culprit(s) in the first sentence.','2. For each piece of evidence: say what the test showed, then which suspect it points to.','3. For EACH other suspect: say the exact evidence that clears them (for example "blood type O, scene blood A").','4. Mention evidence that does not help or only places someone at the scene, and say why it is weaker.','5. Use numbers (Rf values, angles, type names). Be specific.','This part is 30% of the score and breaks ties. Reasons for clearing suspects count.'],mem:'Name, prove, then clear the others.'},
+{id:'a3',t:'case',i:'⚖️',n:'Strong and weak conclusions',hook:'Do not say more than the evidence says.',st:['Strongest: DNA, fingerprints, bullet striations.','Medium: tool marks, shoe wear, a rare fiber or soil type.','Weakest (class): blood type, common fiber, shoe size, plastic type.','Several class matches that all point to the same person are stronger together.','If two suspects both fit, look for evidence that separates them.'],mem:'Many class clues on one person add up.'}
+];
+const LES=Object.fromEntries(LESSONS.map(l=>[l.id,l]));
+
+
+// ---------- QUESTIONS ----------
+const Q=[
+{t:'rules',lv:'C',l:'r1',q:'How many people can be on a Forensics C team?',o:['Up to 2','Up to 3','Exactly 1','Up to 4'],a:0,e:'A team of up to 2.'},
+{t:'rules',lv:'C',l:'r1',q:'What can each participant bring for notes?',o:['One 8.5 x 11 sheet, both sides, no affixed labels','A full binder','Three index cards','Nothing at all'],a:0,e:'One sheet of paper, both sides, any form and source, no affixed labels. It may be laminated or in a taped sheet protector.'},
+{t:'rules',lv:'C',l:'r1',q:'Which calculator class is allowed?',o:['Class III','Class I only','Class IV','No calculators'],a:0,e:'Each participant may bring a Class III calculator.'},
+{t:'rules',lv:'C',l:'r1',q:'About how long is the event?',o:['50 minutes','20 minutes','90 minutes','2 hours'],a:0,e:'About 50 minutes. Time is not part of the score.'},
+{t:'rules',lv:'C',l:'r2',q:'Which part of the score is the biggest?',o:['Analysis of the crime (3.f), about 30%','Qualitative analysis (3.b), about 20%','Chromatography (3.d), about 15%','Crime scene evidence (3.e), about 15%'],a:0,e:'The crime analysis is about 30%.'},
+{t:'rules',lv:'C',l:'r2',q:'How are ties broken?',o:['By the highest score on the crime analysis','By the fastest time','By a coin flip','By the lowest penalty'],a:0,e:'Ties go to the higher analysis score, which includes your reasons for clearing suspects.'},
+{t:'rules',lv:'C',l:'r2',q:'The penalty for not cleaning up as the supervisor designates is…',o:['10%','50%','Disqualification','None'],a:0,e:'A 10% penalty may be given.'},
+{t:'rules',lv:'C',l:'r3',q:'What must you wear?',o:['Goggles and an apron or lab coat, with skin covered from neck to wrist and toes','Only goggles','Only gloves','Nothing special'],a:0,e:'Goggles, apron or lab coat, covered skin. Gloves are optional.'},
+{t:'rules',lv:'C',l:'r4',q:'Which of these will the supervisor ALWAYS provide?',o:['Benedict’s solution','A microscope','Candle and matches','Density solutions'],a:0,e:'Benedict’s solution is always provided. The microscope, candle and matches, and density solutions are only provided when needed.'},
+{t:'rules',lv:'C',l:'r4',q:'You get plastics to identify. What might the supervisor provide for them?',o:['Differential density solutions','A candle to burn them','A pencil','A magnet'],a:0,e:'Density solutions may be provided. You do NOT burn plastics.'},
+{t:'rules',lv:'C',l:'r5',q:'At Regional, about how many solids are tested (Part 3.b)?',o:['3 to 8','10 to 14','20 to 30','Exactly 15'],a:0,e:'Regional 3 to 8, State 6 to 10, National 10 to 14.'},
+{t:'rules',lv:'C',l:'r5',q:'Which level has the MOST crime scene topics (Part 3.e)?',o:['National (3 to 5)','Regional (1 to 2)','State (1 to 3)','They are all equal'],a:0,e:'National 3 to 5, State 1 to 3, Regional 1 to 2.'},
+{t:'rules',lv:'C',l:'r5',q:'Is the crime analysis (Part 3.f) required at every level?',o:['Yes','No, only at Nationals','No, only at Regionals','Only if time is left'],a:0,e:'Required at Regional, State and National.'},
+{t:'rules',lv:'C',l:'r2',n:1,q:'A team scores full marks on 3.c, 3.d and 3.e only. What percent of the total is that? (20, 15, 15)',a:50,tol:0.5,u:'%',h:['3.c = 20','3.d = 15 and 3.e = 15','20 + 15 + 15 = 50'],e:'50%'},
+
+{t:'qual',lv:'C',l:'q2',q:'A lilac (pale violet) flame test points to…',o:['Potassium','Lithium','Sodium','Calcium'],a:0,e:'Potassium is lilac.'},
+{t:'qual',lv:'C',l:'q2',q:'A crimson red flame test points to…',o:['Lithium','Potassium','Boron','Sodium'],a:0,e:'Lithium is crimson red.'},
+{t:'qual',lv:'C',l:'q2',q:'A bright yellow-orange flame points to…',o:['Sodium','Calcium','Magnesium','Ammonium'],a:0,e:'Sodium is bright yellow-orange.'},
+{t:'qual',lv:'C',l:'q2',q:'Which solid gives a green flame?',o:['Boric acid','Calcium carbonate','Sucrose','Magnesium sulfate'],a:0,e:'Boron compounds burn green.'},
+{t:'qual',lv:'C',l:'q2',q:'A brick red or orange-red flame points to…',o:['Calcium','Lithium','Potassium','Boron'],a:0,e:'Calcium is brick red.'},
+{t:'qual',lv:'C',l:'q3',q:'A white solid FIZZES when 1 M HCl is added. Which could it be?',o:['Sodium carbonate','Sodium chloride','Cornstarch','Glucose'],a:0,e:'Carbonates and hydrogen carbonates release carbon dioxide with acid.'},
+{t:'qual',lv:'C',l:'q3',q:'Which three solids fizz with HCl?',o:['Sodium hydrogen carbonate, sodium carbonate, calcium carbonate','Sodium chloride, potassium chloride, lithium chloride','Glucose, sucrose, cornstarch','Boric acid, ammonium chloride, magnesium sulfate'],a:0,e:'All carbonates and hydrogen carbonates.'},
+{t:'qual',lv:'C',l:'q3',q:'Warming a solid with NaOH gives an ammonia smell. It is…',o:['Ammonium chloride','Sodium acetate','Calcium nitrate','Boric acid'],a:0,e:'NaOH frees ammonia gas from ammonium salts.'},
+{t:'qual',lv:'C',l:'q3',q:'A solid with a yellow flame gives a vinegar smell with HCl. It is…',o:['Sodium acetate','Sodium chloride','Sodium carbonate','Sodium hydrogen carbonate'],a:0,e:'Acetate plus acid makes acetic acid (vinegar).'},
+{t:'qual',lv:'C',l:'q3',q:'NaOH makes a white cloudy precipitate with…',o:['Magnesium sulfate','Sucrose','Sodium chloride','Cornstarch'],a:0,e:'Magnesium ions form magnesium hydroxide, a white solid.'},
+{t:'qual',lv:'C',l:'q4',q:'Iodine turns blue-black with…',o:['Cornstarch','Glucose','Sucrose','Sodium chloride'],a:0,e:'Iodine is the starch test.'},
+{t:'qual',lv:'C',l:'q4',q:'Which gives an orange-red result with Benedict’s solution and heat?',o:['Glucose','Sucrose','Cornstarch','Boric acid'],a:0,e:'Glucose is a reducing sugar.'},
+{t:'qual',lv:'C',l:'q4',q:'Sucrose with Benedict’s solution and heat…',o:['Stays blue (no change)','Turns brick red','Turns black','Fizzes'],a:0,e:'Sucrose is not a reducing sugar.'},
+{t:'qual',lv:'C',l:'q4',q:'Which two solids are both sugars?',o:['Glucose and sucrose','Glucose and cornstarch','Sucrose and boric acid','Cornstarch and sodium chloride'],a:0,e:'Cornstarch is a starch, not a sugar.'},
+{t:'qual',lv:'C',l:'q5',q:'Which solid is the most strongly basic (highest pH) in water?',o:['Sodium carbonate','Sodium chloride','Boric acid','Sucrose'],a:0,e:'Sodium carbonate is about pH 11.'},
+{t:'qual',lv:'C',l:'q5',q:'Which solid does NOT dissolve in water?',o:['Calcium carbonate','Sodium chloride','Glucose','Magnesium sulfate'],a:0,e:'Calcium carbonate (chalk, limestone) is insoluble.'},
+{t:'qual',lv:'C',l:'q5',q:'Boric acid solution is…',o:['Slightly acidic','Strongly basic','Exactly neutral','Strongly acidic'],a:0,e:'Boric acid is a weak acid (about pH 5).'},
+{t:'qual',lv:'C',l:'q6',q:'A white powder does not dissolve, fizzes with HCl, and gives a brick-red flame. It is…',o:['Calcium carbonate','Calcium sulfate','Sodium carbonate','Cornstarch'],a:0,e:'Insoluble + fizz + calcium flame = calcium carbonate.'},
+{t:'qual',lv:'C',l:'q6',q:'A white powder, barely soluble, no fizz, brick-red flame. It is probably…',o:['Calcium sulfate','Calcium carbonate','Calcium nitrate','Magnesium sulfate'],a:0,e:'Calcium sulfate is slightly soluble and does not fizz.'},
+{t:'qual',lv:'C',l:'q6',q:'Which test separates sodium carbonate from sodium hydrogen carbonate?',o:['Solution pH (carbonate is higher)','Flame color','Iodine','Benedict’s solution'],a:0,e:'Both fizz and both give a yellow flame. Carbonate is the stronger base.'},
+{t:'qual',lv:'C',l:'q1',q:'Which of these is NOT on the list of 15 solids?',o:['Copper sulfate','Boric acid','Glucose','Ammonium chloride'],a:0,e:'Copper sulfate is not on the list.'},
+{t:'qual',lv:'C',l:'q6',q:'A solid that turns Benedict’s orange and gives no flame color is…',o:['Glucose','Sucrose','Cornstarch','Sodium chloride'],a:0,e:'Glucose.'},
+
+{t:'poly',lv:'C',l:'p1',q:'Which plastic is used for milk jugs (recycling #2)?',o:['HDPE','PETE','PVC','PS'],a:0,e:'HDPE.'},
+{t:'poly',lv:'C',l:'p1',q:'Which plastic is used for soda bottles (#1)?',o:['PETE','HDPE','LDPE','PP'],a:0,e:'PETE.'},
+{t:'poly',lv:'C',l:'p1',q:'Which three plastics float in water?',o:['PP, LDPE, HDPE','PETE, PVC, PS','PMMA, PC, PVC','PS, PETE, PMMA'],a:0,e:'Only plastics with density below 1.00 g/cm³ float in water.'},
+{t:'poly',lv:'C',l:'p1',q:'Which plastic is the DENSEST of these?',o:['PVC','PP','LDPE','HDPE'],a:0,e:'PVC (about 1.3 to 1.4 g/cm³) is much denser than PP, LDPE and HDPE.'},
+{t:'poly',lv:'C',l:'p1',q:'Recycling code #5 is…',o:['PP','PS','PVC','LDPE'],a:0,e:'PP = #5. LDPE = #4. PVC = #3. PS = #6.'},
+{t:'poly',lv:'C',l:'p2',q:'A plastic floats in water but sinks in a liquid of density 0.91 g/cm³. Its density is between…',o:['0.91 and 1.00','1.00 and 1.20','0.50 and 0.80','1.30 and 1.40'],a:0,e:'Floats in water means below 1.00. Sinks in the 0.91 liquid means above 0.91.'},
+{t:'poly',lv:'C',l:'p2',n:1,q:'A plastic piece has mass 9.5 g and volume 10 cm³. What is its density (g/cm³)?',a:0.95,tol:0.01,u:'g/cm³',h:['Density = mass ÷ volume','9.5 ÷ 10 = 0.95'],e:'0.95 g/cm³ (HDPE)'},
+{t:'poly',lv:'C',l:'p2',q:'In a density test, a plastic floats when its density is…',o:['Less than the liquid’s','More than the liquid’s','Equal to zero','Always the same as water'],a:0,e:'Lighter than the liquid floats.'},
+{t:'poly',lv:'C',l:'p3',q:'Do participants burn the plastics at this event?',o:['No, the supervisor may give the results','Yes, with the Bunsen burner','Yes, with a candle','Only the PVC'],a:0,e:'No burn tests on plastics. Fibers may be burned.'},
+{t:'poly',lv:'C',l:'p3',q:'A plastic burns with a green-edged flame and an acrid smell, and goes out when removed. It is…',o:['PVC','PP','PS','PMMA'],a:0,e:'PVC contains chlorine.'},
+{t:'poly',lv:'C',l:'p3',q:'A plastic burns with heavy black soot and a sweet smell. It is probably…',o:['PS','HDPE','PP','LDPE'],a:0,e:'Polystyrene burns smoky.'},
+{t:'poly',lv:'C',l:'p4',q:'A fiber burns fast with a burning-paper smell and leaves soft gray ash. It is…',o:['Cotton','Wool','Silk','Nylon'],a:0,e:'Cellulose fibers (cotton, linen) smell like burning paper.'},
+{t:'poly',lv:'C',l:'p4',q:'A fiber smells like burning hair and leaves a crushable black ash. It is…',o:['Wool','Cotton','Polyester','Spandex'],a:0,e:'Protein fibers (wool, silk) smell like burning hair.'},
+{t:'poly',lv:'C',l:'p4',q:'A fiber melts, drips, smells like celery and leaves a hard bead. It is…',o:['Nylon','Linen','Wool','Silk'],a:0,e:'Nylon melts and smells chemical or like celery.'},
+{t:'poly',lv:'C',l:'p4',q:'Which pair are both NATURAL protein fibers?',o:['Wool and silk','Cotton and linen','Nylon and polyester','Polyester and spandex'],a:0,e:'Wool and silk. Cotton and linen are plant cellulose fibers.'},
+{t:'poly',lv:'C',l:'p4',q:'Which fiber is synthetic?',o:['Spandex','Silk','Linen','Cotton'],a:0,e:'Spandex (also nylon and polyester).'},
+{t:'poly',lv:'C',l:'p5',q:'Under a microscope, a fiber looks like a flat twisted ribbon. It is…',o:['Cotton','Silk','Nylon','Wool'],a:0,e:'Cotton has a twisted ribbon look.'},
+{t:'poly',lv:'C',l:'p5',q:'Which fiber has visible scales like shingles?',o:['Wool','Silk','Polyester','Cotton'],a:0,e:'Wool.'},
+{t:'poly',lv:'C',l:'p6',q:'The outer layer of a hair is the…',o:['Cuticle','Cortex','Medulla','Root'],a:0,e:'Cuticle = scales on the outside.'},
+{t:'poly',lv:'C',l:'p6',q:'Pigment granules in a hair are mainly in the…',o:['Cortex','Cuticle','Medulla','Tag'],a:0,e:'The cortex holds the pigment.'},
+{t:'poly',lv:'C',l:'p6',q:'The central canal of a hair is the…',o:['Medulla','Cortex','Cuticle','Follicle'],a:0,e:'Medulla.'},
+{t:'poly',lv:'C',l:'p6',q:'Which hair root gives usable NUCLEAR DNA?',o:['A root with a follicular tag','A hair shaft with no root','A club-shaped root with no tag','Any cut hair end'],a:0,e:'The sticky tag carries the cells with nuclear DNA.'},
+{t:'poly',lv:'C',l:'p7',q:'Human hair usually has…',o:['A thin or absent medulla and imbricate scales','A very wide medulla','Coronal scales','Spinous scales only'],a:0,e:'Human medullary index is less than 1/3.'},
+{t:'poly',lv:'C',l:'p7',q:'A hair with a medullary index over 1/2 is most likely…',o:['Animal','Human','A synthetic fiber','Wool'],a:0,e:'Animal hair has a wide medulla.'},
+{t:'poly',lv:'C',l:'p7',q:'Crown-like, stacked scales are called…',o:['Coronal','Spinous','Imbricate','Pigment'],a:0,e:'Coronal.'},
+{t:'poly',lv:'C',l:'p7',n:1,q:'A hair is 80 µm wide and its medulla is 20 µm wide. What is the medullary index?',a:0.25,tol:0.01,u:'',h:['Index = medulla width ÷ hair width','20 ÷ 80 = 0.25'],e:'0.25 (under 1/3, so human-like)'},
+
+{t:'chrom',lv:'C',l:'c1',q:'Why draw the start line with PENCIL, not pen?',o:['Pencil graphite does not dissolve in the solvent','Pen is too expensive','Pencil makes the solvent climb faster','Pen is not allowed in labs'],a:0,e:'Ink would run. Pencil stays put.'},
+{t:'chrom',lv:'C',l:'c1',q:'In paper chromatography the PAPER is the…',o:['Stationary phase','Mobile phase','Solvent front','Sample'],a:0,e:'The paper stays. The solvent moves.'},
+{t:'chrom',lv:'C',l:'c1',q:'The solvent level should be…',o:['Below the start line','Above the start line','At the top of the paper','Covering the paper'],a:0,e:'If it covers the spots, they wash into the solvent.'},
+{t:'chrom',lv:'C',l:'c2',q:'Rf is the distance moved by…',o:['The spot ÷ the solvent front','The solvent front ÷ the spot','The spot × the solvent front','The spot − the solvent front'],a:0,e:'Rf = spot ÷ solvent.'},
+{t:'chrom',lv:'C',l:'c2',q:'An Rf value is always…',o:['Between 0 and 1','Greater than 1','Negative','In centimeters'],a:0,e:'The spot cannot go farther than the solvent.'},
+{t:'chrom',lv:'C',l:'c2',n:1,q:'A spot moved 3.2 cm and the solvent front moved 8.0 cm. What is the Rf?',a:0.4,tol:0.01,u:'',h:['Rf = spot ÷ solvent front','3.2 ÷ 8.0 = 0.40'],e:'0.40'},
+{t:'chrom',lv:'C',l:'c2',n:1,q:'A spot is at Rf 0.60. The solvent front moved 9.0 cm. How far did the spot move (cm)?',a:5.4,tol:0.05,u:'cm',h:['Spot = Rf × solvent distance','0.60 × 9.0 = 5.4'],e:'5.4 cm'},
+{t:'chrom',lv:'C',l:'c3',q:'In TLC the stationary phase is…',o:['A silica gel layer','Paper','Water','A UV lamp'],a:0,e:'Silica gel on a plate.'},
+{t:'chrom',lv:'C',l:'c3',q:'On a polar silica plate, which compounds travel FARTHEST?',o:['Less polar ones','More polar ones','The heaviest ones','The colorless ones'],a:0,e:'Polar compounds stick to the polar silica. Less polar ones run farther.'},
+{t:'chrom',lv:'C',l:'c3',q:'A UV lamp is used with TLC to…',o:['Show colorless spots','Heat the plate','Make the solvent climb','Dissolve the silica'],a:0,e:'Many spots are invisible in normal light.'},
+{t:'chrom',lv:'C',l:'c4',q:'An ink at the scene splits into spots at Rf 0.35 and 0.72. Suspect A has 0.35 and 0.72. Suspect B has 0.35 only. Which is consistent?',o:['Suspect A','Suspect B','Both','Neither'],a:0,e:'Only A has both spots at the same heights.'},
+{t:'chrom',lv:'C',l:'c5',q:'In a mass spectrum, the x-axis shows…',o:['m/z (mass-to-charge)','Time','Rf','Temperature'],a:0,e:'x = m/z. y = relative abundance.'},
+{t:'chrom',lv:'C',l:'c5',q:'The tallest peak in a mass spectrum is called the…',o:['Base peak','Molecular ion','Solvent front','Parent ladder'],a:0,e:'The base peak is set to 100%.'},
+{t:'chrom',lv:'C',l:'c5',q:'The molecular ion peak is usually…',o:['The peak at the highest m/z','The tallest peak','The peak at 15','The peak at 100'],a:0,e:'The right-most major peak is the intact molecule.'},
+{t:'chrom',lv:'C',l:'c5',n:1,q:'A mass spectrum’s molecular ion is at m/z 78 and there is a big peak at m/z 63. What mass was lost? (Hint: 15 is CH₃)',a:15,tol:0.5,u:'',h:['Lost mass = 78 − 63','78 − 63 = 15, which is a CH₃ group'],e:'15 (a methyl group, CH₃)'},
+
+{t:'print',lv:'C',l:'f1',q:'Which skin layer is on the OUTSIDE?',o:['Epidermis','Dermis','Hypodermis','Muscle'],a:0,e:'Epidermis.'},
+{t:'print',lv:'C',l:'f1',q:'A print left in soft wax or soap is a…',o:['Plastic print','Latent print','Patent print','Iodine print'],a:0,e:'Plastic = 3-D impression.'},
+{t:'print',lv:'C',l:'f1',q:'A print you can see without any treatment (like in blood or ink) is…',o:['Patent','Latent','Plastic','Radial'],a:0,e:'Patent = visible.'},
+{t:'print',lv:'C',l:'f2',q:'Which pattern family is the MOST common?',o:['Loops','Whorls','Arches','Deltas'],a:0,e:'Loops are about 60 to 65%.'},
+{t:'print',lv:'C',l:'f2',q:'A pattern with NO delta is a…',o:['Arch','Loop','Whorl','Double loop whorl'],a:0,e:'Arches have no delta. Loops have one. Whorls have two.'},
+{t:'print',lv:'C',l:'f2',q:'A loop that opens toward the little-finger side is…',o:['Ulnar','Radial','Tented','Accidental'],a:0,e:'Ulnar = pinky side (ulna). Radial = thumb side.'},
+{t:'print',lv:'C',l:'f2',q:'Which is NOT one of the 8 patterns?',o:['Spur loop','Plain arch','Tented arch','Central pocket whorl'],a:0,e:'The 8: plain arch, tented arch, radial loop, ulnar loop, plain whorl, central pocket whorl, accidental whorl, double loop whorl.'},
+{t:'print',lv:'C',l:'f2',q:'Two loops twisting around each other make a…',o:['Double loop whorl','Plain whorl','Tented arch','Radial loop'],a:0,e:'Double loop whorl.'},
+{t:'print',lv:'C',l:'f3',q:'A ridge that splits into two is a…',o:['Bifurcation','Island','Spur','Delta'],a:0,e:'Bifurcation.'},
+{t:'print',lv:'C',l:'f3',q:'A very short ridge, like a dot, is an…',o:['Island','Enclosure','Trifurcation','Eye'],a:0,e:'Island.'},
+{t:'print',lv:'C',l:'f3',q:'A ridge that splits and then rejoins makes an…',o:['Enclosure','Island','Spur','Delta'],a:0,e:'Enclosure (also called a lake or eye).'},
+{t:'print',lv:'C',l:'f3',q:'A ridge that splits into three is a…',o:['Trifurcation','Bifurcation','Double bifurcation','Island'],a:0,e:'Trifurcation.'},
+{t:'print',lv:'C',l:'f4',q:'Which method turns amino acids in a print purple on paper?',o:['Ninhydrin','Iodine fuming','Dusting','Cyanoacrylate fuming'],a:0,e:'Ninhydrin reacts with amino acids.'},
+{t:'print',lv:'C',l:'f4',q:'Which method is best for prints on plastic, metal or glass?',o:['Cyanoacrylate (super glue) fuming','Ninhydrin','Iodine fuming','Sprinkling flour'],a:0,e:'Super glue vapor builds a white polymer on non-porous surfaces.'},
+{t:'print',lv:'C',l:'f4',q:'Iodine fuming makes prints…',o:['Brown, and they fade quickly','Purple and permanent','Glow-in-the-dark','Invisible'],a:0,e:'Iodine prints are brown and temporary.'},
+{t:'print',lv:'C',l:'f4',q:'When dusting, you use dark powder on…',o:['Light-colored surfaces','Dark surfaces','Paper only','Glass only'],a:0,e:'Pick a powder that contrasts with the surface.'},
+
+{t:'bio',lv:'C',l:'d1',q:'In DNA, which bases pair together?',o:['A with T, and C with G','A with G, and C with T','A with C, and T with G','A with A'],a:0,e:'A–T and C–G.'},
+{t:'bio',lv:'C',l:'d1',q:'A match between scene DNA and a suspect requires…',o:['Matching at every locus tested','Matching at one locus','Matching blood type','Matching hair color'],a:0,e:'One clear mismatch excludes the suspect.'},
+{t:'bio',lv:'C',l:'d1',q:'How many alleles does a person have at each STR locus?',o:['Two (one from each parent)','One','Three','Four'],a:0,e:'One from each parent.'},
+{t:'bio',lv:'C',l:'d2',q:'In PCR, the strands are separated at about…',o:['95 °C (denaturing)','72 °C (extending)','55 °C (annealing)','0 °C'],a:0,e:'Heat separates the strands.'},
+{t:'bio',lv:'C',l:'d2',q:'Which step lets the primers stick to the DNA?',o:['Annealing','Denaturing','Extension','Electrophoresis'],a:0,e:'Cooling to about 50 to 60 °C lets the primers anneal.'},
+{t:'bio',lv:'C',l:'d2',q:'The enzyme that builds new DNA in PCR is…',o:['Taq polymerase','Ninhydrin','Amylase','Ligase'],a:0,e:'Taq survives the heat.'},
+{t:'bio',lv:'C',l:'d2',n:1,q:'Starting with 1 copy of DNA, how many copies after 8 PCR cycles?',a:256,tol:0.5,u:'copies',h:['Each cycle doubles','2⁸ = 256'],e:'256 copies'},
+{t:'bio',lv:'C',l:'d2',n:1,q:'Starting with 100 copies of DNA, how many copies after 5 cycles?',a:3200,tol:0.5,u:'copies',h:['Copies = start × 2ⁿ','2⁵ = 32','100 × 32 = 3200'],e:'3200 copies'},
+{t:'bio',lv:'C',l:'d3',q:'In gel electrophoresis, DNA moves toward the…',o:['Positive electrode','Negative electrode','Top of the gel','Light'],a:0,e:'DNA is negatively charged.'},
+{t:'bio',lv:'C',l:'d3',q:'Which DNA fragments travel FARTHEST in a gel?',o:['The smallest','The largest','The coldest','The reddest'],a:0,e:'Small pieces slip through faster.'},
+{t:'bio',lv:'C',l:'d3',q:'On an electropherogram, each peak is…',o:['One allele (fragment size)','One person','One gene','One cycle'],a:0,e:'Peak position = size. Peak height = amount.'},
+{t:'bio',lv:'C',l:'d3',q:'A locus with ONE tall peak means the person is…',o:['Homozygous','Heterozygous','A mixture','Excluded'],a:0,e:'Two identical alleles show as one peak.'},
+{t:'bio',lv:'C',l:'d4',q:'Blood clumps with anti-A serum ONLY. The type is…',o:['A','B','AB','O'],a:0,e:'Clumping with anti-A means A antigens are present.'},
+{t:'bio',lv:'C',l:'d4',q:'Blood clumps with BOTH anti-A and anti-B serum. The type is…',o:['AB','O','A','B'],a:0,e:'Both antigens present.'},
+{t:'bio',lv:'C',l:'d4',q:'Blood that does NOT clump with anti-A or anti-B is type…',o:['O','AB','A','B'],a:0,e:'Neither antigen.'},
+{t:'bio',lv:'C',l:'d4',q:'Blood type evidence is…',o:['Class evidence','Individual evidence','Proof of one person','Not useful'],a:0,e:'Many people share a type.'},
+{t:'bio',lv:'C',l:'d5',q:'Red blood cells with a nucleus come from…',o:['Birds, reptiles or amphibians','Mammals','Humans only','Fish only'],a:0,e:'Mammal red cells lose their nucleus.'},
+{t:'bio',lv:'C',l:'d5',q:'On a slide, small round cells with NO nucleus suggest…',o:['A mammal','A bird','A reptile','An amphibian'],a:0,e:'Mammal red cells have no nucleus.'},
+{t:'bio',lv:'C',l:'d5',q:'Which red blood cells are usually the LARGEST?',o:['Amphibian','Bird','Mammal','Human'],a:0,e:'Amphibian red cells are big and oval with a nucleus.'},
+
+{t:'trace',lv:'C',l:'t1',q:'Refractive index is…',o:['Speed of light in vacuum ÷ speed in the material','Speed in the material ÷ speed in vacuum','Mass ÷ volume','Angle ÷ distance'],a:0,e:'n = c ÷ v.'},
+{t:'trace',lv:'C',l:'t1',q:'In the oil immersion method, the glass chip seems to vanish when…',o:['The oil and the glass have the same refractive index','The oil is boiling','The glass melts','The oil is colder than the glass'],a:0,e:'Matching refractive index makes the edge disappear (Becke line).'},
+{t:'trace',lv:'C',l:'t1',n:1,q:'Light moves at 2.0 × 10⁸ m/s in a glass. What is its refractive index? (c = 3.0 × 10⁸ m/s)',a:1.5,tol:0.02,u:'',h:['n = c ÷ v','3.0 ÷ 2.0 = 1.5'],e:'1.5'},
+{t:'trace',lv:'C',l:'t2',q:'In a broken window, the fracture that STOPS at another fracture was formed…',o:['Later','First','At the same time','Before the glass broke'],a:0,e:'A crack cannot cross an existing crack, so it ends there.'},
+{t:'trace',lv:'C',l:'t2',q:'Cracks that radiate outward like spokes are…',o:['Radial','Concentric','Conchoidal','Tented'],a:0,e:'Radial. Concentric ones form rings.'},
+{t:'trace',lv:'C',l:'t2',q:'A bullet hole through glass has a cone-shaped crater that is wider on the…',o:['Exit side','Entry side','Top','Left'],a:0,e:'The crater widens in the direction the bullet traveled.'},
+{t:'trace',lv:'C',l:'t3',q:'A shoe’s model and size are…',o:['Class evidence','Individual evidence','Not evidence','DNA'],a:0,e:'A unique cut or wear mark would be individual.'},
+{t:'trace',lv:'C',l:'t3',q:'Tire track width is the distance between…',o:['Left and right tires','Front and back tires','Two tread blocks','The road edges'],a:0,e:'Wheelbase is front to back.'},
+{t:'trace',lv:'C',l:'t3',n:1,q:'A footprint is 27 cm long. Using foot length = 15% of height, estimate the height in cm.',a:180,tol:1,u:'cm',h:['Height = foot ÷ 0.15','27 ÷ 0.15 = 180'],e:'180 cm'},
+{t:'trace',lv:'C',l:'t3',q:'Soil texture is described by the amounts of…',o:['Sand, silt and clay','Fats, oils and wax','Iron and gold','Water and air only'],a:0,e:'Sand, silt and clay.'},
+{t:'trace',lv:'C',l:'t4',q:'Wind-pollinated plants usually make pollen that is…',o:['Light and smooth','Sticky and spiny','Heavy and large','Bright red'],a:0,e:'Insect-pollinated pollen is stickier and spinier.'},
+{t:'trace',lv:'C',l:'t4',q:'Seeds with tiny hooks (burrs) travel by…',o:['Sticking to animals or clothing','Wind','Water','Explosion'],a:0,e:'That is why they are good clues on clothing.'},
+{t:'trace',lv:'C',l:'t4',q:'Pollen and seeds can help place a suspect at a scene because…',o:['Plant types differ by region and habitat','They glow','They are always on shoes','They do not decay'],a:0,e:'Compare plant species to where the plants grow.'},
+{t:'trace',lv:'C',l:'t5',q:'The spiral grooves inside a gun barrel are called…',o:['Rifling','Striations','Spatters','Convergence'],a:0,e:'Rifling spins the bullet.'},
+{t:'trace',lv:'C',l:'t5',q:'Which is an INDIVIDUAL characteristic of a bullet?',o:['Fine striation scratches','Caliber','Number of lands and grooves','Twist direction'],a:0,e:'Caliber, land and groove count and twist are class features.'},
+{t:'trace',lv:'C',l:'t5',q:'A comparison microscope is used to…',o:['Line up two bullets side by side','Heat samples','Fingerprint a gun','Measure pH'],a:0,e:'It matches striations.'},
+
+{t:'scene',lv:'C',l:'e1',q:'A round blood drop means it hit the surface…',o:['Straight on (near 90°)','At a very shallow angle','From far away','While moving fast'],a:0,e:'Long, oval stains mean a shallow angle.'},
+{t:'scene',lv:'C',l:'e1',n:1,q:'A stain is 6 mm wide and 12 mm long. What is the angle of impact (degrees)?',a:30,tol:0.5,u:'°',h:['sin θ = width ÷ length','6 ÷ 12 = 0.5','θ = sin⁻¹(0.5) = 30°'],e:'30°'},
+{t:'scene',lv:'C',l:'e1',n:1,q:'A stain is 8 mm wide and 16 mm long. What angle?',a:30,tol:0.5,u:'°',h:['sin θ = 8 ÷ 16 = 0.5','θ = 30°'],e:'30°'},
+{t:'scene',lv:'C',l:'e1',n:1,q:'A stain is 7 mm wide and 10 mm long. What is the angle of impact (degrees)?',a:44.4,tol:0.7,u:'°',h:['sin θ = 7 ÷ 10 = 0.70','θ = sin⁻¹(0.70)','θ ≈ 44.4°'],e:'About 44°'},
+{t:'scene',lv:'C',l:'e2',q:'The point where lines drawn back through many stains cross is the…',o:['Area of convergence','Area of origin','Base peak','Wheelbase'],a:0,e:'Convergence is the 2-D spot on the surface.'},
+{t:'scene',lv:'C',l:'e2',n:1,q:'A stain is 50 cm from the point of convergence at an angle of 45°. What is the height of origin (cm)?',a:50,tol:1,u:'cm',h:['height = distance × tan θ','tan 45° = 1','50 × 1 = 50'],e:'50 cm'},
+{t:'scene',lv:'C',l:'e2',n:1,q:'A stain is 40 cm from the point of convergence at an angle of 30°. What is the height of origin (cm)?',a:23.1,tol:0.7,u:'cm',h:['height = distance × tan θ','tan 30° = 0.577','40 × 0.577 = 23.1'],e:'23 cm'},
+{t:'scene',lv:'C',l:'e3',q:'Tiny mist-like spatter drops (under about 1 mm) suggest…',o:['High velocity (such as a gunshot)','Low velocity (a drip)','A wipe','A pool'],a:0,e:'High velocity breaks blood into a fine mist.'},
+{t:'scene',lv:'C',l:'e3',q:'Large drops (over about 4 mm) that fall from a bleeding wound are…',o:['Low velocity, passive','High velocity','Medium velocity, projected','Transfer'],a:0,e:'Gravity drips are low velocity.'},
+{t:'scene',lv:'C',l:'e3',q:'A bloody hand dragged across a wall leaves a…',o:['Transfer (wipe or swipe) stain','Projected stain','Cast-off','Mist'],a:0,e:'Transfer pattern.'},
+{t:'scene',lv:'C',l:'e4',q:'Which gives the MINIMUM time since death?',o:['The oldest insect stage on the body','The newest eggs','The color of the body','The smell'],a:0,e:'The oldest stage had to start at least that long ago.'},
+{t:'scene',lv:'C',l:'e4',q:'Insect development in colder weather is…',o:['Slower','Faster','The same','Impossible to measure'],a:0,e:'Temperature controls growth speed.'},
+{t:'scene',lv:'C',l:'e4',q:'The correct order of the blow fly life cycle is…',o:['Egg, larva, pupa, adult','Larva, egg, adult, pupa','Pupa, larva, egg, adult','Egg, pupa, larva, adult'],a:0,e:'Egg, larva (maggot), pupa, adult.'},
+
+{t:'case',lv:'C',l:'a1',q:'Which is INDIVIDUAL evidence?',o:['A fingerprint','Blood type A','Cotton fibers','A size 9 shoe'],a:0,e:'Fingerprints, DNA and bullet striations point to one source.'},
+{t:'case',lv:'C',l:'a1',q:'Locard’s principle says…',o:['Every contact leaves a trace','Only blood is evidence','Fingerprints fade quickly','Insects tell the time'],a:0,e:'Every contact exchanges material.'},
+{t:'case',lv:'C',l:'a1',q:'A suspect’s blood type does not match the blood at the scene. The suspect is probably…',o:['Excluded','The culprit','Impossible to judge','Guilty of something else'],a:0,e:'A clear mismatch excludes.'},
+{t:'case',lv:'C',l:'a2',q:'In a good crime analysis you should explain…',o:['Who did it, and why each other suspect was cleared','Only who did it','Only the tests you did','The chain of custody only'],a:0,e:'Clearing suspects counts, and it breaks ties.'},
+{t:'case',lv:'C',l:'a2',q:'What is the first thing to write in the analysis?',o:['Name the culprit(s)','Your team’s favorite test','The time you finished','The tests that failed'],a:0,e:'State the answer, then prove it.'},
+{t:'case',lv:'C',l:'a3',q:'Which evidence is the STRONGEST?',o:['DNA that matches at every locus','Blood type O','A common blue cotton fiber','A shoe size'],a:0,e:'DNA, prints and striations are individual.'},
+{t:'case',lv:'C',l:'a3',q:'Three class-evidence matches (blood type, fiber, shoe size) all point to the same suspect. That is…',o:['Stronger together than any one alone','No help at all','Individual evidence','Proof by itself'],a:0,e:'Class clues add up.'}
+];
+// ---------- STATE ----------
+let tab='C',sub={C:'path',P:'x',T:'start'},quiz=null;
+function store(){try{return JSON.parse(localStorage.getItem('foren_stats')||'{}')}catch(e){return {}}}
+function save(o){try{localStorage.setItem('foren_stats',JSON.stringify(o))}catch(e){}}
+function logs(){try{return JSON.parse(localStorage.getItem('foren_log')||'[]')}catch(e){return []}}
+function saveLogs(l){try{localStorage.setItem('foren_log',JSON.stringify(l))}catch(e){}}
+const RANKS=[[0,'Rookie Sleuth'],[100,'Print Lifter'],[300,'Lab Tech'],[600,'Case Cracker'],[1000,'Master Detective']];
+function showXP(){const e=$('#xp');if(!e)return;const x=store().xp||0;let r=0;RANKS.forEach((a,i)=>{if(x>=a[0])r=i});const nx=RANKS[r+1];const pct=nx?Math.round(100*(x-RANKS[r][0])/(nx[0]-RANKS[r][0])):100;e.innerHTML='<b>'+RANKS[r][1]+'</b> &middot; '+x+' XP'+(nx?' &middot; '+(nx[0]-x)+' to '+nx[1]:' &middot; max rank!')+'<div class="xpbar"><i style="width:'+pct+'%"></i></div>';}
+function nav(){if(tab==='T'&&!teachOk()){tab='C'}if(tab==='P'&&!cfgOk()){tab='C'}showXP();
+ $('#tabs').innerHTML=[['C','Forensics C'],['P','Class progress'],['T','Teach (coach)']].filter(x=>x[0]==='C'||(x[0]==='T'&&teachOk())||(x[0]==='P'&&cfgOk())).map(([k,n])=>`<button class="tab ${k} ${tab===k?'on':''}" onclick="tab='${k}';quiz=null;clearInterval(window.GT);G=null;render()">${n}</button>`).join('');
+ const subs=tab==='P'?[]:tab==='T'?[['start','Start here (coach)'],['C','Teach: 9 sessions'],['S','Songs & my checklist'],['F','Feel it + drill']].concat(ROLE==='coach'?[['students','Students (progress)'],['addstu','Add a student']]:[]):[['path','Start here'],['vids','Videos'],['learn','Learn'],['games','Games'],['quiz','Quiz'],['tools','Calculators'],['feel','Picture drill'],['formula','Key fact a day'],['demos','Hands-on'],['exps','Lab activities'],['songs','Songs'],['dev','Rules & cases']];
+ $('#subtabs').innerHTML=subs.map(([k,n])=>`<button class="st ${sub[tab]===k?'on':''}" onclick="sub[tab]='${k}';quiz=null;render()">${n}</button>`).join('');
+}
+function render(){if(sub[tab]!=='games'&&G){clearInterval(window.GT);G=null}nav();const v=$('#view');
+ if(tab==='P'){v.innerHTML=classView();renderClass();return}
+ if(tab==='T')v.innerHTML=teach(sub.T);else if(sub[tab]==='path')v.innerHTML=tasksCard()+path(tab);else if(sub[tab]==='vids')v.innerHTML=vids(tab);else if(sub[tab]==='games')v.innerHTML=games(tab);else if(sub[tab]==='learn')v.innerHTML=learn(tab);else if(sub[tab]==='quiz')quizView(tab);else if(sub[tab]==='tools')v.innerHTML=tools(tab);else if(sub[tab]==='songs')v.innerHTML=songsStudent(tab);else if(sub[tab]==='feel')v.innerHTML=feel(false,tab);else if(sub[tab]==='formula')v.innerHTML=formulaView();else if(sub[tab]==='demos')v.innerHTML=demosView();else if(sub[tab]==='exps')v.innerHTML=expView(tab);else v.innerHTML=device();
+ if(sub[tab]==='tools'&&tab!=='T')calcInit();
+ if((tab==='T'&&sub.T==='F')||(tab!=='T'&&sub[tab]==='feel')){planPaint();feelNext();}if(tab!=='T'&&sub[tab]==='formula'){fmInit();habPaint();}if(tab!=='T'&&sub[tab]==='demos')demoInit();if(tab==='T'&&sub.T==='students')renderStudents();if(tab==='T'&&sub.T==='addstu')renderStuList();}
+function topicsFor(d){return Object.keys(TOPICS);}
+function shufQ(q){if(!q.o||(q.o.length===2&&q.o[0]==='True'))return q;const idx=q.o.map((_,i)=>i);for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]}return {...q,o:idx.map(i=>q.o[i]),a:idx.indexOf(q.a)};}
+function lq(d,id){return Q.filter(q=>q.l===id&&(d==='C'||q.lv==='B'));}
+function learn(d){const st=store();
+ let h='<div class="tip"><b>How to use this:</b> open a lesson, read the short steps, say the "Remember" line out loud, then hit <b>Quick check</b>. Every quiz question comes from one of these lessons. The topic headings show how much of the score each part is worth.</div>';
+ for(const k of topicsFor(d)){h+=`<h2 class="th">${TOPICS[k]}</h2>`;
+  LESSONS.filter(l=>l.t===k&&(d==='C'||!l.c)).forEach(l=>{const n=lq(d,l.id).length;const s=st[d+'L'+l.id]||{r:0,n:0};const acc=s.n?Math.round(100*s.r/s.n):null;
+   h+=`<details class="card les"><summary><span class="ic">${l.i}</span> <b>${l.n}</b>${l.c?'<span class="pill cp">C</span>':''}${acc!==null&&acc>=80?' ✅':''}</summary>
+   <div class="hook">${l.hook}</div><ol>${l.st.map(x=>`<li>${x}</li>`).join('')}</ol>
+   ${l.cx&&d==='C'?'<div class="cx"><b>Division C add-on</b><ol>'+l.cx.map(x=>`<li>${x}</li>`).join('')+'</ol></div>':''}
+   ${l.ex?`<div class="try"><b>Try it:</b> ${l.ex.q}<ol>${l.ex.st.map(x=>`<li>${x}</li>`).join('')}</ol></div>`:''}
+   <div class="mem">🧠 <b>Remember:</b> ${l.mem}</div>
+   <div class="row"><button class="btn" onclick="startLesson('${d}','${l.id}')">Quick check (${n} question${n===1?'':'s'})</button><span class="small">${acc===null?'not tried':'best: '+acc+'%'}</span></div></details>`;});
+  const vl=vlinks(k);if(vl)h+=`<details class="card"><summary><b>▶ Videos for this topic</b></summary><ul>${vl}</ul></details>`;}
+ return h;}
+function startLesson(d,id){const l=lq(d,id).map(x=>shufQ({...x,s:Math.random()})).sort((a,b)=>a.s-b.s);if(!l.length)return;quiz={d,list:l,i:0,score:0,miss:[],done:false};sub[d]='quiz';render();}
+
+// ---------- START HERE PATH ----------
+const YT=q=>'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+const V=(id,t)=>[t,'https://www.youtube.com/watch?v='+id,id];
+const YS=(q,t)=>[t,YT(q),''];
+const VID={
+ so:[YS('Science Olympiad Forensics event explained','YouTube search: Science Olympiad Forensics event'),YS('Science Olympiad Forensics Division C tips','YouTube search: Forensics C tips and test walkthrough')],
+ qual:[YS('flame test colors lithium sodium potassium calcium','YouTube search: flame test colors'),YS('identify unknown white powders chemistry lab','YouTube search: identify unknown white solids'),YS('Benedict test glucose sucrose iodine test starch','YouTube search: Benedict’s and iodine tests')],
+ poly:[YS('plastic identification density test recycling codes','YouTube search: identify plastics by density'),YS('forensic fiber analysis burn test cotton wool nylon polyester','YouTube search: fiber burn test'),YS('forensic hair analysis medulla cuticle cortex','YouTube search: forensic hair analysis')],
+ chrom:[YS('paper chromatography Rf value explained','YouTube search: paper chromatography and Rf'),YS('thin layer chromatography TLC explained','YouTube search: TLC'),YS('how to read a mass spectrum molecular ion base peak','YouTube search: reading mass spectra')],
+ print:[YS('fingerprint patterns arch loop whorl','YouTube search: fingerprint patterns'),YS('fingerprint ridge characteristics bifurcation island enclosure','YouTube search: ridge details'),YS('developing latent fingerprints ninhydrin cyanoacrylate iodine fuming','YouTube search: developing latent prints')],
+ bio:[YS('PCR polymerase chain reaction explained','YouTube search: PCR explained'),YS('DNA electropherogram STR profile forensic','YouTube search: electropherograms and STR profiles'),YS('ABO blood typing agglutination anti-A anti-B','YouTube search: ABO blood typing')],
+ trace:[YS('forensic glass analysis refractive index','YouTube search: glass refractive index'),YS('glass fracture radial concentric 3R rule','YouTube search: glass fractures'),YS('bullet striations comparison microscope','YouTube search: bullet striations'),YS('forensic pollen seeds palynology','YouTube search: pollen and seeds'),YS('forensic soil footprint tire track analysis','YouTube search: soil, shoe and tire evidence')],
+ scene:[YS('blood spatter analysis angle of impact area of convergence','YouTube search: blood spatter'),YS('forensic entomology time of death blow flies','YouTube search: forensic entomology')],
+ case:[YS('how to solve a crime scene forensics science olympiad analysis','YouTube search: solving a mock crime scene')]
+};
+function vitem(x){const id=x[2];return `<li>▶ <a href="${x[1]}" target="_blank" rel="noopener">${x[0]}</a>${id?` <button class="ghost" onclick="playV(this,'${id}')">Play here</button><div></div>`:''}</li>`;}
+function playV(b,id){const d=b.nextElementSibling;if(d.innerHTML){d.innerHTML='';b.textContent='Play here';return}d.innerHTML=`<iframe width="100%" style="max-width:560px;aspect-ratio:16/9;border:0;margin-top:6px" src="https://www.youtube-nocookie.com/embed/${id}" allow="accelerometer;encrypted-media;picture-in-picture" allowfullscreen></iframe><div class="small">If it says unavailable, use the title link to open it on YouTube.</div>`;b.textContent='Hide';}
+const LEVELS=[
+ {n:1,t:'Level 1: The event and the score',topic:'rules',mode:'mc',why:'No lab. Learn what is tested, how it is scored, what to bring and how to stay safe.',v:['so']},
+ {n:2,t:'Level 2: The 15 solids (20%)',topic:'qual',mode:'any',why:'Flame colors, fizz with HCl, ammonia smell, iodine and Benedict’s, solubility and pH.',v:['qual']},
+ {n:3,t:'Level 3: Plastics, fibers and hair (20%)',topic:'poly',mode:'any',why:'Density for plastics, burn smells and microscope looks for fibers, hair structure and species cues.',v:['poly']},
+ {n:4,t:'Level 4: Chromatography and mass spectra (15%)',topic:'chrom',mode:'any',why:'Rf values, paper and TLC, matching ink strips, and reading a mass spectrum.',v:['chrom']},
+ {n:5,t:'Level 5: Fingerprints',topic:'print',mode:'mc',why:'The 8 patterns, ridge details, skin layers and how each development method works.',v:['print']},
+ {n:6,t:'Level 6: DNA and blood',topic:'bio',mode:'any',why:'PCR steps, electropherograms, ABO typing and what blood looks like under the microscope.',v:['bio']},
+ {n:7,t:'Level 7: Glass, soil, seeds, tracks and bullets',topic:'trace',mode:'any',why:'Refractive index, which crack came first, class vs individual marks.',v:['trace']},
+ {n:8,t:'Level 8: Spatters and insects',topic:'scene',mode:'any',why:'Angle, point of convergence, height, spatter speed and time since death.',v:['scene']},
+ {n:9,t:'Level 9: The crime analysis (30%)',topic:'case',mode:'mc',why:'Class vs individual evidence and how to write the analysis. Then try the Case practice in Rules & cases.',v:['case']},
+ {n:10,t:'Level 10: Number problems',topic:'all',mode:'num',why:'Rf, spatter angles and heights, PCR copies, density, refractive index. Use the Calculators tab.',v:['chrom','scene']}
+];
+function numAcc(d){const s=store()[d+'num'];return s&&s.n?Math.round(100*s.r/s.n):null;}
+function levelAcc(d,topic){const st=store();const ks=topic==='all'?topicsFor(d):[topic];let r=0,n=0;ks.forEach(k=>{const s=st[d+k];if(s){r+=s.r;n+=s.n}});return n?Math.round(100*r/n):null;}
+function path(d){let prev=true;
+ let h='<div class="tip"><b>Go in order.</b> Each level: read the Learn card, watch a short video, then take its quiz. When you hit about 80%, move on. Levels unlock a green check at 80%.</div>';
+ for(const L of LEVELS){if(L.c&&d==='B')continue;
+  const a=L.mode==='num'?numAcc(d):levelAcc(d,L.topic);const ok=a!==null&&a>=80;
+  h+=`<div class="card"><h3>${ok?'\u2705 ':''}${L.t}</h3><div>${L.why}</div>${L.topic!=='all'?'<div class="small">Lessons in this level: '+LESSONS.filter(l=>l.t===L.topic&&(d==='C'||!l.c)).map(l=>l.i+' '+l.n).join(' \u2022 ')+'</div>':''}
+  ${L.v.length?'<ul>'+L.v.flatMap(k=>VID[k]).map(vitem).join('')+'</ul>':''}
+  <div class="row"><button class="btn" onclick="startLevel('${d}','${L.topic}','${L.mode}')">Start Level ${L.n} quiz</button><button class="ghost" onclick="sub['${d}']='learn';render()">Read the cards</button><span class="small">${a===null?'not tried':'best so far: '+a+'%'}</span></div></div>`;}
+ h+='<p class="small">Each video link opens a YouTube search. Pick a short, clear video, and watch it before you take the level quiz.</p>';
+ return h;}
+function startLevel(d,topic,mode){sub[d]='quiz';render();$('#qt').value=topic;$('#qm').value=mode;startQuiz(d);}
+
+
+// ---------- VIDEOS ----------
+const TV={rules:['so'],qual:['qual'],poly:['poly'],chrom:['chrom'],print:['print'],bio:['bio'],trace:['trace'],scene:['scene'],case:['case']};
+function vlinks(k){return (TV[k]||[]).flatMap(x=>VID[x]).map(vitem).join('');}
+function vids(d){let h='<div class="tip">Video searches grouped by topic. Each link opens a YouTube search in a new tab: pick a short video that fits.</div>';
+ for(const k of topicsFor(d)){const l=vlinks(k);h+=`<div class="card"><h3>${TOPICS[k]}</h3>${l?'<ul>'+l+'</ul>':'<div class="small">No video for this topic. Use the flashcard-style quiz instead.</div>'}</div>`;}
+ return h;}
+
+// ---------- FORMULA GAMES ----------
+const OPS=['=','×','÷','+','−','(',')'];
+const FORM=[
+{n:'Rf value',p:['Rf','=','spot distance','÷','solvent distance'],k:'both measured from the start line',mem:'Spot over solvent'},
+{n:'Spatter angle',p:['sin θ','=','width','÷','length'],k:'then press sin⁻¹ on the calculator',mem:'Width over length'},
+{n:'Height of origin',p:['height','=','distance','×','tan θ'],k:'distance from the stain to the point of convergence',mem:'Distance times tan'},
+{n:'PCR copies',p:['copies','=','start','×','2ⁿ'],k:'n = number of cycles',mem:'Doubles each cycle'},
+{n:'Refractive index',p:['n','=','c','÷','v'],k:'c = speed of light in a vacuum, v = speed in the glass',mem:'Light speed ratio'},
+{n:'Density',p:['D','=','m','÷','V'],k:'mass over volume, in g/cm³',mem:'Heavier for its size = denser'},
+{n:'Medullary index',p:['MI','=','medulla width','÷','hair width'],k:'human under 1/3, animal over 1/2',mem:'Core over whole'},
+{n:'Height from a footprint',p:['height','=','foot length','÷','0.15'],k:'foot is about 15% of height',mem:'Foot over fifteen percent'}
+];
+let G=null;
+function fsel(d){return FORM.filter(f=>d==='C'||!f.c);}
+function sh(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
+function fstr(f){return f.p.join(' ');}
+function addXP(n){const st=store();st.xp=(st.xp||0)+n;save(st);showXP();}
+function games(d){
+ if(!G)return `<div class="tip">Four quick games to lock in the formulas. Win XP while you play.</div>
+ <div class="card"><h3>🎴 Match-up</h3><div>Tap a name, then tap its formula.</div><p><button class="btn" onclick="gMatch('${d}')">Play</button></p></div>
+ <div class="card"><h3>🕳️ Fill the gap</h3><div>One piece is missing. Pick it.</div><p><button class="btn" onclick="gGap('${d}',10)">Play (10 rounds)</button></p></div>
+ <div class="card"><h3>🧩 Build it</h3><div>Tap the pieces in the right order.</div><p><button class="btn" onclick="gBuild('${d}')">Play</button></p></div>
+ <div class="card"><h3>⏱️ Speed round</h3><div>60 seconds of fill-the-gap. Beat your best!</div><p><button class="btn" onclick="gSpeed('${d}')">Play</button> <span class="small">best: ${store().best||0}</span></p></div>
+ <div class="card"><h3>📒 Formula cheat sheet</h3><ul>${fsel(d).map(f=>`<li><b>${f.n}:</b> ${fstr(f)}<div class="small">${f.k} &middot; ${f.mem}</div></li>`).join('')}</ul></div>`;
+ return gView(d);}
+function gEnd(){clearInterval(window.GT);G=null;render();}
+function gTop(){return '<p><button class="ghost" onclick="gEnd()">← Games menu</button></p>';}
+function gView(d){
+ if(G.m==='match'){const h=G;if(!h.left)return gTop()+`<div class="card"><h3>\ud83c\udf89 All matched!</h3><div>Misses: ${h.miss}</div><p><button class="btn" onclick="gMatch('${h.d}')">Play again</button></p></div>`;return gTop()+`<div class="card"><h3>🎴 Match-up</h3><div class="small">Misses: ${h.miss} &middot; Left: ${h.left}</div><div class="row" style="align-items:flex-start"><div style="flex:1;min-width:200px">${h.names.map((f,i)=>f.done?'':`<button class="opt ${h.selN===f?'ok':''}" onclick="mTap('n',${i})">${f.n}</button>`).join('')}</div><div style="flex:1;min-width:200px">${h.forms.map((f,i)=>f.done?'':`<button class="opt ${h.selF===f?'ok':''}" onclick="mTap('f',${i})">${fstr(f)}</button>`).join('')}</div></div></div>`;}
+ if(G.m==='gap'||G.m==='speed'){if(G.i>=G.n||G.over)return gTop()+`<div class="card"><h3>${G.m==='speed'?'Time!':'Done'}: ${G.score} ${G.m==='speed'?'correct':'/ '+G.n}</h3>${G.m==='speed'&&G.newBest?'<p>🎉 New best!</p>':''}<button class="btn" onclick="${G.m==='speed'?`gSpeed('${G.d}')`:`gGap('${G.d}',10)`}">Play again</button></div>`;
+  const r=G.q;return gTop()+`<div class="card"><div class="small">${G.m==='speed'?'Time left: <b id="gt">'+G.t+'</b>s &middot; ':''}Score ${G.score}${G.m==='gap'?' &middot; Round '+(G.i+1)+'/'+G.n:''}</div><h3>${r.f.n}</h3><div style="font-size:22px;margin:8px 0">${r.f.p.map((x,i)=>i===r.b?'<b style="color:var(--acc)">[ ? ]</b>':x).join(' ')}</div>${r.o.map((o,i)=>`<button class="opt" onclick="gPick(${i})">${o}</button>`).join('')}<div id="gfb"></div></div>`;}
+ if(G.m==='build'){const f=G.f;return gTop()+`<div class="card"><h3>🧩 Build: ${f.n}</h3><div class="small">${f.k}</div><div style="font-size:22px;margin:10px 0;min-height:34px">${f.p.slice(0,G.pos).join(' ')} <span style="color:var(--mut)">${G.pos<f.p.length?'…':''}</span></div>${G.pos>=f.p.length?`<div class="fb ok">🔥 Built! +10 XP. ${f.mem}</div><p><button class="btn" onclick="gBuild('${G.d}')">Next formula</button></p>`:G.tiles.map((t,i)=>t===null?'':`<button class="opt" style="display:inline-block;width:auto;margin:4px" onclick="bTap(${i})">${t}</button>`).join('')}<div class="small">Misses: ${G.miss}</div></div>`;}
+}
+function mkGap(d){const f=sh(fsel(d))[0];const idx=f.p.map((x,i)=>OPS.includes(x)?-1:i).filter(i=>i>=0);const b=idx[Math.floor(Math.random()*idx.length)];const ans=f.p[b];
+ let lo=b,hi=b;while(lo>0&&f.p[lo-1]==='\u00d7'&&!OPS.includes(f.p[lo-2]))lo-=2;while(hi<f.p.length-1&&f.p[hi+1]==='\u00d7'&&!OPS.includes(f.p[hi+2]))hi+=2;const chain=f.p.slice(lo,hi+1);
+ const pool=[...new Set(fsel(d).flatMap(x=>x.p).filter(x=>!OPS.includes(x)&&x!==ans&&!chain.includes(x)))];const o=sh([ans,...sh(pool).slice(0,3)]);return {f,b,ans,o};}
+function gMatch(d){const f=sh(fsel(d)).slice(0,5).map(x=>({...x}));G={m:'match',d,names:sh(f),forms:sh(f),selN:null,selF:null,miss:0,left:f.length};render();}
+function mTap(side,i){const f=(side==='n'?G.names:G.forms)[i];if(side==='n')G.selN=f;else G.selF=f;
+ if(G.selN&&G.selF){if(G.selN.n===G.selF.n){G.selN.done=G.selF.done=true;G.left--;addXP(5);G.selN=G.selF=null;}else{G.miss++;G.selN=G.selF=null;}}
+ render();}
+function gGap(d,n){G={m:'gap',d,i:0,n,score:0,q:mkGap(d)};render();}
+function gPick(i){if(G.locked)return;G.locked=true;const ok=G.q.o[i]===G.q.ans;if(ok){G.score++;addXP(G.m==='speed'?2:5)}
+ if(G.m==='speed'){G.locked=false;G.q=mkGap(G.d);G.i++;render();return}
+ $('#gfb').innerHTML=`<div class="fb ${ok?'ok':'bad'}">${ok?'🔥 Yes! ':'It was <b>'+G.q.ans+'</b>. '}${fstr(G.q.f)}</div><p><button class="btn" onclick="G.locked=false;G.i++;G.q=mkGap(G.d);render()">Next</button></p>`;}
+function gSpeed(d){clearInterval(window.GT);G={m:'speed',d,i:0,n:9999,score:0,t:60,q:mkGap(d)};render();window.GT=setInterval(()=>{if(!G||G.m!=='speed'){clearInterval(window.GT);return}G.t--;const e=document.getElementById('gt');if(e)e.textContent=G.t;if(G.t<=0){clearInterval(window.GT);const st=store();G.newBest=G.score>(st.best||0);if(G.newBest){st.best=G.score;save(st)}G.over=true;render()}},1000);}
+function gBuild(d){const f=sh(fsel(d))[0];G={m:'build',d,f,pos:0,tiles:sh(f.p),miss:0};render();}
+function bTap(i){const f=G.f;if(G.tiles[i]===f.p[G.pos]){G.tiles[i]=null;G.pos++;if(G.pos>=f.p.length)addXP(10);}else G.miss++;render();}
+
+// ---------- QUIZ ----------
+function pool(d,topic){return Q.filter(q=>(d==='C'||q.lv==='B')&&(topic==='all'||q.t===topic));}
+function quizView(d){
+ const v=$('#view');
+ if(!quiz){const st=store();
+  v.innerHTML=`<div class="card"><h3>Start a quiz</h3><div class="row"><select id="qt"><option value="all">All topics (${pool(d,'all').length} questions)</option>${topicsFor(d).map(k=>`<option value="${k}">${TOPICS[k]} (${pool(d,k).length})</option>`).join('')}</select>
+  <select id="qm"><option value="any">All question types</option><option value="mc">Multiple choice only (no math)</option><option value="num">Number problems only</option></select>
+  <button class="btn" onclick="startQuiz('${d}')">Start</button></div></div>`;return;}
+ if(quiz.i>=quiz.list.length){v.innerHTML=`<div class="card"><h3>Done: ${quiz.score}/${quiz.list.length}</h3><p>${quiz.score===quiz.list.length?'Perfect run!':'Retake the quiz or revisit the Learn tab for the topics you missed.'}</p>${quiz.miss.length?'<b>Missed:</b><ul>'+quiz.miss.map(m=>`<li>${m}</li>`).join('')+'</ul>':''}<button class="btn" onclick="quiz=null;render()">New quiz</button> <button class="ghost" onclick="sub[tab]='learn';quiz=null;render()">Back to lessons</button></div>`;return;}
+ const q=quiz.list[quiz.i];let h=`<div class="card"><div class="small">Question ${quiz.i+1} of ${quiz.list.length} &middot; ${TOPICS[q.t]} &middot; score ${quiz.score}</div><h3>${q.q}</h3>`;
+ if(q.n){h+=`<div class="row"><input id="ans" type="number" step="any" placeholder="your answer"> <span>${q.u}</span><button class="btn" onclick="answerNum()">Check</button><button class="ghost" onclick="hint()">Hint / steps</button></div><div id="hint"></div>`;}
+ else h+=q.o.map((o,i)=>`<button class="opt" onclick="answerMC(${i})">${'ABCDE'[i]}. ${o}</button>`).join('');
+ h+='<div id="fb"></div></div>';v.innerHTML=h;const an=$('#ans');if(an){an.onkeydown=e=>{if(e.key==='Enter')answerNum()};an.focus&&an.focus();}}
+function startQuiz(d){let l=pool(d,$('#qt').value);const m=$('#qm').value;if(m==='mc')l=l.filter(q=>!q.n);if(m==='num')l=l.filter(q=>q.n);
+ if(!l.length){$('#view').insertAdjacentHTML('beforeend','<div class="tip">No questions for that choice.</div>');return}
+ l=l.map(x=>shufQ({...x,s:Math.random()})).sort((a,b)=>a.s-b.s).slice(0,15);quiz={d,list:l,i:0,score:0,miss:[],done:false};render();}
+function record(q,ok){const st=store();for(const k of [quiz.d+q.t,quiz.d+'L'+q.l].concat(q.n?[quiz.d+'num']:[])){st[k]=st[k]||{r:0,n:0};st[k].n++;if(ok)st[k].r++;}if(ok)st.xp=(st.xp||0)+10;save(st);if(ok)quiz.score++;else quiz.miss.push(q.q);showXP();}
+const GOOD=['\ud83d\udd25 Nailed it!','\u26a1 Boom!','\ud83c\udfaf Right on target!','\ud83e\udde0 Big brain!','\ud83d\ude80 Case closed!'],BAD=['\ud83d\udee0\ufe0f Not quite.','\ud83d\udca1 Close!','\ud83d\udd01 Almost. Learn it and come back.'];
+function finish(ok,msg){const q=quiz.list[quiz.i];const ls=LES[q.l];const arr=ok?GOOD:BAD;$('#fb').innerHTML=`<div class="fb ${ok?'ok':'bad'}"><b>${arr[Math.floor(Math.random()*arr.length)]}</b> ${ok?'+10 XP. ':''}${msg}${ok||!ls?'':'<div class="small">Review: lesson "'+ls.n+'" in Learn.</div>'}</div><p><button class="btn" onclick="quiz.locked=false;quiz.i++;render()">Next</button></p>`;}
+function answerMC(i){if(quiz.locked)return;quiz.locked=true;const q=quiz.list[quiz.i];const ok=i===q.a;
+ document.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('ok');else if(j===i)b.classList.add('bad');});record(q,ok);finish(ok,q.e);}
+function answerNum(){if(quiz.locked)return;const q=quiz.list[quiz.i];const x=parseFloat($('#ans').value);if(isNaN(x)){$('#fb').innerHTML='<div class="fb bad">Type a number first.</div>';return}quiz.locked=true;const ok=Math.abs(x-q.a)<=q.tol;record(q,ok);
+ finish(ok,(ok?'':'Answer: ')+q.e+'<br><span class="small">Steps: '+q.h.join(' &rarr; ')+'</span>');}
+function hint(){const q=quiz.list[quiz.i];$('#hint').innerHTML='<div class="tip">'+q.h.map((s,i)=>`<div>Step ${i+1}: ${s}</div>`).join('')+'</div>';}
+// ---------- CALCULATORS ----------
+function tools(d){
+ return `<div class="tip">Fill the boxes, press nothing: results and steps appear as you type. Use these to check your own answers.</div>
+ <div class="card"><h3>Rf value</h3><div class="row"><input type="number" id="rf_s" placeholder="spot moved (cm)" step="any"><input type="number" id="rf_f" placeholder="solvent front moved (cm)" step="any"></div><div id="rf_o" class="res">&hellip;</div></div>
+ <div class="card"><h3>Blood spatter: angle and height</h3><div class="row"><input type="number" id="sp_w" placeholder="stain width (mm)" step="any"><input type="number" id="sp_l" placeholder="stain length (mm)" step="any"><input type="number" id="sp_d" placeholder="distance to convergence (cm, optional)" step="any"></div><div id="sp_o" class="res">&hellip;</div></div>
+ <div class="card"><h3>PCR copies</h3><div class="row"><input type="number" id="pc_n" placeholder="cycles" step="1"><input type="number" id="pc_s" placeholder="starting copies" value="1" step="any"></div><div id="pc_o" class="res">&hellip;</div></div>
+ <div class="card"><h3>Refractive index of glass</h3><div class="row"><input type="number" id="rn_v" placeholder="speed in glass (x 10^8 m/s)" step="any"></div><div id="rn_o" class="res">&hellip;</div></div>
+ <div class="card"><h3>Density and floating</h3><div class="row"><input type="number" id="de_m" placeholder="mass (g)" step="any"><input type="number" id="de_v" placeholder="volume (cm³)" step="any"></div><div id="de_o" class="res">&hellip;</div></div>
+ <div class="card"><h3>Hair medullary index</h3><div class="row"><input type="number" id="hm_m" placeholder="medulla width (µm)" step="any"><input type="number" id="hm_w" placeholder="hair width (µm)" step="any"></div><div id="hm_o" class="res">&hellip;</div></div>
+ <div class="card"><h3>Height from foot length</h3><div class="row"><input type="number" id="ft_l" placeholder="footprint length (cm)" step="any"></div><div id="ft_o" class="res">&hellip;</div></div>
+ <div class="card"><h3>Score estimator</h3><div class="small">Enter the percent you got right on each part.</div><div class="row"><input type="number" id="sc_b" placeholder="3.b solids %"><input type="number" id="sc_c" placeholder="3.c polymers %"><input type="number" id="sc_d" placeholder="3.d chromatography %"><input type="number" id="sc_e" placeholder="3.e scene %"><input type="number" id="sc_f" placeholder="3.f analysis %"><select id="sc_p"><option value="0">No penalty</option><option value="10">10% penalty</option><option value="20">20% (both penalties)</option></select></div><div id="sc_o" class="res">&hellip;</div></div>`;}
+function calcInit(){const g=id=>{const e=document.getElementById(id);return e?parseFloat(e.value):NaN};const o=(id,t)=>{const e=document.getElementById(id);if(e)e.innerHTML=t};
+ const f=(x,d=2)=>Number(x.toFixed(d));
+ const PL=[['PP',0.90],['LDPE',0.92],['HDPE',0.95],['PS',1.05],['PMMA',1.18],['PC',1.20],['PVC',1.35],['PETE',1.38]];
+ const run=()=>{['rf_o','sp_o','pc_o','rn_o','de_o','hm_o','ft_o','sc_o'].forEach(i=>o(i,'&hellip;'));
+  const s=g('rf_s'),fr=g('rf_f');if(!isNaN(s)&&fr>0)o('rf_o',s>fr?'The spot cannot travel farther than the solvent. Check your numbers.':`Rf = ${s} &divide; ${fr} = <b>${f(s/fr,3)}</b>`);
+  const w=g('sp_w'),l=g('sp_l'),dd=g('sp_d');if(w>0&&l>0){if(w>l)o('sp_o','Width cannot be more than length. Swap them.');else{const th=Math.asin(w/l)*180/Math.PI;let t=`sin &theta; = ${w} &divide; ${l} = ${f(w/l,3)}. Angle = <b>${f(th,1)}&deg;</b>`;if(dd>0)t+=`<br>Height of origin = ${dd} &times; tan(${f(th,1)}&deg;) = <b>${f(dd*Math.tan(th*Math.PI/180),1)} cm</b>`;o('sp_o',t)}}
+  const n=g('pc_n'),s0=g('pc_s');if(n>=0&&n<=60&&s0>0){const c=s0*Math.pow(2,n);o('pc_o',`${s0} &times; 2<sup>${n}</sup> = <b>${c>=1e6?c.toExponential(2):f(c,0)}</b> copies`)}
+  const v=g('rn_v');if(v>0){const nn=2.998/v;o('rn_o',`n = c &divide; v = 2.998 &divide; ${v} = <b>${f(nn,3)}</b>`+(nn<1?' (an index below 1 is impossible: check the speed)':''))}
+  const m=g('de_m'),vo=g('de_v');if(m>0&&vo>0){const D=m/vo;let near=PL.slice().sort((a,b)=>Math.abs(a[1]-D)-Math.abs(b[1]-D))[0];o('de_o',`Density = ${m} &divide; ${vo} = <b>${f(D,3)} g/cm&sup3;</b>. In water it ${D<1?'<b>floats</b>':'<b>sinks</b>'}. Closest plastic: ${near[0]} (about ${near[1]}).`)}
+  const mm=g('hm_m'),hw=g('hm_w');if(mm>=0&&hw>0){const mi=mm/hw;o('hm_o',`Medullary index = ${mm} &divide; ${hw} = <b>${f(mi,2)}</b>. ${mi<1/3?'Under 1/3: human-like.':mi>0.5?'Over 1/2: animal-like.':'In between: look at the scales and pigment too.'}`)}
+  const fl=g('ft_l');if(fl>0)o('ft_o',`Height &approx; ${fl} &divide; 0.15 = <b>${f(fl/0.15,0)} cm</b> (${f(fl/0.15/2.54,0)} inches)`);
+  const a=['sc_b','sc_c','sc_d','sc_e','sc_f'].map(g);if(a.some(x=>!isNaN(x))){const wt=[0.2,0.2,0.15,0.15,0.3];let t=0;a.forEach((x,i)=>{t+=(isNaN(x)?0:x)*wt[i]});const p=g('sc_p')||0;o('sc_o',`Raw total = ${f(t,1)}%. After penalty = <b>${f(t*(1-p/100),1)}%</b> <span class="small">(weights 20, 20, 15, 15, 30; the 3.f part is the biggest)</span>`)}
+ };
+ document.querySelectorAll('#view input,#view select').forEach(e=>{e.oninput=run;e.onchange=run});}
+// ---------- RULES, PRACTICE LOG, CASE PRACTICE ----------
+const CASES=[
+{t:'Case 1: The missing trophy',lv:'Regional style',sc:'The school trophy was taken from a locked display case overnight. The case window was broken. Three people had keys: Alex (art club), Blake (night custodian), Casey (baking club).',
+ ev:['Residue on the case: dissolves in water, yellow flame, fizzes with HCl, pH about 8 (mildly basic).','Fiber on the broken glass: melts, drips and smells like celery, leaves a hard bead.','Blood on the glass edge: clumps with anti-A only.','Lifted print on the glass: ulnar loop, with a bifurcation and an island in the same places as one suspect’s print.','Suspect facts: Alex wears a cotton hoodie, has blood type O and plain whorls. Blake wears a wool coat, has blood type B and an ulnar loop with different ridge details. Casey wears a nylon jacket, has blood type A and an ulnar loop that matches the lifted print’s ridge details. Casey’s club bakes with baking soda.'],
+ md:'Culprit: Casey. The residue is sodium hydrogen carbonate (baking soda: yellow flame for sodium, fizzes with acid, mildly basic), and Casey’s club uses it. The nylon fiber (melts into a bead with a celery smell) matches Casey’s jacket. The blood on the glass is type A, which matches Casey. The print is individual evidence: the bifurcation and island line up with Casey’s print. Alex is cleared: cotton burns like paper (not nylon), type O does not match type A, and plain whorls do not match an ulnar loop. Blake is cleared: wool smells like burning hair (not nylon), type B does not match type A, and the ridge details differ from the lifted print.'},
+{t:'Case 2: The lab break-in',lv:'State style',sc:'A note was left after a break-in at the chemistry room. Suspects: Dana, Eli and Fran. Police compared a note, DNA from a drop of blood, and a blood stain.',
+ ev:['Ink on the note, paper chromatography: spots at Rf 0.30, 0.55 and 0.80.','Pens: Dana has spots at 0.30, 0.55, 0.80. Eli has 0.30 and 0.80 only. Fran has 0.45 and 0.80.','DNA peaks (alleles) at three loci. Scene blood: D3 = 15,17; vWA = 16,18; FGA = 21,24.','Dana: D3 = 15,17; vWA = 16,18; FGA = 21,24. Eli: D3 = 14,17; vWA = 16,18; FGA = 22,24. Fran: D3 = 15,16; vWA = 17,18; FGA = 21,23.','Blood stain on the floor is 5 mm wide and 10 mm long. It is 46 cm from the point of convergence.'],
+ md:'Culprit: Dana. The ink on the note has three spots at Rf 0.30, 0.55 and 0.80, and only Dana’s pen has the same three spots. Dana’s DNA matches the scene blood at all three loci (D3, vWA and FGA). Eli is cleared: his pen is missing the 0.55 spot, and his DNA differs at D3 (14,17 vs 15,17) and FGA (22,24 vs 21,24). Fran is cleared: her pen has a spot at 0.45 that the note does not, and she differs at all three loci. The stain angle is sin⁻¹(5 ÷ 10) = 30°, so the height of origin is 46 × tan 30° = about 27 cm, which fits a cut hand or arm, not a blow to the head.'},
+{t:'Case 3: The park incident',lv:'National style',sc:'A person was shot in a park. Suspects: Gus, Hana and Ian. Evidence was collected from the scene and compared with each suspect.',
+ ev:['Bullet striations from the scene match the test bullet fired from Hana’s gun. Gus’s and Ian’s guns do not match.','A shoe print at the scene is 24 cm long.','Heights: Gus 185 cm, Hana 160 cm, Ian 178 cm.','Pollen on the victim’s jacket: pine pollen with two air sacs. Hana’s yard has pines. Gus and Ian have no pine trees.','Seed burrs (hooked) at the scene were also found on Ian’s socks.','Oldest larvae on the body are third-stage blow fly larvae: death at least 2 to 3 days earlier. Hana has no alibi for that time. Ian was out of town.'],
+ md:'Culprit: Hana. Bullet striations are individual evidence and match only Hana’s gun. The 24 cm print gives a height of 24 ÷ 0.15 = 160 cm, which is Hana (Gus at 185 and Ian at 178 are too tall). The pine pollen with two air sacs fits Hana’s pine yard, but Gus and Ian have no pines. The insects show death at least 2 to 3 days earlier and Hana has no alibi then. Gus is cleared by the striations and height mismatch. Ian is cleared by striations, height and his alibi. The burrs on Ian’s socks only put him in the park and are weaker class evidence.'}
+];
+function device(){const lg=logs();
+ const rows=lg.map((r,i)=>`<tr><td>${String(r.lab).replace(/[<>&]/g,'')}</td><td>${r.got}</td><td>${r.max}</td><td>${Math.round(100*r.got/r.max)}%</td><td><button class="ghost" onclick="delLog(${i})">x</button></td></tr>`).join('');
+ const tot=lg.reduce((a,r)=>[a[0]+r.got,a[1]+r.max],[0,0]);
+ return `<div class="card"><h3>The event rules in plain English</h3>${['r1','r2','r3','r4','r5'].map(i=>`<b>${LES[i].i} ${LES[i].n}</b><ul>${LES[i].st.map(x=>`<li>${x}</li>`).join('')}</ul>`).join('')}</div>
+ <h2 class="th">Case practice (the 30% part)</h2><div class="tip">Read the case, write your analysis in the box (name the culprit, give the evidence, say why each other suspect is out), then open the model answer.</div>
+ ${CASES.map(c=>`<details class="card"><summary><b>${c.t}</b> <span class="small">(${c.lv})</span></summary><p>${c.sc}</p><ul>${c.ev.map(x=>`<li>${x}</li>`).join('')}</ul><textarea rows="6" style="width:100%;font-size:16px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)" placeholder="Write your analysis here (not saved)."></textarea><details style="margin-top:8px"><summary><b>Show the model answer</b></summary><div class="mem">${c.md}</div></details></details>`).join('')}
+ <div class="card"><h3>Practice test log</h3><div class="row"><input id="l_n" placeholder="what you did (e.g. 2019 invitational)"><input type="number" id="l_g" placeholder="your score"><input type="number" id="l_x" placeholder="out of"><button class="btn" onclick="addLog()">Add</button></div>
+ <table><tr><th>Test</th><th>Score</th><th>Out of</th><th>%</th><th></th></tr>${rows||'<tr><td colspan=5 class="small">No tests yet. Log every practice test.</td></tr>'}</table>
+ ${lg.length?`<div class="res">Overall: ${tot[0]} of ${tot[1]} = <b>${Math.round(100*tot[0]/tot[1])}%</b> over ${lg.length} test${lg.length===1?'':'s'}.</div>`:''}</div>`;}
+function addLog(){const n=$('#l_n').value.trim()||'Practice test',g=parseFloat($('#l_g').value),x=parseFloat($('#l_x').value);if(isNaN(g)||isNaN(x)||x<=0||g<0)return;const l=logs();l.push({lab:n,got:g,max:x});saveLogs(l);render();}
+function delLog(i){const l=logs();l.splice(i,1);saveLogs(l);render();}
+// ---------- TEACH ----------
+const CHK=[
+ 'Make the song in Mureka using songs/forensics_songs.md, save it as songs/Crime_Scene_Crew.mp3, then listen all the way through',
+ 'The sung words match the lyrics shown below',
+ 'Facts in the song are right (flame colors, Rf, PCR steps, spatter formulas)',
+ 'Nothing in the song says class evidence names one person',
+ 'Rules pages checked: this trainer follows Forensics C (2027) Parts 1 to 4. Re-read the rules each season',
+ 'Hair species notes checked against the photos in your own binder or sheet',
+ 'Practice test answer key (practice_test.html) checked by a coach',
+ 'Cheat sheet (cheat_sheet.html) printed and checked against the one-sheet rule'];
+const SONGDEF=[
+['[Verse 1]',[
+ ['Lithium is crimson, potassium is lilac,','Flame colors: Li red, K lilac.'],
+ ['Sodium is yellow, calcium is brick,','Na yellow, Ca brick red.'],
+ ['Boron burns green and the carbonates fizz,','Boron green. Carbonates fizz with HCl.'],
+ ['Iodine goes blue-black when starch is in the mix!','Iodine + starch = blue-black.']]],
+['[Verse 2]',[
+ ['Benedict’s plus heat turns glucose orange-red,','Glucose turns Benedict’s orange.'],
+ ['Sucrose stays blue, that’s what the books said,','Sucrose gives no change.'],
+ ['Plastics sink or float, PP and PE rise,','Only PP, LDPE, HDPE float.'],
+ ['PVC burns green and the fibers don’t lie!','PVC: green flame. Fibers burn differently.']]],
+['[Chorus]',[
+ ['Look at the evidence, test it, then compare,','Observe, test, compare.'],
+ ['Class narrows the group, individual names who was there,','Class narrows. Individual names one.'],
+ ['Name the culprit first, then clear the others too,','Culprit first, then clear the rest.'],
+ ['Forensics C, we solve the case for you!','Hook.']]],
+['[Verse 3]',[
+ ['Rf is spot over solvent, always zero to one,','Rf = spot ÷ solvent, 0 to 1.'],
+ ['Pencil on the start line, solvent below, then you’re done,','Use pencil; solvent below the line.'],
+ ['The mass spectrum’s last big peak is the molecule’s weight,','Last big peak = molecular mass.'],
+ ['The tallest is the base peak, one hundred percent, great!','Tallest peak = base peak (100%).']]],
+['[Verse 4]',[
+ ['Arch, loop, whorl, count the deltas: none, one, two,','Deltas: arch 0, loop 1, whorl 2.'],
+ ['Ulnar points to the pinky, radial to the thumb is true,','Ulnar = pinky side. Radial = thumb side.'],
+ ['Ninhydrin turns the amino acids purple on the page,','Ninhydrin: purple on paper.'],
+ ['Super glue fumes plastic, metal, glass at any age!','Super glue: plastic, metal, glass.']]],
+['[Verse 5]',[
+ ['PCR is heat, cool, build, and it doubles every time,','PCR: heat, cool, build. Doubles.'],
+ ['Two to the n copies, thirty cycles, billions climb,','Copies = start × 2ⁿ.'],
+ ['Small DNA runs farther, every peak must agree,','Small runs farther. All peaks must match.'],
+ ['Clumps with anti-A only? Then the blood is type A!','Clumps with anti-A only = type A.']]],
+['[Verse 6]',[
+ ['Sine theta is the width over the length of the stain,','sin θ = width ÷ length.'],
+ ['Height is distance times tangent, say it once again,','Height = distance × tan θ.'],
+ ['The crack that ends is the later one, the radial came first,','Crack that stops is later.'],
+ ['The oldest bug gives the minimum time, the clock has burst!','Oldest insect = minimum time.']]],
+['[Chorus 2]',[
+ ['Look at the evidence, test it, then compare,','Observe, test, compare.'],
+ ['Class narrows the group, individual names who was there,','Class narrows. Individual names one.'],
+ ['Name the culprit first, then clear the others too,','Culprit first, then clear the rest.'],
+ ['Forensics C, we solve the case for you!','Hook.']]]
+];
+const LYR1=SONGDEF.map(s=>s[0]+'\n'+s[1].map(x=>x[0]).join('\n')).join('\n\n');
+const NOTES=Object.fromEntries(SONGDEF.flatMap(s=>s[1]));
+function chkGet(){try{return JSON.parse(localStorage.getItem('foren_chk')||'{}')}catch(e){return {}}}
+function chkSet(i,v){const c=chkGet();c[i]=v;try{localStorage.setItem('foren_chk',JSON.stringify(c))}catch(e){}const n=CHK.filter((_,k)=>c[k]).length;const p=document.getElementById('chkn');if(p)p.textContent=n+'/'+CHK.length;}
+const SONGS=[{id:'cs',title:'Crime Scene Crew (Forensics C)',file:'Crime_Scene_Crew.mp3',lyr:LYR1}];
+function secs(lyr){return lyr.split(/\n\n(?=\[)/).map(b=>{const l=b.split('\n');return {tag:l[0],txt:l.slice(1).join('\n')}});}
+
+function songLines(id){const s=SONGS.find(x=>x.id===id),out=[];secs(s.lyr).forEach((x,i)=>{x.txt.split('\n').forEach((ln,j)=>out.push({sec:i,first:j===0,tag:x.tag,ln,note:NOTES[ln]||''}))});return out;}
+(function(){try{if(localStorage.getItem('foren_lsync'))return;const old=JSON.parse(localStorage.getItem('foren_sync')||'{}');const n={};SONGS.forEach(s=>{const o=old[s.id];if(!o)return;const L=songLines(s.id);n[s.id]=L.map(l=>l.first&&typeof o[l.sec]==='number'?o[l.sec]:null)});localStorage.setItem('foren_lsync',JSON.stringify(n))}catch(e){}})();
+function syncGet(){try{return JSON.parse(localStorage.getItem('foren_lsync')||'{}')}catch(e){return {}}}
+function syncSave(o){try{localStorage.setItem('foren_lsync',JSON.stringify(o))}catch(e){}}
+function sTimes(id){const t=syncGet()[id]||[];return songLines(id).map((_,i)=>typeof t[i]==='number'?t[i]:null);}
+function fmtT(t){return t===null?'--':(Math.floor(t/60)+':'+(t%60).toFixed(1).padStart(4,'0'));}
+function syncPaint(id){const t=sTimes(id);t.forEach((v,i)=>{const e=document.getElementById('st_'+id+'_'+i);if(e)e.textContent=fmtT(v)});}
+function syncStore(id,t){const o=syncGet();o[id]=t;syncSave(o);syncPaint(id);}
+function syncTap(id){const a=document.getElementById('a_'+id);const t=sTimes(id);const i=t.findIndex(v=>v===null);if(i<0)return;t[i]=Math.round(a.currentTime*10)/10;syncStore(id,t);syncMsg(id,'Line '+(i+1)+' set at '+fmtT(t[i])+(i+1<t.length?'. Next: line '+(i+2):'. All set!'));}
+function syncNudge(id,i,d){const t=sTimes(id);if(t[i]===null)return;t[i]=Math.max(0,Math.round((t[i]+d)*10)/10);syncStore(id,t);const a=document.getElementById('a_'+id);if(a){a.currentTime=t[i];a.play()}}
+function syncSetNow(id,i){const a=document.getElementById('a_'+id);const t=sTimes(id);t[i]=Math.round(a.currentTime*10)/10;syncStore(id,t);}
+function syncGo(id,i){const t=sTimes(id)[i];if(t===null)return;const a=document.getElementById('a_'+id);a.currentTime=t;a.play();}
+function syncClearLine(id,i){const t=sTimes(id);t[i]=null;syncStore(id,t);}
+function syncUndo(id){const t=sTimes(id);let i=t.findIndex(v=>v===null);i=i<0?t.length-1:i-1;if(i<0)return;t[i]=null;syncStore(id,t);syncMsg(id,'Cleared line '+(i+1)+'. Next to tap: line '+(i+1));}
+window._clr={};function syncClear(id){const b=document.getElementById('clr_'+id);if(!window._clr[id]){window._clr[id]=1;if(b)b.textContent='Tap again to clear all';syncMsg(id,'Tap Clear all again to erase every timing');setTimeout(()=>{window._clr[id]=0;const bb=document.getElementById('clr_'+id);if(bb)bb.textContent='Clear all'},4000);return}window._clr[id]=0;if(b)b.textContent='Clear all';syncStore(id,[]);syncMsg(id,'All timings cleared. Next to tap: line 1');}
+function syncExport(id){const j=JSON.stringify(sTimes(id));try{navigator.clipboard.writeText(j)}catch(e){}prompt('Timings (copied if allowed). Save this text:',j);}
+function syncImport(id){const j=prompt('Paste timings:');if(!j)return;try{const t=JSON.parse(j);if(!Array.isArray(t))throw 0;syncStore(id,t);syncMsg(id,'Imported')}catch(e){alert('Could not read that text')}}
+function syncMsg(id,m){const e=document.getElementById('sm_'+id);if(e)e.textContent=m;}
+function scrollIn(e){const bx=e.closest('.lyrbox');if(!bx)return;bx.scrollTo({top:e.offsetTop-bx.clientHeight/2+e.clientHeight/2,behavior:'smooth'});}
+function curLine(t,ct){let cur=-1;t.forEach((v,i)=>{if(v!==null&&v<=ct+0.05&&(cur<0||v>=t[cur]))cur=i});return cur;}
+function syncTick(id){const a=document.getElementById('a_'+id);if(!a)return;const t=sTimes(id);const cur=curLine(t,a.currentTime);const key='_cur_'+id;if(window[key]===cur)return;window[key]=cur;t.forEach((_,i)=>{const e=document.getElementById('sc_'+id+'_'+i);if(e)e.style.background=i===cur?'var(--accbg)':''});const e=document.getElementById('sc_'+id+'_'+cur);if(e&&!a.paused)scrollIn(e);}
+function songCard(s){const L=songLines(s.id),t=sTimes(s.id);let last='';
+ return `<div class="card"><h3>&#127925; ${s.title}</h3><audio id="a_${s.id}" data-song="1" onplay="setRate(rateGet())" onloadedmetadata="setRate(rateGet())" controls preload="none" style="width:100%" src="${s.file}" ontimeupdate="syncTick('${s.id}')" onseeked="syncTick('${s.id}')"></audio>
+ ${rateBar()}<p class="small">File: ${s.file}. If the player is silent, keep trainer.html and the songs folder together.</p>
+ <div class="tip"><b>Sync line by line:</b> press play. When each line starts, tap <b>TAP</b>. It marks the next line in order. Fix any line with -0.1 / +0.1, or press <b>Set now</b> on a line to stamp it at the current time.</div>
+ <div class="row" style="position:sticky;top:0;z-index:5;background:var(--card);padding:6px 0"><button class="btn" style="font-size:18px;padding:14px 28px" onclick="syncTap('${s.id}')">TAP</button><button class="ghost" onclick="syncUndo('${s.id}')">Undo last</button><button class="ghost" id="clr_${s.id}" onclick="syncClear('${s.id}')">Clear all</button><button class="ghost" onclick="syncExport('${s.id}')">Export</button><button class="ghost" onclick="syncImport('${s.id}')">Import</button></div>
+ <div class="small" id="sm_${s.id}">Next to tap: line ${(t.findIndex(v=>v===null)+1)||'none (all set)'}</div>
+ <div class="lyrbox">${L.map((x,i)=>{let h='';if(x.tag!==last){last=x.tag;h=`<div class="small" style="margin-top:10px;color:var(--acc);font-weight:700">${x.tag}</div>`}return h+`<div id="sc_${s.id}_${i}" style="border:1px solid var(--line);border-radius:8px;padding:5px 8px;margin:4px 0"><div class="row" style="margin:0"><span style="flex:1 1 200px">${i+1}. ${x.ln}</span><span class="small" id="st_${s.id}_${i}">${fmtT(t[i])}</span><button class="ghost" onclick="syncNudge('${s.id}',${i},-0.1)">-0.1</button><button class="ghost" onclick="syncNudge('${s.id}',${i},0.1)">+0.1</button><button class="ghost" onclick="syncSetNow('${s.id}',${i})">Set now</button><button class="ghost" onclick="syncGo('${s.id}',${i})">Play</button><button class="ghost" onclick="syncClearLine('${s.id}',${i})">x</button></div>${x.note?`<div class="small">${x.note}</div>`:''}</div>`}).join('')}</div></div>`;}
+function songs(){const c=chkGet();const n=CHK.filter((_,i)=>c[i]).length;
+ return SONGS.map(songCard).join('')+`<div class="card"><h3>My checklist <span class="pill" id="chkn">${n}/${CHK.length}</span></h3>${CHK.map((t,i)=>`<label style="display:block;margin:6px 0"><input type="checkbox" ${c[i]?'checked':''} onchange="chkSet(${i},this.checked)"> ${t}</label>`).join('')}</div>`;}
+// ---------- FEEL IT: physical anchors + repetition drill ----------
+const FEEL=[
+ {id:'f1',t:'Flame colors',p:'What color does each metal make in a flame?',a:'Think of a fireworks show: red fireworks use lithium and strontium, orange-yellow is sodium (the same yellow as street lamps and as table salt in a campfire), lilac-purple is potassium, brick red is calcium, green is boron (and copper).',s:'Li red, Na yellow, K lilac, Ca brick, boron green.',n:''},
+ {id:'f2',t:'Fizz, smell and clump',p:'What do acid and base tests tell you about a white powder?',a:'A baking soda volcano: fizz with acid means a carbonate (baking soda, washing soda, chalk). Vinegar smell when acid hits it means acetate. A sharp ammonia smell with NaOH means ammonium. A cloudy white cloud with NaOH points to magnesium.',s:'Fizz = carbonate. Vinegar = acetate. Ammonia = ammonium.',n:'Fizzers: sodium hydrogen carbonate, sodium carbonate, calcium carbonate.'},
+ {id:'f3',t:'Starch and sugar',p:'How do you tell cornstarch, glucose and sucrose apart?',a:'A potato turns inky blue-black when you drip iodine on it (starch). Glucose is a reducing sugar and turns Benedict’s orange when warmed, like a rust-colored sunset. Table sugar (sucrose) stays blue, like it did nothing.',s:'Iodine = starch. Benedict’s = glucose, not sucrose.',n:'Cornstarch + iodine: blue-black. Glucose + Benedict’s + heat: orange. Sucrose: no change.'},
+ {id:'f4',t:'Plastics: sink or float',p:'Which plastics float in water and which sink?',a:'A milk jug, a grocery bag and a yogurt tub bob on top of the pool. Solid polystyrene (not foamed) is just a bit denser than water, so it sinks slowly. Soda bottles (PETE) and water pipes (PVC) sink like stones.',s:'Floaters: PP, LDPE, HDPE. The rest sink.',n:'Densities: PP 0.90, LDPE 0.92, HDPE 0.95, PS 1.05, PMMA 1.18, PC 1.20, PVC 1.3 to 1.4, PETE 1.38.'},
+ {id:'f5',t:'Fiber burn smells',p:'How do you tell cotton, wool and nylon by burning?',a:'Burning paper = cotton or linen. Burning hair or feathers = wool or silk. A plastic bead that drips and melts = nylon or polyester. Plant, animal, factory: three different smells.',s:'Paper smell = plant. Hair smell = animal. Melts into a bead = synthetic.',n:'Nylon smells like celery. Polyester burns sooty and sweet. Do these burns only when the supervisor allows.'},
+ {id:'f6',t:'Hair anatomy',p:'Name the three layers of a hair and what each does.',a:'A pencil: the paint is the cuticle (scaly outside), the wood is the cortex (holds the color), the graphite in the middle is the medulla. The root is the eraser end that was attached to the head.',s:'Cuticle outside, cortex color, medulla center.',n:'Medullary index = medulla ÷ hair width. Human under 1/3, animal over 1/2.'},
+ {id:'f7',t:'Rf value',p:'How do you work out an Rf value?',a:'A race: a runner (the spot) and a car (the solvent) start together. The runner ran 3.2 cm while the car went 8.0 cm. Rf is how far the runner got compared to the car, always less than 1.',s:'Rf = spot distance ÷ solvent distance.',n:'3.2 ÷ 8.0 = 0.40.'},
+ {id:'f8',t:'Chromatography setup',p:'How do you set up paper chromatography so it works?',a:'Draw the start line with pencil, keep the water below the line, and stop before the water reaches the top. Mark the front straight away. If the water covers the dots, the colors wash out into the cup.',s:'Pencil line, solvent below it, mark the front.',n:''},
+ {id:'f9',t:'Mass spectrum',p:'What is the molecular ion and the base peak?',a:'A bar graph of broken pieces. The right-most big bar is the whole molecule (its mass). The tallest bar is the base peak, the most common piece, called 100%.',s:'Right-most = the molecule. Tallest = base peak.',n:'M at 78 and a peak at 63 means 15 was lost (CH₃).'},
+ {id:'f10',t:'Fingerprint patterns',p:'What are the 8 patterns and how many deltas does each family have?',a:'Look at your own fingertips. Arches (rainbow hills): plain and tented, no delta. Loops (a hairpin): radial and ulnar, one delta. Whorls (a bullseye): plain, central pocket, accidental and double loop, two deltas.',s:'Arch 0 deltas, loop 1, whorl 2.',n:'Loops about 60 to 65%, whorls 30 to 35%, arches about 5%.'},
+ {id:'f11',t:'Ridge details',p:'Name the ridge features you compare.',a:'Like a road map: a fork in the road is a bifurcation, a dead end is a ridge ending, a lone dot is an island, a road that splits and rejoins is an enclosure (lake), a little side street is a spur.',s:'Fork = bifurcation. Dot = island. Fork and rejoin = enclosure.',n:'Also: trifurcation (3-way fork), double bifurcation, delta, loop.'},
+ {id:'f12',t:'Developing prints',p:'Which method for which surface?',a:'Paper is like a sponge, so ninhydrin soaks in and turns amino acids purple. A plastic cup is smooth, so super glue fumes build a white print on top. Dusting is like flour on a greasy hand. Iodine fuming leaves a brown print that fades like a bruise.',s:'Paper: ninhydrin. Plastic or metal: super glue. Quick and brown: iodine.',n:'Cyanoacrylate = super glue. Ninhydrin color = Ruhemann’s purple.'},
+ {id:'f13',t:'PCR',p:'How does PCR copy DNA?',a:'A zipper: heat unzips the DNA (denature), cooling lets the little helper pieces (primers) clip on (anneal), then the builder enzyme (Taq) zips new halves on (extend). Every round doubles the number.',s:'Heat apart, cool to bind, build up. Doubles each cycle.',n:'1 copy x 2¹⁰ = 1024 after 10 cycles. 30 cycles is about a billion.'},
+ {id:'f14',t:'Matching DNA peaks',p:'How do you match an electropherogram to a suspect?',a:'Two sets of keys: the scene has two keys per lock (alleles). A suspect only matches if they have the same two keys at EVERY lock. One wrong key and that suspect is out.',s:'Every locus must match. One mismatch excludes.',n:'Scene 15,17 vs suspect 15,16: no match.'},
+ {id:'f15',t:'ABO blood typing',p:'How do you type blood with anti-A and anti-B?',a:'Mix a drop of blood with each serum. If it clumps like cottage cheese, that marker is there. Clumps with A only: type A. B only: type B. Both: AB. Neither: O.',s:'Clumps = that antigen is present.',n:'Neither clumps = O. Both clump = AB.'},
+ {id:'f16',t:'Whose blood: bird or mammal',p:'How do blood cells show the animal group?',a:'Mammal blood cells are like donuts with no nucleus (no center dot). Bird, reptile and amphibian cells are ovals with a dot (nucleus). Amphibian cells are the largest.',s:'No nucleus = mammal. Nucleus = bird, reptile, amphibian.',n:''},
+ {id:'f17',t:'Which glass crack first',p:'How do you tell the order of fractures in a broken window?',a:'A cracked phone screen: a crack cannot cross another crack that is already there. The new one just stops at the old one. Radial cracks (spokes) come first, then concentric rings.',s:'The crack that ends is the later one.',n:'3R: Radial cracks make a Right angle on the Reverse side.'},
+ {id:'f18',t:'Glass and refractive index',p:'What does it mean when glass vanishes in oil?',a:'Clear water beads vanish in water because they bend light the same way. A glass chip vanishes in oil when the oil’s refractive index equals the glass’s. Change the oil temperature until it disappears.',s:'Edge vanishes = same refractive index.',n:'n = c ÷ v. Light at 2.0 x 10⁸ m/s in glass: n = 1.5.'},
+ {id:'f19',t:'Spatter angle',p:'How do you find the angle a blood drop hit at?',a:'A ketchup drop dropped straight down makes a circle. Tilt the plate and it stretches into an oval. The skinnier the oval, the lower the angle. Measure width and length.',s:'sin θ = width ÷ length.',n:'5 mm wide and 10 mm long: sin θ = 0.5, so θ = 30°.'},
+ {id:'f20',t:'Height of origin',p:'How do you find how high the blood started from?',a:'Draw lines back along each stain’s long side, they meet at one spot on the floor (convergence). Then stand at that spot, measure the distance to a stain, and use tan θ to climb up to the height the drop started from.',s:'Height = distance × tan θ.',n:'40 cm away at 30°: 40 x 0.577 = 23 cm.'},
+ {id:'f21',t:'Insects and time of death',p:'How do insects tell how long ago death happened?',a:'A fruit left outside: flies find it fast and lay eggs, then maggots, then pupae, then new flies. The oldest stage on the body, plus how warm it was, tells the minimum time.',s:'Oldest stage + temperature = minimum time.',n:'Cold slows the life cycle. Warm speeds it up.'},
+ {id:'f22',t:'Bullet striations',p:'What matches a bullet to one gun?',a:'Every barrel has tiny scratches, like a fingerprint inside the tube. Caliber and the number of lands and grooves only narrow it down (class). The matching scratches line up under a comparison microscope (individual).',s:'Lands and grooves = class. Scratches = individual.',n:'Casings: firing pin mark and breech face marks match too.'},
+ {id:'f23',t:'Pollen and seeds',p:'How do plants place a suspect at a scene?',a:'A burr stuck to your sock tells you where you walked. Pollen is tiny shape-coded dust: pine pollen has two air sacs, like tiny Mickey Mouse ears. Match the plant to where it grows.',s:'Plant type shows the place.',n:'Wind pollen: light and smooth. Insect pollen: spiny and sticky.'},
+ {id:'f24',t:'Shoes, tires and soil',p:'What can a footprint, tire track or soil sample tell you?',a:'A muddy shoe print: the tread tells the shoe, wear and cuts tell the shoe, and the length tells the height (foot ≈ 15% of height). Tire tracks show tread, track width and wheelbase. Soil colors and grains compare to the suspect’s boots.',s:'Height = foot ÷ 0.15.',n:'A 24 cm print: 24 ÷ 0.15 = 160 cm.'},
+ {id:'f25',t:'Class vs individual',p:'What is the difference between class and individual evidence?',a:'Class is a team jersey: it narrows it to the team. Individual is a signature: it names one person. Blood type, shoe size and fiber type are jerseys. DNA, prints and striations are signatures.',s:'Class narrows. Individual names.',n:''},
+ {id:'f26',t:'Writing the analysis',p:'How do you write the crime analysis?',a:'A courtroom speech in four moves: 1) the culprit is…; 2) these tests show…; 3) suspect X is cleared because…; 4) suspect Y is cleared because… Use numbers. The reasons you give for clearing others also break ties.',s:'Name, prove, then clear the others.',n:''}
+];
+// ---------- memory chart + daily plan ----------
+function jget(k,d){try{return JSON.parse(localStorage.getItem(k)||'')||d}catch(e){return d}}
+function jset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function dayN(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000);}
+function planGet(){const p=jget('foren_plan',null)||{start:today(),days:14,min:15};if(!jget('foren_plan',null))jset('foren_plan',p);p.min=Math.min(15,p.min||15);return p;}
+function stageCounts(){const b=feelBox(),dy=jget('foren_feel_days',{});let n=0,s=0,l=0;FEEL.forEach(c=>{const d=(dy[c.id]||[]).length;if(!d){n++;return}if((b[c.id]||0)>=4&&d>=2)l++;else s++;});return {n,s,l};}
+function feelLog(id,ok,secs){const t=today();const dy=jget('foren_feel_days',{});const a=dy[id]||[];if(!a.includes(t))a.push(t);dy[id]=a;jset('foren_feel_days',dy);
+ const tm=jget('foren_feel_time',{});tm[t]=(tm[t]||0)+Math.min(60,secs);jset('foren_feel_time',tm);
+ const h=jget('foren_feel_hist',{});const c=stageCounts();h[t]={s:c.s,l:c.l};jset('foren_feel_hist',h);if(!ok){const ms=jget('foren_feel_miss',{});ms[id]=(ms[id]||0)+1;jset('foren_feel_miss',ms)}const nn=jget('foren_feel_n',{});nn[t]=(nn[t]||0)+1;jset('foren_feel_n',nn);const bb=feelBox();if(ok&&(bb[id]||0)>=4&&(dy[id]||[]).length>=2){const lk=jget('foren_feel_lock',{});if(!lk[id]){lk[id]=t;jset('foren_feel_lock',lk)}}}
+function planSet(k,v){const p=planGet();p[k]=k==='start'?v:Math.max(1,parseInt(v)||1);if(k==='min')p.min=Math.min(15,p.min);jset('foren_plan',p);planPaint();}
+function planPaint(){const e=document.getElementById('feelPlan');if(!e)return;const p=planGet(),c=stageCounts(),tm=jget('foren_feel_time',{}),h=jget('foren_feel_hist',{});
+ const left=Math.max(1,p.days-dayN(p.start,today())),elapsed=Math.max(0,dayN(p.start,today()));const need=FEEL.length-c.l;
+ const rawRec=Math.max(10,Math.round(need*4*0.75/left/5)*5),rec=Math.min(15,rawRec),todayMin=Math.round((tm[today()]||0)/6)/10;const pct=Math.min(100,Math.round(100*todayMin/p.min));
+ const W=640,H=180,L=34,B=22,T=10,R=8,pw=W-L-R,ph=H-T-B,N=FEEL.length;const X=i=>L+pw*i/Math.max(1,p.days-1),Y=v=>T+ph*(1-v/N);
+ const pts=k=>{let last=0,out=[];for(let i=0;i<p.days;i++){const d=new Date(p.start+'T00:00:00');d.setDate(d.getDate()+i);const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');if(key>today())break;if(h[key])last=h[key][k];out.push(X(i)+','+Y(last))}return out.join(' ')};
+ const grid=[0,0.5,1].map(f=>`<line x1="${L}" x2="${W-R}" y1="${Y(N*f)}" y2="${Y(N*f)}" stroke="var(--line)"/><text x="2" y="${Y(N*f)+4}" font-size="11" fill="var(--mut)">${Math.round(N*f)}</text>`).join('');
+ const xl=[0,Math.floor(p.days/2),p.days-1].map(i=>`<text x="${X(i)}" y="${H-6}" font-size="11" fill="var(--mut)" text-anchor="middle">Day ${i+1}</text>`).join('');
+ const nowX=X(Math.min(p.days-1,elapsed));
+ e.innerHTML=`<h3>Memory progress &amp; daily plan</h3>
+ <div class="row"><span><b>${c.n}</b> new</span><span><b style="color:var(--acc)">${c.s}</b> short-term</span><span><b style="color:var(--ok)">${c.l}</b> long-term</span><span class="small">of ${N} cards</span></div>
+ <div class="bar" style="height:12px"><i style="width:${Math.round(100*c.l/N)}%"></i></div>
+ <p class="small">Long-term = 4 right in a row AND remembered on 2 different days. Short-term = seen, but not locked in yet.</p>
+ <svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto">${grid}${xl}<line x1="${nowX}" x2="${nowX}" y1="${T}" y2="${T+ph}" stroke="var(--mut)" stroke-dasharray="3 3"/><polyline fill="none" stroke="var(--acc)" stroke-width="2.5" points="${pts('s')}"/><polyline fill="none" stroke="var(--ok)" stroke-width="2.5" points="${pts('l')}"/><text x="${W-R}" y="${Y(N)+12}" font-size="11" fill="var(--mut)" text-anchor="end">goal: all ${N} long-term</text></svg>
+ <div class="small"><span style="color:var(--acc)">&#9632;</span> short-term &nbsp; <span style="color:var(--ok)">&#9632;</span> long-term &nbsp; dashed line = today</div>
+ <div class="row" style="margin-top:8px">Goal in <input type="number" min="1" style="width:70px" value="${p.days}" onchange="planSet('days',this.value)"> days &middot; I can study <input type="number" min="1" max="15" style="width:70px" value="${p.min}" onchange="planSet('min',this.value)"> min/day &middot; start <input type="date" value="${p.start}" onchange="planSet('start',this.value)"></div>
+ <div class="res">Day ${Math.min(elapsed+1,p.days)} of ${p.days}. Still to lock in: ${need} cards. Suggested: <b>${rec} min/day</b>${rawRec>15?' (capped at 15 so it stays doable; add days if you want a lighter load)':''}${p.min<rec?` (you set ${p.min}: a little short, add some or extend the days)`:' (you are on track with your setting)'}.
+ <div class="small" style="margin-top:4px">Today: ${todayMin} of ${p.min} min</div><div class="bar" style="height:10px"><i style="width:${pct}%"></i></div></div>`;}
+
+let feelCur=null,feelShow=false;
+function feelBox(){try{return JSON.parse(localStorage.getItem('foren_feel')||'{}')}catch(e){return {}}}
+function feelSave(o){try{localStorage.setItem('foren_feel',JSON.stringify(o))}catch(e){}}
+function feelPick(lv){const b=feelBox();let pool=FEEL.filter(c=>lv==='C'||!c.c);const fs=document.getElementById('feelSet');if(!fs||fs.value==='top'){const t10=pool.filter(c=>TOP10.includes(c.id));if(t10.some(c=>(b[c.id]||0)<3))pool=t10}let tot=0;const w=pool.map(c=>{const x=6-Math.min(5,b[c.id]||0);tot+=x*x;return x*x});let r=Math.random()*tot,i=0;while(i<pool.length-1&&r>=w[i]){r-=w[i];i++}let c=pool[i];if(pool.length>1&&c.id===feelCur){c=pool[(i+1)%pool.length]}return c.id;}
+function feelPaint(){const e=document.getElementById('feelDrill');if(!e)return;teamPaint();const c=FEEL.find(x=>x.id===feelCur);const b=feelBox();const done=FEEL.filter(x=>(b[x.id]||0)>=4).length;
+ e.innerHTML=`<div class="small">Mastered ${done}/${FEEL.length} (4 right in a row). Missed cards come back more often.</div><h3>${c.e} ${c.t}${c.c?' <span class="pill cp">C</span>':''}</h3><div style="font-size:18px;margin:8px 0">${pl(c.p)}</div>`+
+ (feelShow?`<div class="mem"><b>Picture it:</b> ${pl(c.a)}</div><div class="hook">${c.s}</div>${c.d?`<div class="try"><b>Try it (30 seconds):</b> ${c.d}</div>`:''}${c.n?`<div class="try"><b>With numbers:</b> ${pl(c.n)}</div>`:''}<div class="row"><button class="btn" onclick="feelGrade(1)">Got it</button><button class="ghost" onclick="feelGrade(0)">Missed it</button></div>`:`<div class="row"><button class="btn" onclick="feelShow=true;feelPaint();if(SPK.auto){const c=FEEL.find(x=>x.id===feelCur);speak(c.a+' '+c.s+' '+c.n)}">Show the picture</button><span class="small">Say the answer out loud first.</span></div>`);}
+let feelT0=Date.now();
+function feelSay(){const e=document.getElementById('feelDrill');if(e)speak(spkText(e));}
+function feelNext(){feelT0=Date.now();feelCur=feelPick(document.getElementById('feelLv')?document.getElementById('feelLv').value:'B');feelShow=false;feelPaint();if(typeof SPK!=='undefined'&&SPK.auto){const c=FEEL.find(x=>x.id===feelCur);speak(c.t+'. '+c.p)}}
+function feelGrade(ok){const b=feelBox();b[feelCur]=ok?(b[feelCur]||0)+1:0;feelSave(b);feelLog(feelCur,ok,(Date.now()-feelT0)/1000);if(TEAM.on){if(ok)TEAM.score[TEAM.turn]++;TEAM.turn=1-TEAM.turn}planPaint();feelNext();}
+// ---------- EXPERIMENTS + coverage ----------
+const CONC=[
+ {id:'flame',t:'Flame colors'},{id:'acid',t:'Fizz and acid tests'},{id:'starch',t:'Starch and sugar tests'},
+ {id:'density',t:'Density of plastics'},{id:'burn',t:'Fiber burn smells'},{id:'hair',t:'Hair structure'},
+ {id:'chrom',t:'Chromatography'},{id:'rf',t:'Rf values'},{id:'print',t:'Fingerprint patterns'},
+ {id:'dust',t:'Developing prints'},{id:'pcr',t:'PCR doubling'},{id:'spatter',t:'Spatter angles'},
+ {id:'glass',t:'Glass fractures'},{id:'tracks',t:'Tracks and height'},{id:'pollen',t:'Seeds and pollen'},
+ {id:'insects',t:'Insect timeline'},{id:'soil',t:'Soil layers'},{id:'analysis',t:'Writing the analysis'}];
+const EXPS=[
+ {id:'e0',t:'Salt in a flame (adult only)',min:10,tags:['flame'],mat:'A candle or gas stove flame, an adult, a pinch of table salt, a metal spoon, goggles.',
+  steps:['Predict first: what color will the flame turn?','With an adult, sprinkle a pinch of salt onto a spoon and hold it near the flame (do not breathe the smoke).','Watch the color. If you can, find a video of lithium, potassium and calcium flames to compare.'],
+  see:'A bright yellow-orange flash from the sodium.',teach:'Each metal gives its own flame color. Sodium is yellow, lithium red, potassium lilac, calcium brick red, boron green.'},
+ {id:'e1',t:'The fizz test',min:10,tags:['acid'],mat:'Baking soda, chalk (calcium carbonate), table salt, sugar, cornstarch, vinegar, small cups, a spoon.',
+  steps:['Predict first: which powders will fizz?','Put a pinch of each powder in its own cup.','Add a spoon of vinegar to each. Write down which fizz.'],
+  see:'Baking soda and chalk fizz. Salt, sugar and cornstarch do not.',teach:'Acid plus a carbonate makes carbon dioxide gas. In the event you use 1 M HCl, but the idea is the same.'},
+ {id:'e2',t:'Starch test with iodine (adult)',min:10,tags:['starch'],mat:'Iodine tincture (from a first aid kit), a potato slice, a cracker, sugar, a cotton swab, an adult. Do not eat anything.',
+  steps:['Predict first: which will turn blue-black?','Put a tiny drop of iodine on the potato, the cracker and a pinch of sugar.','Compare the colors after 30 seconds.'],
+  see:'Potato and cracker turn blue-black. Sugar stays brown.',teach:'Iodine is the starch test. It is how cornstarch is told apart from glucose and sucrose.'},
+ {id:'e3',t:'Plastic sink or float',min:15,tags:['density'],mat:'A big bowl of water, small pieces cut from a milk jug, bag, yogurt tub, water bottle and a clear plastic case, a pen to write the recycling code.',
+  steps:['Predict first: which pieces float?','Write the recycling number on each piece.','Drop each piece in the water (push off any bubbles). Sort them into floaters and sinkers.'],
+  see:'#2 (HDPE), #4 (LDPE) and #5 (PP) float. #1 (PETE) and #6 (PS, if solid) sink.',teach:'Floating depends on density. In the event the supervisor may give density solutions so you can split the sinkers into smaller groups.'},
+ {id:'e4',t:'Fiber burn (adult only)',min:15,tags:['burn'],mat:'Threads of cotton and polyester (from sewing scraps), tweezers, a candle, a metal tray with water, an adult, goggles. Burn one at a time.',
+  steps:['Predict first: how will each thread burn?','An adult holds each thread with tweezers over the sink tray and touches it to the flame.','Note the speed, the smell, and what is left. Try wool yarn if you have it.'],
+  see:'Cotton burns fast with a paper smell and soft gray ash. Polyester melts into a hard bead.',teach:'Plant fibers smell like paper, animal fibers smell like hair, synthetics melt. Only do fiber burns when allowed.'},
+ {id:'e5',t:'Hair under the magnifier',min:10,tags:['hair'],mat:'A few of your own hairs, pet hair if you have it, a magnifier or phone camera with macro, a white card.',
+  steps:['Predict first: how will your hair differ from your pet’s?','Lay the hairs on the card and zoom in.','Compare the thickness, the color pattern and whether there is a dark center line (medulla).'],
+  see:'Animal hair is usually thicker with a clearer center line.',teach:'Hair has a cuticle, a cortex and a medulla. Animal hair has a wider medulla (index over 1/2). Human is under 1/3.'},
+ {id:'e6',t:'Marker chromatography and Rf',min:20,tags:['chrom','rf'],mat:'A coffee filter strip, a pencil, a ruler, water-based markers (black and brown), a cup, a little water.',
+  steps:['Predict first: will black ink be one color or many?','Draw a pencil line 2 cm from the bottom. Put a marker dot on it. Stand the strip in 1 cm of water with the dot above the water.','When the water is near the top, take the strip out and mark the water front. Measure the spot and the water distance and work out Rf.'],
+  see:'Black ink splits into several colors, each with its own Rf.',teach:'Different dyes stick to the paper differently. Same ink means the same spots at the same Rf. That is how an ink is matched to a pen.'},
+ {id:'e7',t:'Fingerprint dusting with cocoa',min:10,tags:['dust','print'],mat:'A clean glass or plate, cocoa powder or baby powder, a soft brush, clear tape.',
+  steps:['Predict first: will you see a print?','Press a clean finger on the glass (touch your nose first for more oil).','Brush the powder on gently, then lift it with a piece of tape and stick it on paper.'],
+  see:'A ridge pattern appears where the finger touched.',teach:'Powder sticks to the oils and moisture. That is dusting, the first method everyone learns.'},
+ {id:'e8',t:'Print type census',min:15,tags:['print'],mat:'A pencil, paper, clear tape, a magnifier, family or friends who agree.',
+  steps:['Predict first: which pattern is most common?','Rub pencil on paper, press a finger on it and lift the graphite with tape. Do 10 fingers.','Label each print arch, loop or whorl, and say radial or ulnar for the loops.'],
+  see:'Most of the prints are loops.',teach:'Loops are about 60 to 65%, whorls 30 to 35% and arches about 5%.'},
+ {id:'e9',t:'The PCR doubling game',min:10,tags:['pcr'],mat:'A sheet of paper.',
+  steps:['Predict first: how many layers after 10 folds in half?','Fold the paper in half. Count the layers. Fold again and count. Do as many as you can.','Write the numbers: 1, 2, 4, 8, 16... Compare to 2 to the power of the number of folds.'],
+  see:'The layers double every fold (you can usually only do about 6 or 7).',teach:'PCR doubles the DNA every cycle. 10 cycles = 1,024 copies. 30 cycles = about a billion.'},
+ {id:'e10',t:'Spatter angles with red water',min:20,tags:['spatter'],mat:'Cardboard, red-colored water (food coloring), a dropper, a ruler, a tilted board or a book to prop it up, newspaper to protect the table.',
+  steps:['Predict first: how will the stain change if the board tilts?','Drop a drop from 30 cm onto the flat card. Then tilt the card about 30° and drop again.','Measure the width and length of the tilted stain. Work out sin θ = width ÷ length and check the angle with the calculator.'],
+  see:'The flat stain is round. The tilted stain is an oval whose width ÷ length gives about 0.5.',teach:'Angle of impact: sin θ = width ÷ length. The tail of the stain points the way the drop moved.'},
+ {id:'e11',t:'Glass fracture photo hunt',min:10,tags:['glass'],mat:'A cracked phone screen, windshield or any photo of broken glass (an adult’s phone, a magazine, or a picture online).',
+  steps:['Predict first: which cracks formed first?','Find the point of impact. Find the cracks running outward (radial) and the ring-like cracks (concentric).','Look for a T-shaped meeting: the crack that stops at another one is the later one.'],
+  see:'The concentric cracks stop at the radial ones.',teach:'Radial cracks form first. The later fracture ends at the earlier one.'},
+ {id:'e12',t:'Footprints and height',min:10,tags:['tracks'],mat:'A ruler or tape measure, a piece of paper, a pencil, a few family members.',
+  steps:['Predict first: how tall is each person if their foot is 15% of their height?','Trace and measure each person’s foot length (cm).','Divide by 0.15, then measure the real height and compare.'],
+  see:'The estimate lands within about 5 to 10 cm.',teach:'Height ≈ foot length ÷ 0.15. It is an estimate, so use it to rule people out, not to prove one person.'},
+ {id:'e13',t:'Seeds on your socks',min:10,tags:['pollen'],mat:'Old socks, a walk outside in tall grass or a garden, a magnifier, paper.',
+  steps:['Predict first: what seeds will you pick up?','Wear the old socks over your shoes for a short walk in long grass or weeds.','Remove and sort the seeds. Which ones have hooks? Which are fluffy or winged?'],
+  see:'Hooked seeds cling to the fabric.',teach:'Seeds and pollen can place someone in a certain habitat. Compare scene plants with a suspect’s clothing.'},
+ {id:'e14',t:'Insect timeline poster',min:15,tags:['insects'],mat:'A sheet of paper, colored pencils, a library book or web page on blow flies.',
+  steps:['Predict first: how long from egg to adult fly?','Draw a timeline with egg, larva (three stages), pupa and adult, and note the time at warm temperature.','Mark where the oldest stage would be if a body was found with pupae only.'],
+  see:'Your timeline shows a body with pupae has been dead longer than one with only young maggots.',teach:'The oldest stage gives the MINIMUM time since death. Temperature changes the speed.'},
+ {id:'e15',t:'Soil jar layers',min:15,tags:['soil'],mat:'A clear jar with a lid, soil from the yard, water, a few drops of dish soap.',
+  steps:['Predict first: what will settle first?','Fill the jar one-third with soil and add water almost to the top. Shake hard for a minute.','Let it stand a few hours and watch the layers.'],
+  see:'Sand settles first, silt next, clay last, with organic bits floating.',teach:'Soil has sand, silt, clay and organic matter. Comparing a scene sample with a shoe sample uses the same ideas.'},
+ {id:'e16',t:'Make a mini crime scene',min:30,tags:['analysis','print','spatter','density'],mat:'Two or three friends or family members, a few household items to use as clues (red water spatter, a thread, a print, a note).',
+  steps:['Predict first: how would you solve a case made by someone else?','One person sets up a scene with 3 or 4 clues and picks the culprit in secret.','The others test the clues and write the analysis: who did it, the evidence, and why each other suspect is cleared.'],
+  see:'Writing the reasons for clearing others is the hardest and most valuable part.',teach:'The crime analysis is 30% of the score and the tiebreaker.'}];
+function exGet(){return jget('foren_exps',{});}
+function exToggle(id){const o=exGet();o[id]=!o[id];jset('foren_exps',o);render();}
+function expView(d){const dn=exGet(),C=d==='C',list=EXPS.filter(x=>C||!x.c),conc=CONC.filter(x=>C||!x.c);
+ const cov=id=>list.some(e=>dn[e.id]&&e.tags.includes(id)),n=conc.filter(x=>cov(x.id)).length;
+ return `<div class="tip"><b>Experiments.</b> Predict first, then try it, then say what you saw. Doing it yourself is what makes the idea stick.</div>
+ <div class="card"><h3>Ideas the experiments cover <span class="pill">${n}/${conc.length}</span></h3><p class="small">Orange = no experiment done yet for that idea. Green = covered.</p><div class="row">`+conc.map(x=>cov(x.id)?`<span style="background:var(--okbg);border:1px solid var(--ok);border-radius:14px;padding:2px 10px">&#10003; ${x.t}</span>`:`<span style="background:var(--accbg);border:2px solid var(--acc);border-radius:14px;padding:2px 10px;font-weight:700">${x.t}</span>`).join('')+`</div></div>`+
+ list.map(e=>{const done=!!dn[e.id];return `<details class="card"><summary><b>${done?'&#9989; ':''}${e.t}</b> <span class="small">(${e.min} min)</span>${e.c?' <span class="pill cp">C</span>':''}</summary>
+ <div class="row small" style="margin-top:6px">${e.tags.map(t=>`<span style="background:var(--accbg);border-radius:12px;padding:1px 8px">${CONC.find(c=>c.id===t).t}</span>`).join('')}</div>
+ <p><b>You need:</b> ${e.mat}</p><ol>${e.steps.map(s=>`<li>${s}</li>`).join('')}</ol><div class="try"><b>You should see:</b> ${e.see}</div><div class="mem"><b>Why it matters:</b> ${e.teach}</div>
+ <div class="row"><button class="${done?'ghost':'btn'}" onclick="exToggle('${e.id}')">${done?'Undo done':'I did it'}</button></div></details>`}).join('');}
+// ---------- EXTRAS: today tasks, key fact a day, demos, one-pager, team mode ----------
+const TOP10=['f1','f2','f3','f5','f7','f10','f13','f15','f19','f26'];
+const ICON={f1:'🔥',f2:'🫧',f3:'🥔',f4:'♻️',f5:'🧵',f6:'💇',f7:'📏',f8:'🧫',f9:'📈',f10:'🖐️',f11:'🔎',f12:'🧴',f13:'🧬',f14:'📉',f15:'🩸',f16:'🔬',f17:'🪟',f18:'💎',f19:'🍅',f20:'📍',f21:'🪰',f22:'🔫',f23:'🌼',f24:'🥾',f25:'⚖️',f26:'✍️'};
+const DEMO={
+ f1:'With an adult, sprinkle a pinch of table salt on a spoon held near a candle flame. See the yellow-orange flash of sodium.',
+ f2:'Put baking soda in a cup and add a spoon of vinegar. Fizz = carbonate plus acid. Sniff the vinegar so you know the acetate smell.',
+ f3:'Drip tincture of iodine (adult) on a potato slice and on sugar. The potato turns blue-black (starch). The sugar does not.',
+ f4:'Drop pieces of a milk jug, a yogurt tub, a clear plastic case and a water bottle into water. Write the recycling number and see which float.',
+ f5:'With an adult, hold a cotton thread and a polyester thread in tweezers over a sink near a flame. Cotton burns like paper. Polyester melts into a bead.',
+ f6:'Pull a hair and look at it under a magnifier or phone macro. Find the root end and look for a dark center line.',
+ f7:'Draw a pencil line on a coffee filter strip, add a marker dot, and stand the strip in a little water. Measure the spot and the water and divide.',
+ f8:'Try a black marker and a brown marker on filter paper strips. Compare how many colors each makes.',
+ f9:'Search the web for a mass spectrum picture. Point to the right-most big peak and the tallest peak.',
+ f10:'Press a pencil-covered finger on tape and stick it on paper. Is it an arch, a loop or a whorl? Check all 10 fingers.',
+ f11:'Look at your fingertip with a magnifier. Find a ridge that splits (bifurcation) and a short dot ridge (island).',
+ f12:'Touch a clean glass with a finger, then dust it lightly with cocoa powder and a soft brush. Lift the print with tape.',
+ f13:'Fold a paper in half over and over. Count the layers: 1, 2, 4, 8, 16. That is how PCR doubles.',
+ f14:'Draw peaks for the scene and two suspects on paper. Circle the first locus where a suspect does not match.',
+ f15:'Draw four circles labelled A, B, AB and O. Draw clumps for anti-A and anti-B to show what each would do.',
+ f16:'Draw a round cell with no center dot (mammal) and an oval cell with a dot (bird, reptile, amphibian).',
+ f17:'Look at a cracked phone screen or a photo of a broken window. Find which crack stops at another crack.',
+ f18:'Put a clear water bead in a cup of water. It nearly disappears because it bends light like the water.',
+ f19:'Drop red water from 30 cm onto flat cardboard, then onto tilted cardboard. Measure width and length of the tilted stain.',
+ f20:'Draw lines through the long axes of three stains on paper. Find the point where they cross.',
+ f21:'Look up a blow fly life cycle chart. Color the egg, larva, pupa and adult stages.',
+ f22:'Drag two different keys across soft clay and compare the scratch lines. Each key leaves its own pattern.',
+ f23:'Look at a burr stuck on your sock or a dandelion seed. How did it travel?',
+ f24:'Measure your foot in cm, divide by 0.15, and compare to your real height.',
+ f25:'List five things in your room and decide: class evidence or individual evidence?',
+ f26:'Write three sentences: who did it, the evidence, and why one other suspect is cleared.'};
+FEEL.forEach(c=>{c.d=DEMO[c.id]||'';c.e=ICON[c.id]||''});
+function pl(s){if(!s)return s;let o=s;const g=[['Rf','Rf (spot distance ÷ solvent distance)'],['PCR','PCR (copying DNA)'],['θ','θ (the angle)'],['RFU','RFU (signal strength)']];g.forEach(([k,v])=>{const i=o.indexOf(k);if(i>=0&&o.slice(i,i+k.length+2)!==k+' ('&&!/[A-Za-z]/.test(o.charAt(i+k.length))&&!(i>0&&/[A-Za-z]/.test(o.charAt(i-1))))o=o.slice(0,i)+v+o.slice(i+k.length)});return o;}
+const SC=[
+ {say:'Two people, 50 minutes, one sheet of notes each. The write-up is 30% and breaks ties.',do:'Read Event rules, then do the Level 1 quiz. Plan the one sheet.'},
+ {say:'Flame colors, fizz, ammonia, iodine, Benedict’s: each test names a group of solids.',do:'Run the fizz and iodine activities, then the Level 2 quiz.'},
+ {say:'Plastics by density, fibers by smell, hair by medulla.',do:'Do the plastic float activity and the hair magnifier activity. Level 3 quiz.'},
+ {say:'Rf is spot over solvent. Always between 0 and 1.',do:'Do the marker chromatography activity. Level 4 quiz and number problems.'},
+ {say:'Arch 0 deltas, loop 1, whorl 2. Paper: ninhydrin. Plastic: super glue.',do:'Do the print census and the cocoa dusting. Level 5 quiz.'},
+ {say:'Heat, cool, build. Every peak must match. Clumps show the antigen.',do:'Do the doubling game and the ABO drawing. Level 6 quiz.'},
+ {say:'The crack that ends is the later one. Class narrows, individual names.',do:'Do the glass photo hunt, the footprint height activity and Level 7 quiz.'},
+ {say:'Width over length for the angle. Distance times tan for the height.',do:'Do the red water spatter activity. Level 8 quiz and the mini crime scene.'},
+ {say:'Name the culprit first, then clear the others with specific evidence.',do:'Do Case 1, 2 and 3 in Rules & cases and compare to the model answer.'}];
+// ----- key facts, one a day -----
+const FMLS=[
+ {id:'fl',lv:'C',card:'f1',d:'The flame colors of lithium, sodium, potassium and calcium.',f:'Li red, Na yellow, K lilac, Ca brick red',w:['Li yellow, Na red, K lilac, Ca green','Li lilac, Na red, K yellow, Ca brick red','Li red, Na lilac, K yellow, Ca green']},
+ {id:'fz',lv:'C',card:'f2',d:'What fizzing with HCl tells you.',f:'Fizz means a carbonate or hydrogen carbonate',w:['Fizz means a chloride','Fizz means a sugar','Fizz means ammonium']},
+ {id:'st',lv:'C',card:'f3',d:'Which test shows starch.',f:'Iodine turns blue-black with starch',w:['Benedict’s turns blue-black with starch','Iodine turns orange with starch','HCl turns blue-black with starch']},
+ {id:'be',lv:'C',card:'f3',d:'What Benedict’s solution with heat shows.',f:'Glucose turns it orange; sucrose stays blue',w:['Sucrose turns it orange; glucose stays blue','Both turn it black','Neither changes it']},
+ {id:'pf',lv:'C',card:'f4',d:'Which plastics float in water.',f:'PP, LDPE and HDPE float',w:['PETE, PVC and PS float','PS, PMMA and PC float','Only PVC floats']},
+ {id:'fb',lv:'C',card:'f5',d:'How cotton burns.',f:'Cotton smells like burning paper and leaves soft gray ash',w:['Cotton smells like burning hair','Cotton melts into a hard bead','Cotton smells like celery']},
+ {id:'nm',lv:'C',card:'f5',d:'How nylon burns.',f:'Nylon melts into a hard bead and smells like celery',w:['Nylon burns like paper','Nylon smells like burning hair','Nylon leaves soft gray ash']},
+ {id:'mi',lv:'C',card:'f6',d:'The medullary index.',f:'Human is under 1/3, animal over 1/2',w:['Human is over 1/2, animal under 1/3','Both are under 1/10','Human is exactly 1/2']},
+ {id:'rf',lv:'C',card:'f7',d:'How to calculate an Rf value.',f:'Rf = spot distance ÷ solvent distance',w:['Rf = solvent distance ÷ spot distance','Rf = spot distance × solvent distance','Rf = spot distance − solvent distance']},
+ {id:'ms',lv:'C',card:'f9',d:'The molecular ion in a mass spectrum.',f:'The peak at the highest m/z',w:['The tallest peak','The peak at m/z 15','The smallest peak']},
+ {id:'fp',lv:'C',card:'f10',d:'Deltas in each pattern family.',f:'Arch 0, loop 1, whorl 2',w:['Arch 1, loop 2, whorl 0','Arch 2, loop 1, whorl 0','Arch 0, loop 2, whorl 1']},
+ {id:'ul',lv:'C',card:'f10',d:'Which way an ulnar loop opens.',f:'Toward the little-finger side',w:['Toward the thumb side','Toward the palm','Toward the fingertip']},
+ {id:'rd',lv:'C',card:'f11',d:'A ridge that splits then rejoins.',f:'Enclosure',w:['Island','Spur','Trifurcation']},
+ {id:'dv',lv:'C',card:'f12',d:'The best print method for plastic.',f:'Cyanoacrylate (super glue) fuming',w:['Ninhydrin','Iodine fuming','Dusting with flour']},
+ {id:'nh',lv:'C',card:'f12',d:'What ninhydrin reacts with.',f:'Amino acids, making purple',w:['Oils, making brown','Salts, making white','Water, making blue']},
+ {id:'pc',lv:'C',card:'f13',d:'The three PCR steps.',f:'Denature (95 °C), anneal (50 to 60 °C), extend (72 °C)',w:['Anneal, denature, extend','Extend, anneal, denature at 95 °C','Denature at 72 °C, extend at 95 °C, anneal at 0 °C']},
+ {id:'p2',lv:'C',card:'f13',d:'How many copies PCR makes.',f:'Start × 2ⁿ (it doubles each cycle)',w:['Start + 2n','Start × n²','Start ÷ 2ⁿ']},
+ {id:'dn',lv:'C',card:'f14',d:'When a suspect matches the scene DNA.',f:'Every locus matches; one mismatch excludes',w:['One matching locus is enough','Only the largest peak must match','The blood type must match']},
+ {id:'ab',lv:'C',card:'f15',d:'Blood that clumps with anti-B only.',f:'Type B',w:['Type A','Type AB','Type O']},
+ {id:'bl',lv:'C',card:'f16',d:'Red blood cells with a nucleus.',f:'Bird, reptile or amphibian',w:['Mammal','Human','All animals']},
+ {id:'gl',lv:'C',card:'f17',d:'Which glass crack is later.',f:'The one that stops at another crack',w:['The one that crosses another crack','The longest one','The straightest one']},
+ {id:'ri',lv:'C',card:'f18',d:'Refractive index.',f:'n = speed of light in a vacuum ÷ speed in the material',w:['n = speed in the material ÷ speed in a vacuum','n = mass ÷ volume','n = angle ÷ distance']},
+ {id:'sa',lv:'C',card:'f19',d:'The spatter angle of impact.',f:'sin θ = width ÷ length',w:['sin θ = length ÷ width','tan θ = width ÷ length','cos θ = width × length']},
+ {id:'ho',lv:'C',card:'f20',d:'The height of origin of a spatter.',f:'height = distance × tan θ',w:['height = distance ÷ tan θ','height = distance × sin θ','height = distance + tan θ']},
+ {id:'sv',lv:'C',card:'f19',d:'Spatter drop size and speed.',f:'Under 1 mm = high speed, over 4 mm = low speed',w:['Under 1 mm = low speed, over 4 mm = high speed','Size does not depend on speed','Over 4 mm = high speed']},
+ {id:'in',lv:'C',card:'f21',d:'What the oldest insect stage tells you.',f:'The minimum time since death',w:['The maximum time since death','The cause of death','The place of death']},
+ {id:'bu',lv:'C',card:'f22',d:'Which bullet features are individual.',f:'Striations (scratches)',w:['Caliber','Number of lands and grooves','Twist direction']},
+ {id:'ht',lv:'C',card:'f24',d:'Estimating height from foot length.',f:'height = foot length ÷ 0.15',w:['height = foot length × 0.15','height = foot length + 100','height = foot length ÷ 1.5']},
+ {id:'ci',lv:'C',card:'f25',d:'Class vs individual evidence.',f:'Class narrows the group; individual names one source',w:['Class names one source; individual narrows the group','Both name one person','Neither is useful']},
+ {id:'an',lv:'C',card:'f26',d:'What to say first in the crime analysis.',f:'Name the culprit, then prove it and clear the others',w:['List every test you did','Say who you could not rule out','Describe the scene only']}];
+function fmList(lv){return FMLS.filter(x=>lv==='C'||x.lv==='B');}
+function fdGet(){return jget('foren_fday',{done:[],last:''});}
+function fmShuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
+let fmCur=null,fmMode='new',fmTry=0;
+function fmInit(){const lv=tab==='C'?'C':'B';const L=fmList(lv),st=fdGet();const next=L.find(x=>!st.done.includes(x.id));
+ if(next&&st.last!==today()){fmCur=next;fmMode='new'}else{const pool=L.filter(x=>st.done.includes(x.id));fmCur=pool.length?pool[Math.floor(Math.random()*pool.length)]:null;fmMode=next?'wait':'review'}
+ fmTry=0;fmPaint();}
+function fmPaint(){const e=document.getElementById('fmBox');if(!e)return;const lv=tab==='C'?'C':'B',L=fmList(lv),st=fdGet();const n=L.filter(x=>st.done.includes(x.id)).length;
+ let h=`<div class="small">Key facts learned: ${n} of ${L.length}. One new key fact per day.</div><div class="bar"><i style="width:${Math.round(100*n/L.length)}%"></i></div>`;
+ if(!fmCur){h+='<p>Come back tomorrow for your first key fact.</p>';e.innerHTML=h;return}
+ const c=FEEL.find(x=>x.id===fmCur.card);
+ h+=`<h3>${fmMode==='new'?'Today\'s key fact':fmMode==='wait'?'Done for today. Practice an earlier key fact':'Review'}</h3><div class="mem"><b>Picture it ${c.e}:</b> ${pl(c.a)}</div><div class="try"><b>Try it (30 seconds):</b> ${c.d}</div>`;
+ const opts=fmShuf([fmCur.f].concat(fmCur.w));window._fmOpts=opts;
+ h+=`<div style="margin:10px 0;font-size:17px"><b>Which one is correct?</b><br>${fmCur.d}</div>`+opts.map((o,i)=>`<button class="opt" onclick="fmPick(${i})">${o}</button>`).join('')+'<div id="fmFb"></div>';e.innerHTML=h;}
+function fmPick(i){const ok=window._fmOpts[i]===fmCur.f;const fb=document.getElementById('fmFb');const btns=document.querySelectorAll('#fmBox .opt');
+ btns.forEach((b,k)=>{if(window._fmOpts[k]===fmCur.f)b.classList.add('ok');else if(k===i&&!ok)b.classList.add('bad')});
+ if(ok){fmTry++;if(fmMode==='new'){const st=fdGet();if(!st.done.includes(fmCur.id))st.done.push(fmCur.id);st.last=today();jset('foren_fday',st);fb.innerHTML=`<div class="fb ok"><b>Right!</b> ${fmCur.f}. That is today's formula done. Come back tomorrow for the next one.</div><div class="row"><button class="ghost" onclick="fmInit()">Practice an earlier one</button></div>`}else fb.innerHTML=`<div class="fb ok"><b>Right!</b> ${fmCur.f}</div><div class="row"><button class="btn" onclick="fmInit()">Next</button></div>`;}
+ else fb.innerHTML=`<div class="fb bad">Not that one. Look at the picture above, then try again.</div><div class="row"><button class="ghost" onclick="fmPaint()">Try again</button></div>`;}
+// ----- test habits quiz (easy multiple choice) -----
+const HAB=[
+ {q:'What do you do first when the evidence packet arrives?',o:['Read the scenario and the suspects','Start with the hardest test','Throw away the instructions'],a:0},
+ {q:'What goes on your one sheet of notes?',o:['Flame colors, Rf, spatter formulas, patterns','Nothing','Only a drawing of a fingerprint'],a:0},
+ {q:'Which part of the score is the biggest?',o:['The crime analysis','The fastest test','The clean-up'],a:0},
+ {q:'A suspect does not match one test. What does that usually mean?',o:['That suspect is probably excluded','The test was wrong','The suspect is guilty'],a:0},
+ {q:'After a test, what should you write down?',o:['What it shows and which suspect it points to','Nothing, you will remember','Only the time'],a:0},
+ {q:'When you finish, you should…',o:['Clean up and dispose of waste as directed','Leave it for the next team','Pour chemicals down the drain'],a:0}];
+let habI=0,habScore=0;
+function habPaint(){const e=document.getElementById('habBox');if(!e)return;if(habI>=HAB.length){e.innerHTML=`<div class="res"><b>Done!</b> ${habScore} of ${HAB.length} right.</div><div class="row"><button class="btn" onclick="habI=0;habScore=0;habPaint()">Again</button></div>`;return}
+ const q=HAB[habI],ord=fmShuf(q.o.map((t,i)=>({t,ok:i===q.a})));window._habO=ord;
+ e.innerHTML=`<div class="small">Question ${habI+1} of ${HAB.length}</div><div style="font-size:17px;margin:6px 0">${q.q}</div>`+ord.map((o,i)=>`<button class="opt" onclick="habPick(${i})">${o.t}</button>`).join('')+'<div id="habFb"></div>';}
+function habPick(i){const o=window._habO;const btns=document.querySelectorAll('#habBox .opt');btns.forEach((b,k)=>{if(o[k].ok)b.classList.add('ok');else if(k===i)b.classList.add('bad')});if(o[i].ok)habScore++;document.getElementById('habFb').innerHTML=`<div class="fb ${o[i].ok?'ok':'bad'}">${o[i].ok?'Right!':'Not quite. The green one is right.'}</div><div class="row"><button class="btn" onclick="habI++;habPaint()">Next</button></div>`;}
+function formulaView(){return `<div class="tip"><b>One key fact a day.</b> Look at the picture, try the 30-second demo, then pick the right answer out of four. That is all for today.</div><div class="card" id="fmBox"></div><h2 class="th">Test habits (quick)</h2><div class="card" id="habBox"></div>`;}
+// ----- today's tasks, streak, locked-in count -----
+function nGet(){return jget('foren_feel_n',{});}
+function tdGet(){return (jget('foren_today',{}))[today()]||{};}
+function tdToggle(k){const a=jget('foren_today',{});const d=a[today()]||{};d[k]=!d[k];a[today()]=d;jset('foren_today',a);render();}
+function go(t,s){tab=t;sub[t]=s;quiz=null;render();window.scrollTo(0,0);}
+function streakN(){const tm=jget('foren_feel_time',{});const d=new Date();let n=0;const key=x=>x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');if(!tm[key(d)])d.setDate(d.getDate()-1);while(tm[key(d)]){n++;d.setDate(d.getDate()-1)}return n;}
+function lockedToday(){const l=jget('foren_feel_lock',{});return Object.values(l).filter(v=>v===today()).length;}
+function statsBar(){const p=planGet();const day=Math.min(Math.max(0,dayN(p.start,today()))+1,p.days);return `<div class="row small"><span>&#128197; Day <b>${day}</b> of ${p.days}</span><span>&#128293; Streak <b>${streakN()}</b> day${streakN()===1?'':'s'}</span><span>&#9989; Cards locked in today <b>${lockedToday()}</b></span></div>`;}
+function tasksCard(){const td=tdGet(),n=(nGet()[today()]||0),fd=fdGet();
+ const T=[{k:'formula',t:'Learn today\'s key fact',sub:'formula',auto:fd.last===today()},{k:'drill',t:'Drill 10 picture cards ('+Math.min(n,10)+'/10)',sub:'feel',auto:n>=10},{k:'sing',t:'Sing along to one song',sub:'songs'},{k:'demo',t:'Do one hands-on demo',sub:'demos'},{k:'video',t:'Watch one video (optional)',sub:'vids'}];
+ const done=T.filter(x=>x.auto||td[x.k]).length;
+ return `<div class="card"><h3>Today's tasks <span class="pill">${done}/${T.length}</span></h3>${statsBar()}<p class="small">About 15 minutes. Tap Go for each one.</p>`+T.map(x=>{const d=x.auto||td[x.k];return `<div class="row" style="margin:6px 0"><span style="font-size:20px">${d?'&#9989;':'&#11036;'}</span><span style="flex:1 1 180px">${x.t}</span><button class="btn" onclick="go('${tab}','${x.sub}')">Go</button>${x.auto===undefined?`<button class="ghost" onclick="tdToggle('${x.k}')">${td[x.k]?'Undo':'Mark done'}</button>`:''}</div>`}).join('')+'</div>';}
+function coachStart(){return `<div class="tip"><b>Start here (coach).</b> Three steps. Do them in this order, about 15 minutes a day.</div>${statsBar()}
+ <div class="card"><h3>1. Watch</h3><div>Pick one short video topic. Kids just watch.</div><div class="row"><button class="btn" onclick="go('C','vids')">Videos</button></div></div>
+ <div class="card"><h3>2. Sing</h3><div>Play the song at 70%, then 85%, then normal. Tap a line to jump to it.</div><div class="row"><button class="btn" onclick="go('C','songs')">Songs</button><button class="ghost" onclick="tab='T';sub.T='S';render()">Sync the timing</button></div></div>
+ <div class="card"><h3>3. Drill 10 minutes a day</h3><div>Picture cards first (the top 10), then one key fact a day.</div><div class="row"><button class="btn" onclick="go('C','feel')">Picture drill</button><button class="ghost" onclick="go('C','formula')">Key fact a day</button><button class="ghost" onclick="go('C','demos')">Hands-on demos</button><button class="ghost" onclick="go('C','exps')">Lab activities</button><button class="ghost" onclick="go('C','dev')">Rules &amp; cases</button></div></div>
+ <div class="card"><h3>Share and print</h3><div class="row"><button class="btn" onclick="dlOnePager()">Download the 1-page sheet</button><button class="ghost" onclick="printOnePager()">Print it</button></div><p class="small">Top 10 facts with a picture each. Open the downloaded file and print it.</p></div>`;}
+// ----- one pager -----
+function onePagerHtml(){const C=TOP10.map(id=>FEEL.find(x=>x.id===id));return `<!doctype html><html><head><meta charset="utf-8"><title>Forensics C: Top 10</title><style>body{font:15px/1.4 system-ui,Segoe UI,sans-serif;margin:20px;color:#111}h1{font-size:22px;margin:0 0 4px}.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}.c{border:2px solid #0b7285;border-radius:10px;padding:8px 10px;break-inside:avoid}.c b{font-size:16px}.e{font-size:26px;float:left;margin-right:8px}.s{color:#0b7285;font-weight:700;margin:2px 0}@media print{body{margin:8mm}}</style></head><body><h1>Forensics C: the top 10</h1><div>Say the memory line out loud, then picture it.</div><div class="g">${C.map((c,i)=>`<div class="c"><div class="e">${c.e}</div><b>${i+1}. ${c.t}</b><div class="s">${c.s}</div><div>${c.a}</div></div>`).join('')}</div></body></html>`;}
+function dlOnePager(){const b=new Blob([onePagerHtml()],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='forensics_top10.html';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);}
+function printOnePager(){const w=window.open('','_blank');if(!w){alert('Pop-up blocked. Use Download instead.');return}w.document.write(onePagerHtml());w.document.close();w.focus();setTimeout(()=>w.print(),400);}
+// ----- hands-on demos (text + on-screen) -----
+function demosView(){return `<div class="tip"><b>Hands-on.</b> Each one takes about 30 seconds with things in your kitchen. Or try the on-screen versions first.</div>
+ <div class="card"><h3>On the screen: spatter angle</h3><div class="row">Angle of impact: <input type="range" id="dm1" min="10" max="90" step="5" value="30" oninput="demoUp()"> <b id="dm1v"></b></div><div style="min-height:140px;display:flex;align-items:center;justify-content:center"><div id="dm1b" style="background:#c92a2a;border-radius:50%;transition:all .2s"></div></div><div class="res" id="dm1t"></div></div>
+ <div class="card"><h3>On the screen: Rf value</h3><div class="row">Spot moved: <input type="range" id="dm2" min="1" max="9" step="0.5" value="3" oninput="demoUp()"> <b id="dm2v"></b> cm &nbsp; Solvent moved: <b>10 cm</b></div><div style="position:relative;height:160px;width:90px;border:2px solid var(--line);border-radius:6px;margin:6px 0;background:var(--card)"><div id="dm2s" style="position:absolute;left:35px;width:20px;height:20px;border-radius:50%;background:#7048e8"></div><div style="position:absolute;left:0;right:0;bottom:0;border-bottom:2px dashed var(--mut)"></div></div><div class="res" id="dm2t"></div></div>
+ <div class="card"><h3>On the screen: PCR doubling</h3><div class="row">Cycles: <input type="range" id="dm3" min="0" max="30" step="1" value="5" oninput="demoUp()"> <b id="dm3v"></b></div><div class="res" id="dm3t"></div></div>
+ <div class="card"><h3>On the screen: ABO blood typing</h3><div class="row"><label><input type="checkbox" id="dm4a" onchange="demoUp()"> Clumps with anti-A</label><label><input type="checkbox" id="dm4b" onchange="demoUp()"> Clumps with anti-B</label></div><div class="res" id="dm4t"></div></div>
+ <h2 class="th">At home (30 seconds each)</h2>`+FEEL.map(c=>`<details class="card"><summary><b>${c.e} ${c.t}</b></summary><div class="try">${c.d}</div></details>`).join('');}
+function demoUp(){const a=parseFloat(document.getElementById('dm1').value);document.getElementById('dm1v').textContent=a+'°';const w=50,l=Math.min(160,w/Math.sin(a*Math.PI/180));const b=document.getElementById('dm1b');b.style.width=l+'px';b.style.height=w+'px';document.getElementById('dm1t').textContent='width ÷ length = '+w+' ÷ '+Math.round(l)+' = '+(w/l).toFixed(2)+', so sin θ = '+(w/l).toFixed(2)+' and θ = '+a+'°. The lower the angle, the longer the stain.';
+ const s=parseFloat(document.getElementById('dm2').value);document.getElementById('dm2v').textContent=s;document.getElementById('dm2s').style.bottom=(s/10*140)+'px';document.getElementById('dm2t').textContent='Rf = '+s+' ÷ 10 = '+(s/10).toFixed(2)+'. Lower Rf means the spot sticks to the paper more.';
+ const n=parseInt(document.getElementById('dm3').value);document.getElementById('dm3v').textContent=n;const c=Math.pow(2,n);document.getElementById('dm3t').textContent='1 copy becomes '+c.toLocaleString()+' copies after '+n+' cycle'+(n===1?'':'s')+' (2^'+n+').';
+ const A=document.getElementById('dm4a').checked,B=document.getElementById('dm4b').checked;document.getElementById('dm4t').textContent='Blood type: '+(A&&B?'AB':A?'A':B?'B':'O')+(A||B?'':' (no clumping means neither A nor B antigen)');}
+function demoInit(){if(document.getElementById('dm1'))demoUp()}
+// ----- team mode -----
+const TEAM={on:false,turn:0,score:[0,0],names:['Player 1','Player 2']};
+function teamPaint(){const e=document.getElementById('teamBar');if(!e)return;e.innerHTML=TEAM.on?`<div class="res"><b>${TEAM.names[TEAM.turn]}'s turn.</b> Score: ${TEAM.names[0]} ${TEAM.score[0]} &middot; ${TEAM.names[1]} ${TEAM.score[1]} <button class="ghost" onclick="TEAM.score=[0,0];TEAM.turn=0;teamPaint()">Reset scores</button></div>`:'';}
+function teamSet(on){TEAM.on=on;TEAM.turn=0;TEAM.score=[0,0];teamPaint();}
+function teamName(i,v){TEAM.names[i]=v||('Player '+(i+1));teamPaint();}
+
+function feel(coach,lv){if(!feelCur)feelCur=FEEL[0].id;lv='C';
+ return `<div class="tip"><b>Learn it with your body and your kitchen.</b> Each card gives a real thing you can touch, then the one-line memory, then the numbers. The top 10 come first. A few cards every day is what makes it stick.</div>
+ <div class="card" id="feelPlan"></div>
+ <div class="card"><div class="row"><select id="feelLv" hidden><option value="C" selected>Division C</option></select><select id="feelSet" onchange="feelNext()"><option value="top">Top 10 first</option><option value="all">All cards</option></select><button class="ghost" onclick="feelNext()">Skip</button><button class="ghost" onclick="feelSay()">&#128266; Read this card</button></div>
+ <div class="row small"><label><input type="checkbox" id="teamOn" onchange="teamSet(this.checked)" ${TEAM.on?'checked':''}> Team mode: two partners take turns</label><input value="${TEAM.names[0]}" onchange="teamName(0,this.value)" style="width:100px"><input value="${TEAM.names[1]}" onchange="teamName(1,this.value)" style="width:100px"></div><div id="teamBar"></div><div id="feelDrill"></div></div>
+ <h2 class="th">All cards (read-through)</h2>`+FEEL.map(c=>`<details class="card"><summary><b>${c.e} ${c.t}</b>${c.c?' <span class="pill cp">C</span>':''}${TOP10.includes(c.id)?' <span class="pill">top 10</span>':''}</summary><div class="hook">${c.s}</div><div class="mem"><b>Picture it:</b> ${pl(c.a)}</div>${c.d?`<div class="try"><b>Try it (30 seconds):</b> ${c.d}</div>`:''}${c.n?`<div class="try"><b>With numbers:</b> ${pl(c.n)}</div>`:''}${coach?`<div class="mem"><b>Coach script.</b> Say: ${c.s} Do: ${c.d}</div>`:''}</details>`).join('');}
+function teach(w){
+ if(w==='S')return songs();
+ if(w==='start')return coachStart();
+ if(w==='students')return studentsView();
+ if(w==='addstu')return addStuView();
+ if(w==='F')return feel(true,'C');
+ const plan=[
+ ['Session 1: The event and the score','Walk through the rules page: team of 2, 50 minutes, one sheet each, goggles and apron. Score split 20, 20, 15, 15, 30. Plan what goes on the one sheet.'],
+ ['Session 2: The 15 solids (3.b)','Flame colors, fizz with HCl, ammonia smell, iodine, Benedict’s, solubility and pH. Do the unknown-solid plan with real powders if you can.'],
+ ['Session 3: Plastics, fibers, hair (3.c)','Density ladder for plastics, burn smells for fibers (adult only), hair layers and medullary index. Remind: plastics are not burned by participants.'],
+ ['Session 4: Chromatography and mass spectra (3.d)','Paper and TLC, Rf, matching ink strips, reading the molecular ion and base peak.'],
+ ['Session 5: Fingerprints (3.e)','The 8 patterns, deltas, ridge details, skin layers, and the four development methods with the chemistry for each.'],
+ ['Session 6: DNA and blood (3.e)','PCR steps and doubling, electropherogram matching, ABO typing and species by blood cells.'],
+ ['Session 7: Glass, soil, seeds, tracks, bullets (3.e)','Refractive index, which crack came first, 3R rule, footprint height, tires, pollen, striations.'],
+ ['Session 8: Spatters and insects (3.e)','Angle, area of convergence, height of origin, spatter speed, insects and time since death.'],
+ ['Session 9: The crime analysis (3.f)','Class vs individual evidence and the four-step write-up. Work the three practice cases and compare to the model answers.']
+ ];
+ return `<div class="tip">Teaching Division C Forensics. Pick the topics your tournament level tests (check the table in Rules). The crime analysis is the biggest part, so practice it every week.</div>`+plan.map((p,i)=>{const sc=SC[i];return `<div class="card"><h3>${p[0]}</h3><div>${p[1]}</div>${sc?`<div class="mem"><b>Say:</b> ${sc.say}<br><b>Do:</b> ${sc.do}</div>`:''}</div>`}).join('')+
+ `<div class="card"><h3>Quick links</h3><div>Use <b>Forensics C</b> &rarr; Quiz to run these sessions. Calculators are under that tab too.</div></div>`;}
+// ---------- SING-ALONG (student songs tab) + speed ----------
+function rateGet(){const r=parseFloat(localStorage.getItem('foren_songrate'));return [0.7,0.85,1].includes(r)?r:1;}
+function setRate(r){try{localStorage.setItem('foren_songrate',String(r))}catch(e){}document.querySelectorAll('audio[data-song]').forEach(a=>{a.playbackRate=r;a.preservesPitch=true;a.mozPreservesPitch=true;a.webkitPreservesPitch=true});document.querySelectorAll('.rateb').forEach(b=>{b.classList.toggle('btn',parseFloat(b.dataset.r)===r);b.classList.toggle('ghost',parseFloat(b.dataset.r)!==r)});}
+function rateBar(){const r=rateGet();return `<div class="row"><b>Speed:</b>${[[0.7,'70%'],[0.85,'85%'],[1,'100% (normal)']].map(([v,n])=>`<button class="rateb ${v===r?'btn':'ghost'}" data-r="${v}" onclick="setRate(${v})">${n}</button>`).join('')}</div>`;}
+window.lyCur={};
+function lyTick(id){const a=document.getElementById('sa_'+id);if(!a)return;const t=sTimes(id);let cur=curLine(t,a.currentTime);
+ const lp=document.getElementById('lp_'+id);if(lp&&lp.checked&&cur>=0){const L=songLines(id),sec=L[cur].sec;let st=-1,en=null;L.forEach((x,i)=>{if(x.sec===sec&&t[i]!==null&&(st<0||t[i]<t[st]))st=i});for(let i=0;i<L.length;i++){if(L[i].sec>sec&&t[i]!==null){en=t[i];break}}if(st>=0&&en!==null&&a.currentTime>=en-0.05&&!a.paused){a.currentTime=t[st];return}}
+ if(window.lyCur[id]===cur)return;window.lyCur[id]=cur;t.forEach((_,k)=>{const e=document.getElementById('ly_'+id+'_'+k);if(e){e.style.background=k===cur?'var(--accbg)':'';e.style.fontWeight=k===cur?'700':'';}});const e=document.getElementById('ly_'+id+'_'+cur);if(e&&!a.paused)scrollIn(e);}
+function lyGo(id,k){const a=document.getElementById('sa_'+id);const s=sTimes(id)[k];if(s===null)return;a.currentTime=s;a.play();}
+function songsStudent(d){const list=SONGS.slice();
+ return `<div class="tip"><b>Sing along.</b> Press play and follow the highlighted line. Tap any line to jump there. Slow it to 70% to learn the words, then go back to 100%. Tick "Loop this part" to repeat one verse over and over: repetition is what makes it stick.</div>`+list.map(s=>{const L=songLines(s.id),t=sTimes(s.id),has=t.some(v=>v!==null);let last='';
+ return `<div class="card"><h3>&#127925; ${s.title}</h3><audio id="sa_${s.id}" data-song="1" controls preload="none" style="width:100%" src="${s.file}" onloadedmetadata="setRate(rateGet())" onplay="setRate(rateGet())" ontimeupdate="lyTick('${s.id}')" onseeked="lyTick('${s.id}')"></audio>
+ ${rateBar()}<label class="small"><input type="checkbox" id="lp_${s.id}"> Loop this part (the verse or chorus currently playing)</label>
+ ${has?'':'<p class="small">Line timing has not been set for this song yet. The coach sets it in <b>Teach: B vs C &rarr; Songs &amp; my checklist</b>. You can still play and read along.</p>'}
+ <div class="lyrbox">${L.map((x,k)=>{let h='';if(x.tag!==last){last=x.tag;h=`<div class="small" style="margin-top:10px;color:var(--acc);font-weight:700">${x.tag}</div>`}return h+`<div id="ly_${s.id}_${k}" onclick="lyGo('${s.id}',${k})" style="padding:3px 8px;border-radius:6px;cursor:pointer;font-size:17px">${x.ln}${x.note?`<div class="small" style="font-weight:400;font-size:13px">${x.note}</div>`:''}</div>`}).join('')}</div></div>`}).join('');}
+// ---------- READ ALOUD (text to speech) ----------
+const SPK={rate:parseFloat(localStorage.getItem('foren_rate'))||0.95,auto:localStorage.getItem('foren_auto')==='1'};
+function spkClean(t){return t.replace(/θ/g,' theta ').replace(/µm/g,' micrometers').replace(/Δ/g,'delta ').replace(/°C/g,' degrees Celsius').replace(/°F/g,' degrees Fahrenheit').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/[−–]/g,' minus ').replace(/⁴/g,' to the fourth').replace(/²/g,' squared').replace(/³/g,' cubed').replace(/→/g,' to ').replace(/=/g,' equals ').replace(/\//g,' over ').replace(/\s+/g,' ').trim();}
+function speak(t){if(!window.speechSynthesis||!t)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(spkClean(t));u.rate=SPK.rate;const vs=speechSynthesis.getVoices();const v=vs.find(x=>/en[-_]US/i.test(x.lang)&&/natural|aria|jenny|google|samantha/i.test(x.name))||vs.find(x=>/^en/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u);}
+function spkText(el){const c=el.cloneNode(true);c.querySelectorAll('.spk,button,select,input,audio,svg,script,style').forEach(n=>n.remove());return c.textContent;}
+function spkCard(btn){speak(spkText(btn.parentElement));}
+function spkInject(){document.querySelectorAll('#view .card:not([data-spk])').forEach(c=>{c.setAttribute('data-spk','1');if(c.querySelector('audio')||c.id==='feelPlan')return;c.style.position='relative';const b=document.createElement('button');b.className='ghost spk';b.title='Read aloud';b.textContent='🔊';b.style.cssText='position:absolute;top:8px;right:8px;padding:2px 8px;font-size:15px';b.onclick=function(e){e.stopPropagation();e.preventDefault();spkCard(this)};c.appendChild(b);});}
+(function(){const x=document.getElementById('xp');if(x)x.insertAdjacentHTML('afterend',`<div class="row small" style="margin:4px 0"><b>🔊 Read aloud:</b> speed <select id="spkRate" onchange="SPK.rate=parseFloat(this.value);localStorage.setItem('foren_rate',this.value)"><option value="0.75">slow</option><option value="0.95">normal</option><option value="1.2">fast</option></select><label><input type="checkbox" id="spkAuto" onchange="SPK.auto=this.checked;localStorage.setItem('foren_auto',this.checked?'1':'0')"> auto-read drill cards</label><button class="ghost" onclick="speechSynthesis.cancel()">Stop</button></div>`);const r=document.getElementById('spkRate');if(r){r.value=String(SPK.rate);if(!r.value)r.value='0.95'}const a=document.getElementById('spkAuto');if(a)a.checked=SPK.auto;
+ const v=document.getElementById('view');if(v)new MutationObserver(spkInject).observe(v,{childList:true,subtree:true});if(window.speechSynthesis)speechSynthesis.getVoices();})();
+// ---------- ACCOUNTS + PROGRESS SYNC (optional: needs config.js and a Supabase project) ----------
+const SYNC_KEYS=['foren_stats','foren_log','foren_feel','foren_feel_days','foren_feel_time','foren_feel_hist','foren_feel_n','foren_feel_lock','foren_feel_miss','foren_plan','foren_today','foren_exps','foren_fday','foren_chk','foren_rate','foren_auto','foren_songrate'];
+let SBC=null,SESSION=null,ROLE='local',NICK='',lastSnap='',lastShared='',loginCoach=false;
+const EMAIL_DOMAIN='forensics.class';
+function teachOk(){return ROLE==='coach'||(ROLE==='local'&&!cfgOk())}
+function cfgOk(){return !!(window.FOREN_CFG&&FOREN_CFG.url&&FOREN_CFG.key&&!/YOUR_/.test(FOREN_CFG.url+FOREN_CFG.key)&&window.supabase)}
+function snapData(){const d={};SYNC_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v!==null)d[k]=v});return d}
+function applyData(d){SYNC_KEYS.forEach(k=>{if(d&&typeof d[k]==='string'){try{localStorage.setItem(k,d[k])}catch(e){}}})}
+function loginUi(msg){let o=document.getElementById('loginBox');if(!o){o=document.createElement('div');o.id='loginBox';o.style.cssText='position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto';document.body.appendChild(o)}
+ o.innerHTML=`<div class="card" style="max-width:380px;width:100%"><h1 style="font-size:22px">&#128269; Forensics C Trainer</h1><p class="small">${loginCoach?'Coach sign in':'Sign in with your nickname and the password your coach gave you.'}</p>
+ <div style="display:grid;gap:8px"><input id="lgU" placeholder="${loginCoach?'Coach email':'Nickname'}" autocapitalize="none" autocomplete="username" style="width:100%"><input id="lgP" type="password" placeholder="Password" autocomplete="current-password" style="width:100%" onkeydown="if(event.key==='Enter')doLogin()"><button class="btn" onclick="doLogin()">Sign in</button></div>
+ <div class="fb bad" id="lgErr" ${msg?'':'hidden'}>${msg||''}</div>
+ <div class="row small" style="margin-top:10px"><button class="ghost" onclick="loginCoach=!loginCoach;loginUi()">${loginCoach?'Student sign in':'Coach sign in'}</button></div><p class="small">Ask your coach for your nickname and password.</p></div>`;}
+function hideLogin(){const o=document.getElementById('loginBox');if(o)o.remove();}
+function skipLogin(){ROLE='local';if(tab==='T'||tab==='P')tab='C';hideLogin();render();}
+async function doLogin(){const u=document.getElementById('lgU').value.trim(),p=document.getElementById('lgP').value;if(!u||!p){loginUi('Enter both boxes.');return}
+ const email=(loginCoach||u.includes('@'))?u:(u.toLowerCase().replace(/[^a-z0-9._-]/g,'')+'@'+EMAIL_DOMAIN);
+ const r=await SBC.auth.signInWithPassword({email,password:p});
+ if(r.error||!r.data.session){loginUi('That nickname or password did not work. Ask your coach.');return}
+ await onSession(r.data.session);}
+async function signOut(){await pushProgress(true);try{await SBC.auth.signOut()}catch(e){}SESSION=null;ROLE='local';NICK='';location.reload();}
+async function loadShared(){try{const r=await SBC.from('shared').select('data').eq('key','timings').maybeSingle();if(r.data&&r.data.data&&typeof r.data.data.v==='string'){localStorage.setItem('foren_lsync',r.data.data.v);lastShared=r.data.data.v}}catch(e){}}
+async function pushShared(){try{const v=localStorage.getItem('foren_lsync')||'{}';if(v===lastShared)return;await SBC.from('shared').upsert({key:'timings',data:{v},updated_at:new Date().toISOString()});lastShared=v}catch(e){}}
+async function pullProgress(){try{const r=await SBC.from('progress').select('data').eq('user_id',SESSION.user.id).maybeSingle();if(r.data&&r.data.data&&Object.keys(r.data.data).length){applyData(r.data.data)}else{await pushProgress(true)}}catch(e){}}
+async function pushProgress(force){if(ROLE!=='student'||!SESSION)return;const d=snapData(),s=JSON.stringify(d);if(!force&&s===lastSnap)return;lastSnap=s;try{await SBC.from('progress').upsert({user_id:SESSION.user.id,nick:NICK,data:d,updated_at:new Date().toISOString()})}catch(e){lastSnap=''}}
+async function onSession(s){SESSION=s;NICK=(s.user.email||'').split('@')[0];let coach=false;try{const c=await SBC.from('coaches').select('user_id').eq('user_id',s.user.id).maybeSingle();coach=!!(c.data)}catch(e){}
+ ROLE=coach?'coach':'student';{const ow=localStorage.getItem('foren_owner');if(ow!==s.user.id){SYNC_KEYS.forEach(k=>localStorage.removeItem(k));try{localStorage.setItem('foren_owner',s.user.id)}catch(e){}}}await loadShared();if(ROLE==='student')await pullProgress();hideLogin();
+ if(ROLE==='student'){lastSnap=JSON.stringify(snapData());setInterval(()=>pushProgress(false),15000);document.addEventListener('visibilitychange',()=>{if(document.hidden)pushProgress(false)})}
+ else setInterval(pushShared,5000);
+ const x=document.getElementById('spkRate');const bar=document.getElementById('acct');if(!bar){const b=document.createElement('div');b.id='acct';b.className='row small';b.style.margin='4px 0';b.innerHTML=`<span>Signed in as <b>${NICK}</b>${ROLE==='coach'?' (coach)':''}</span><button class="ghost" onclick="signOut()">Sign out</button>`;const xp=document.getElementById('xp');if(xp)xp.insertAdjacentElement('afterend',b)}
+ if(!teachOk()&&tab==='T')tab='C';render();}
+async function authInit(){if(!cfgOk()){ROLE='local';return}SBC=window.supabase.createClient(FOREN_CFG.url,FOREN_CFG.key);let s=null;try{const r=await SBC.auth.getSession();s=r.data.session}catch(e){}
+ if(s)await onSession(s);else loginUi();}
+// ----- add a student (coach only) -----
+const PW_WORDS=['print','clue','case','swab','lens','trace','glass','blood','fiber','hair','dust','scene','spot','arch','loop','dna'];
+function genPw(){const w=()=>PW_WORDS[Math.floor(Math.random()*PW_WORDS.length)];return w()+'-'+w()+'-'+(10+Math.floor(Math.random()*90));}
+function addStuView(){return `<div class="tip"><b>Add a student.</b> Pick a nickname (no real names) and a password. Write both down: passwords cannot be looked up later.</div>
+ <div class="card"><div style="display:grid;gap:8px;max-width:360px"><label class="small">Nickname (letters and numbers, 2 to 20 characters)<input id="asN" autocapitalize="none" style="width:100%"></label>
+ <label class="small">Password (at least 6 characters)<input id="asP" style="width:100%"></label>
+ <div class="row"><button class="ghost" onclick="document.getElementById('asP').value=genPw()">Make a password for me</button><button class="btn" onclick="addStudent()">Create student</button></div></div>
+ <div id="asOut" style="margin-top:10px"></div></div>
+ <div class="card"><h3>Your students</h3><div class="row"><button class="ghost" onclick="renderStuList()">Refresh</button><span class="small" id="stuListMsg"></span></div><div id="stuList" class="small" style="overflow-x:auto">Loading...</div></div>
+ <div class="card"><h3>Other things you can do</h3><ul class="small"><li>Reset a password: Supabase &rarr; Authentication &rarr; Users.</li><li>See how they are doing: Students (progress) tab.</li></ul><div class="row"><a href="https://supabase.com/dashboard" target="_blank" rel="noopener">Open the Supabase Users page</a></div></div>`;}
+function safeNick(s){return String(s).replace(/[^a-z0-9._-]/gi,'');}
+async function renderStuList(){const box=document.getElementById('stuList');if(!box)return;if(!SBC||ROLE!=='coach'){box.textContent='Sign in as coach to see students.';return}
+ box.textContent='Loading...';let r;try{r=await SBC.rpc('list_students')}catch(e){box.textContent='Could not load the list.';return}
+ if(r.error){box.textContent='Could not load the list: '+String(r.error.message).replace(/[<>&]/g,'');return}
+ const rows=r.data||[];if(!rows.length){box.textContent='No students yet.';return}
+ box.innerHTML='<table><tr><th>Nickname</th><th>Created</th><th>Last sign in</th><th></th></tr>'+rows.map(x=>{const n=safeNick(x.nick);return `<tr><td><b>${n}</b></td><td>${new Date(x.created_at).toLocaleDateString()}</td><td>${x.last_sign_in?new Date(x.last_sign_in).toLocaleDateString():'never'}</td><td><button class="ghost" id="del_${n}" onclick="delStudent('${n}')">Delete</button></td></tr>`}).join('')+'</table>';}
+window._delArm={};
+async function delStudent(nick){const b=document.getElementById('del_'+nick),m=document.getElementById('stuListMsg');
+ if(!window._delArm[nick]){window._delArm[nick]=1;if(b){b.textContent='Tap again to delete';b.style.borderColor='var(--bad)'}if(m)m.textContent='Deleting '+nick+' removes their login and all their progress.';setTimeout(()=>{window._delArm[nick]=0;const bb=document.getElementById('del_'+nick);if(bb){bb.textContent='Delete';bb.style.borderColor=''}},4000);return}
+ window._delArm[nick]=0;if(m)m.textContent='Deleting...';let r;try{r=await SBC.rpc('delete_student',{p_nick:nick})}catch(e){if(m)m.textContent='Could not delete. Try again.';return}
+ if(r.error){if(m)m.textContent='Could not delete: '+String(r.error.message).replace(/[<>&]/g,'');return}
+ if(m)m.textContent=r.data?('Deleted '+nick+'.'):('No student named '+nick+' was found.');renderStuList();}
+async function addStudent(){const out=document.getElementById('asOut');const nick=document.getElementById('asN').value.trim().toLowerCase(),pw=document.getElementById('asP').value;
+ if(!/^[a-z0-9._-]{2,20}$/.test(nick)){out.innerHTML='<div class="fb bad">Nickname: use 2 to 20 letters, numbers, dot, dash or underscore. No spaces.</div>';return}
+ if(pw.length<6){out.innerHTML='<div class="fb bad">Password needs at least 6 characters.</div>';return}
+ if(!window.supabase||!FOREN_CFG){out.innerHTML='<div class="fb bad">Not connected to the database.</div>';return}
+ out.innerHTML='<div class="small">Creating...</div>';
+ const tmp=window.supabase.createClient(FOREN_CFG.url,FOREN_CFG.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+ let r;try{r=await tmp.auth.signUp({email:nick+'@'+EMAIL_DOMAIN,password:pw})}catch(e){out.innerHTML='<div class="fb bad">Could not reach the database. Try again.</div>';return}
+ if(r.error){const m=r.error.message||'';out.innerHTML=`<div class="fb bad">${/already|registered/i.test(m)?'That nickname is taken. Try another.':'Could not create: '+m.replace(/[<>&]/g,'')}</div>`;return}
+ if(r.data&&r.data.user&&Array.isArray(r.data.user.identities)&&r.data.user.identities.length===0){out.innerHTML='<div class="fb bad">That nickname is taken. Try another.</div>';return}
+ out.innerHTML=`<div class="fb ok"><b>Created.</b> Give this to the student:<br>Nickname: <b>${nick}</b><br>Password: <b>${pw.replace(/[<>&]/g,'')}</b><br><span class="small">Write it down now. It will not be shown again.</span></div>`;document.getElementById('asN').value='';document.getElementById('asP').value='';renderStuList();}
+// ----- coach dashboard -----
+function dayKeyOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function pj(d,k,dflt){try{return JSON.parse(d[k])||dflt}catch(e){return dflt}}
+function studentStats(row){const d=row.data||{};const tm=pj(d,'foren_feel_time',{}),b=pj(d,'foren_feel',{}),dy=pj(d,'foren_feel_days',{}),ms=pj(d,'foren_feel_miss',{}),fd=pj(d,'foren_fday',{done:[]}),ex=pj(d,'foren_exps',{});
+ let n=0,s=0,l=0;FEEL.forEach(c=>{const nd=(dy[c.id]||[]).length;if(!nd){n++;return}if((b[c.id]||0)>=4&&nd>=2)l++;else s++});
+ const now=new Date();let streak=0;const x=new Date(now);if(!tm[dayKeyOf(x)])x.setDate(x.getDate()-1);while(tm[dayKeyOf(x)]){streak++;x.setDate(x.getDate()-1)}
+ const todayMin=Math.round((tm[dayKeyOf(now)]||0)/6)/10;let weekMin=0;for(let i=0;i<7;i++){const y=new Date(now);y.setDate(y.getDate()-i);weekMin+=(tm[dayKeyOf(y)]||0)}weekMin=Math.round(weekMin/6)/10;
+ const days=Object.keys(tm).sort();const dl=days.length?days[days.length-1]:null;const ul=row.updated_at?dayKeyOf(new Date(row.updated_at)):null;const last=(dl&&ul)?(dl>ul?dl:ul):(dl||ul);const since=last?dayN(last,dayKeyOf(now)):null;
+ const weak=FEEL.map(c=>({t:c.t,m:ms[c.id]||0,streak:b[c.id]||0,seen:(dy[c.id]||[]).length})).filter(c=>c.m>=2&&c.streak<4).sort((a,c)=>c.m-a.m).slice(0,4);
+ const flags=[];if(since===null)flags.push('Has not started');else if(since>=3)flags.push('Quiet for '+since+' days');if(since!==null&&weekMin<10)flags.push('Under 10 min this week');if(weak.length)flags.push('Keeps missing: '+weak.slice(0,3).map(w=>w.t).join(', '));
+ const stt=pj(d,'foren_stats',{});let qr=0,qn=0;Object.keys(TOPICS).forEach(k=>{const z=stt['C'+k];if(z){qr+=z.r;qn+=z.n}});
+ return {nick:row.nick,xp:stt.xp||0,acc:qn?Math.round(100*qr/qn):null,qn,n,s,l,streak,todayMin,weekMin,since,formulas:(fd.done||[]).length,exps:Object.values(ex).filter(Boolean).length,weak,flags,updated:row.updated_at};}
+function studentsView(){return `<div class="tip"><b>Students.</b> Everyone who has signed in with a nickname shows here. Orange rows may need a quick chat.</div><div class="card"><div class="row"><button class="btn" onclick="renderStudents()">Refresh</button><span class="small" id="stuMsg"></span></div><div id="stuBox" class="small">Loading...</div></div>`;}
+async function renderStudents(){const box=document.getElementById('stuBox'),msg=document.getElementById('stuMsg');if(!box)return;if(!SBC||ROLE!=='coach'){box.textContent='Sign in as coach to see students.';return}
+ msg.textContent='Loading...';let r;try{r=await SBC.from('progress').select('nick,data,updated_at')}catch(e){box.textContent='Could not load.';return}if(r.error){box.textContent='Could not load: '+r.error.message;msg.textContent='';return}
+ const st=(r.data||[]).map(studentStats).sort((a,c)=>(c.flags.length-a.flags.length)||a.nick.localeCompare(c.nick));msg.textContent=st.length+' student'+(st.length===1?'':'s');
+ if(!st.length){box.innerHTML='No students have signed in yet.';return}
+ box.innerHTML='<div style="overflow-x:auto"><table><tr><th>Nickname</th><th>Streak</th><th>Min today / week</th><th>Cards: long / short / new</th><th>Key facts</th><th>Activities</th><th>Quiz accuracy</th><th>Last active</th><th>Notes</th></tr>'+st.map(x=>`<tr style="${x.flags.length?'background:var(--accbg)':''}"><td><b>${x.nick.replace(/[<>&]/g,'')}</b></td><td>${x.streak}</td><td>${x.todayMin} / ${x.weekMin}</td><td>${x.l} / ${x.s} / ${x.n}</td><td>${x.formulas}</td><td>${x.exps}</td><td>${x.acc===null?'-':x.acc+'% ('+x.qn+')'}</td><td>${x.since===null?'never':x.since===0?'today':x.since+' d ago'}</td><td>${x.flags.length?x.flags.join('<br>'):'On track'}</td></tr>`).join('')+'</table></div>';}
+// ----- class progress (every signed-in student can see everyone) -----
+function rankName(x){let r=0;RANKS.forEach((a,i)=>{if(x>=a[0])r=i});return RANKS[r][1];}
+function classView(){return `<div class="tip"><b>Class progress.</b> Everyone who is signed in can see how everyone else is doing. Only nicknames are shown. Cheer each other on and catch up if you are behind!</div><div class="card"><div class="row"><button class="btn" onclick="renderClass()">Refresh</button><span class="small" id="clsMsg"></span></div><div id="clsBox" class="small">Loading...</div></div>`;}
+async function renderClass(){const box=document.getElementById('clsBox'),msg=document.getElementById('clsMsg');if(!box)return;if(!SBC||ROLE==='local'){box.textContent='Sign in to see your classmates.';return}
+ msg.textContent='Loading...';if(ROLE==='student')await pushProgress(true);let r;try{r=await SBC.from('progress').select('nick,data,updated_at')}catch(e){box.textContent='Could not load.';msg.textContent='';return}
+ if(r.error){box.textContent='Could not load: '+String(r.error.message).replace(/[<>&]/g,'');msg.textContent='';return}
+ const st=(r.data||[]).map(studentStats).sort((a,c)=>(c.xp-a.xp)||a.nick.localeCompare(c.nick));msg.textContent=st.length+' student'+(st.length===1?'':'s');
+ if(!st.length){box.innerHTML='Nobody has signed in yet.';return}
+ const medal=['🥇','🥈','🥉'],N=FEEL.length;
+ box.innerHTML='<div style="overflow-x:auto"><table><tr><th>#</th><th>Nickname</th><th>Rank</th><th>XP</th><th>Streak</th><th>Min this week</th><th>Cards locked in</th><th>Key facts</th><th>Activities</th><th>Quiz accuracy</th><th>Last active</th></tr>'+st.map((x,i)=>{const me=x.nick===NICK;const nk=x.nick.replace(/[<>&]/g,'');return `<tr style="${me?'background:var(--accbg);font-weight:700':''}"><td>${medal[i]||i+1}</td><td><b>${nk}</b>${me?' (you)':''}</td><td>${rankName(x.xp)}</td><td>${x.xp}</td><td>${x.streak}</td><td>${x.weekMin}</td><td>${x.l} of ${N}<div class="bar"><i style="width:${Math.round(100*x.l/N)}%"></i></div></td><td>${x.formulas} of ${FMLS.length}</td><td>${x.exps} of ${EXPS.length}</td><td>${x.acc===null?'-':x.acc+'% ('+x.qn+')'}</td><td>${x.since===null?'not yet':x.since===0?'today':x.since+' d ago'}</td></tr>`}).join('')+'</table></div><p class="small">XP comes from quizzes, games and drills. Cards locked in = 4 right in a row on 2 different days.</p>';}
+
+render();
+authInit();
+</script></body></html>
